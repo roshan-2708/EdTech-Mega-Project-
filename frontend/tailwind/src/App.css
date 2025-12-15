@@ -1,0 +1,31 @@
+/* write your css here */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+    overflow-x: hidden;
+}
+
+.homepage_bg {
+    background-image: url('./assets/Images/bghome.svg');
+}
+
+.section2 {
+    background-color: white;
+}
+
+@layer components {
+    .card-box {
+        @apply p-4 border border-richblack-600 rounded-lg bg-richblack-700 w-[300px] h-[170px] flex flex-col;
+    }
+
+    .card-title {
+        @apply text-lg font-semibold text-richblack-5;
+    }
+
+    .card-text {
+        @apply text-richblack-200 text-sm mt-2 leading-snug;
+    }
+}

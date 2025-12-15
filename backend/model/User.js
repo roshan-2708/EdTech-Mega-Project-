@@ -33,8 +33,8 @@ const userSchema = new mongoose.Schema(
         },
 
         additionalDetail: {
-            type: mongoose.Schema.Types.ObjectId, // ! storing profile's ID
-            ref: "Profile", // ! referring to profile model
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Profile",
             required: true,
         },
 
@@ -45,9 +45,10 @@ const userSchema = new mongoose.Schema(
             }
         ],
 
+        // ✔ Renamed to image
         image: {
-            type: String,   // URL of profile picture
-            required: true,
+            type: String,
+            default: "",
         },
 
         coursesProgress: [
@@ -56,11 +57,13 @@ const userSchema = new mongoose.Schema(
                 ref: "CourseProgress",
             }
         ],
+
         token: {
-            type : String,
+            type: String,
         },
+
         resetPasswordExpires: {
-            type : Date,
+            type: Date,
         }
     },
     {
