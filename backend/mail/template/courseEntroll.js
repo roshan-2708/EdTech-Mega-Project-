@@ -17,15 +17,15 @@ module.exports = function courseEnrollTemplate(name, courseName) {
             </p>
 
             <p style="font-size:15px; color:#333; line-height:1.6;">
-                We are excited to have you on board!  
-                Your learning journey starts today 🚀  
+                We are excited to have you on board!
+                Your learning journey starts today 🚀
                 Log in anytime and start exploring the course content.
             </p>
 
             <div style="text-align:center; margin:30px 0;">
-                <a href="#" 
-                   style="background:#4A90E2; color:#fff; padding:12px 22px; text-decoration:none;
-                          border-radius:8px; font-size:16px;">
+                <a href="#"
+                style="background:#4A90E2; color:#fff; padding:12px 22px; text-decoration:none;
+                        border-radius:8px; font-size:16px;">
                     Go to My Courses
                 </a>
             </div>

@@ -1,4 +1,4 @@
-const cloudinary = require("cloudinary").v2;
+const { cloudinary } = require("../config/cloudinary");
 
 // Upload Image to Cloudinary
 exports.uploadImageCloudinary = async (file, folder, height, quality) => {
