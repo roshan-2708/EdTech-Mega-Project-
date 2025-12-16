@@ -83,11 +83,21 @@ exports.signUp = async (req, res) => {
             contactNumber,
         } = req.body;
 
+
         // Basic validation
         if (!firstName || !lastName || !email || !password || !confirmPassword || !contactNumber) {
             return res.status(400).json({
                 success: false,
                 message: "All fields are required."
+            });
+        }
+        // Validate accountType
+        const validAccountTypes = ["Student", "Instructor"];
+
+        if (!accountType || !validAccountTypes.includes(accountType)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid account type",
             });
         }
 
@@ -163,7 +173,7 @@ exports.signUp = async (req, res) => {
 
 exports.login = async (req, res) => {
     try {
-        const { email, password , role} = req.body;
+        const { email, password, role } = req.body;
 
         if (!email || !password || !role) {
             return res.status(400).json({
