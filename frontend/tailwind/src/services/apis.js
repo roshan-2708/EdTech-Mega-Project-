@@ -1,21 +1,15 @@
-import { apiConnector } from "./apiConnecter";
-
+export const authEndpoints = {
+    SEND_OTP: "/auth/send-otp",
+    VERIFY_OTP: "/auth/verify-otp",
+    SIGNUP: "/auth/signup",
+    LOGIN: "/auth/login",
+    LOGOUT: "/auth/logout",
+    RESET_PASSWORD_TOKEN: "/auth/reset-password-token",
+    RESET_PASSWORD: "/auth/reset-password",
+    CATEGORY_API: "/category/all"
+};
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export const categories = {
     CATEGORY_API: `${BASE_URL}/category/all`,
-};
-
-// AUTH APIs
-
-export const sendOtp = (email) => {
-    return apiConnector("POST", "/auth/send-otp", { email });
-};
-
-export const verifyOtp = (email, otp) => {
-    return apiConnector("POST", "/auth/verify-otp", { email, otp });
-};
-
-export const signup = (data) => {
-    return apiConnector("POST", "/auth/signup", data);
 };

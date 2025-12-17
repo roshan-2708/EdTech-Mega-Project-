@@ -1,43 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import { NavbarLinks } from '../../data/navbar-links';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { NavbarLinks } from "../../data/navbar-links";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/Logo/Logo-Full-Light.png";
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from "react-redux";
 import { FaShoppingCart } from "react-icons/fa";
-import ProfileDropDown from '../core/auth/ProfileDropDown';
-import { apiConnector } from '../../services/apiConnecter';
-import { categories } from '../../services/apis';
-import { logoutUser } from '../../services/auth';
-import { logout } from '../../slice/AuthSlice'; // Make sure your authSlice has logout action
+import ProfileDropDown from "../core/auth/ProfileDropDown";
+import { getAllCategories } from "../../services/operations/categoryAPI";
+import { logoutUser } from "../../services/operations/authAPI";
+import { logout } from "../../slice/AuthSlice";
 
 const Navbar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
+
     const { token } = useSelector((state) => state.auth);
     const { user } = useSelector((state) => state.profile);
     const { totalItems } = useSelector((state) => state.cart);
 
     const [sublinks, setSublinks] = useState([]);
 
-    // Helper to highlight active link
+    // Active link helper
     const isActive = (path) => location.pathname === path;
 
-    // Fetch catalog categories
+    // Fetch categories
     const fetchSublinks = async () => {
         try {
-            const result = await apiConnector("GET", categories.CATEGORY_API);
-            setSublinks(result?.data?.data || []);
+            const res = await getAllCategories();
+            setSublinks(res?.data?.data || []);
         } catch (error) {
-            console.log("Could not fetch category list", error);
+            console.error("Could not fetch categories", error);
         }
     };
 
-    // Logout handler
+    // Logout
     const handleLogout = async () => {
         try {
             await logoutUser();
-            dispatch(logout()); // clear token and user info in Redux
+            dispatch(logout());
             navigate("/login");
         } catch (error) {
             console.error("Logout failed", error);
@@ -52,7 +52,7 @@ const Navbar = () => {
         <div className="w-full h-16 border-b border-richblack-700 bg-richblack-900 flex items-center">
             <div className="w-11/12 max-w-maxContent mx-auto flex items-center justify-between">
 
-                {/* Logo */}
+                {/* LOGO */}
                 <Link to="/">
                     <img
                         src={Logo}
@@ -62,7 +62,7 @@ const Navbar = () => {
                     />
                 </Link>
 
-                {/* Nav Links */}
+                {/* NAV LINKS */}
                 <nav className="hidden md:block">
                     <ul className="flex items-center gap-6 text-richblack-25 font-medium">
                         {NavbarLinks.map((link, idx) => (
@@ -70,9 +70,11 @@ const Navbar = () => {
                                 {link.title === "Catalog" ? (
                                     <div className="cursor-pointer text-richblack-5 group-hover:text-yellow-25">
                                         Catalog ▾
-                                        <div className="absolute left-0 hidden group-hover:block bg-richblack-800 text-richblack-25 px-4 py-3 rounded-lg shadow-lg z-20 w-48">
+                                        <div className="absolute left-0 hidden group-hover:block bg-richblack-800 px-4 py-3 rounded-lg shadow-lg z-20 w-48">
                                             {sublinks.length === 0 ? (
-                                                <p className="text-sm text-richblack-200">Loading...</p>
+                                                <p className="text-sm text-richblack-200">
+                                                    Loading...
+                                                </p>
                                             ) : (
                                                 sublinks.map((cat) => (
                                                     <Link
@@ -88,11 +90,11 @@ const Navbar = () => {
                                     </div>
                                 ) : (
                                     <Link
-                                        to={link?.path}
-                                        className={`${isActive(link?.path)
-                                            ? "text-yellow-25"
-                                            : "text-richblack-5"
-                                            } hover:text-yellow-25 transition-all`}
+                                        to={link.path}
+                                        className={`${isActive(link.path)
+                                                ? "text-yellow-25"
+                                                : "text-richblack-5"
+                                            } hover:text-yellow-25 transition`}
                                     >
                                         {link.title}
                                     </Link>
@@ -102,52 +104,46 @@ const Navbar = () => {
                     </ul>
                 </nav>
 
-                {/* Login / Signup / Logout / Profile / Cart */}
+                {/* RIGHT SIDE */}
                 <div className="flex gap-x-4 items-center">
 
-                    {/* Cart icon */}
-                    {user && user?.accountType !== "Instructor" && (
+                    {/* CART */}
+                    {user && user.accountType !== "Instructor" && (
                         <Link to="/dashboard/cart" className="relative">
                             <FaShoppingCart className="text-richblack-5 text-xl" />
                             {totalItems > 0 && (
-                                <span className="absolute -top-2 -right-2 bg-yellow-25 text-black rounded-full px-[6px] text-xs font-bold">
+                                <span className="absolute -top-2 -right-2 bg-yellow-25 text-black rounded-full px-2 text-xs font-bold">
                                     {totalItems}
                                 </span>
                             )}
                         </Link>
                     )}
 
-                    {/* Not logged in */}
-                    {!token && (
-                        <div className="flex items-center gap-3">
+                    {/* AUTH BUTTONS */}
+                    {!token ? (
+                        <div className="flex gap-3">
                             <Link to="/login">
-                                <button className="text-white border border-yellow-50 px-4 py-1 rounded-md hover:bg-yellow-50 hover:text-black transition">
+                                <button className="border border-yellow-50 px-4 py-1 rounded-md hover:bg-yellow-50 hover:text-black transition">
                                     Sign in
                                 </button>
                             </Link>
-
                             <Link to="/verify-email">
-                                <button className="text-white border border-yellow-50 px-4 py-1 rounded-md hover:bg-yellow-50 hover:text-black transition">
+                                <button className="border border-yellow-50 px-4 py-1 rounded-md hover:bg-yellow-50 hover:text-black transition">
                                     Sign up
                                 </button>
                             </Link>
                         </div>
-                    )}
-
-                    {/* Logged in */}
-                    {token && (
+                    ) : (
                         <>
                             <button
                                 onClick={handleLogout}
-                                className="px-4 py-2 bg-pink-400 text-white rounded-lg hover:bg-red-400 transition-colors"
-                                >
+                                className="px-4 py-1 bg-pink-500 text-white rounded-md hover:bg-red-500 transition"
+                            >
                                 Logout
                             </button>
-
                             <ProfileDropDown />
                         </>
                     )}
-
                 </div>
             </div>
         </div>
