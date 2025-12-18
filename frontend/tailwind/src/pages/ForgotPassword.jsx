@@ -59,9 +59,9 @@ const ForgotPassword = () => {
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="Enter your email"
                                 className="w-full px-3 py-2 rounded-md 
-                                           bg-richblack-700 text-richblack-5 
-                                           outline-none border border-richblack-600 
-                                           focus:border-yellow-50"
+                                            bg-richblack-700 text-richblack-5 
+                                            outline-none border border-richblack-600 
+                                            focus:border-yellow-50"
                             />
                         </div>
                     )}
@@ -69,8 +69,9 @@ const ForgotPassword = () => {
                     <button
                         type="submit"
                         className="w-full bg-yellow-50 text-black 
-                                   font-semibold py-2 rounded-md 
-                                   hover:scale-95 transition-all"
+                                    font-semibold py-2 rounded-md 
+                                    hover:scale-95 transition-all"
+                        
                     >
                         {!emailSent ? "Reset Password" : "Resend Email"}
                     </button>
@@ -81,7 +82,7 @@ const ForgotPassword = () => {
                     <Link
                         to="/login"
                         className="text-sm text-richblack-300 
-                                   hover:text-richblack-5 hover:underline"
+                                    hover:text-richblack-5 hover:underline"
                     >
                         Back to Login
                     </Link>

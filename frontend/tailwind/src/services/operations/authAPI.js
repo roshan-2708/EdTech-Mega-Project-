@@ -2,7 +2,7 @@ import { apiConnector } from "../apiConnecter";
 import { authEndpoints } from "../apis";
 import { setToken } from "../../slice/AuthSlice";
 import { setUser } from "../../slice/profileSlice";
-
+import toast from "react-hot-toast";
 const {
     SEND_OTP,
     VERIFY_OTP,
@@ -67,7 +67,6 @@ export const getPasswordResetToken = (email, setEmailSent) => {
                 RESET_PASSWORD_TOKEN,
                 { email }
             );
-
             if (res.data.success) {
                 setEmailSent(true);
             }
@@ -78,7 +77,8 @@ export const getPasswordResetToken = (email, setEmailSent) => {
 };
 
 // RESET PASSWORD
-export const resetPassword = (password, confirmPassword, token, navigate) => {
+// RESET PASSWORD
+export const resetPassword = (password, confirmPassword, token) => {
     return async () => {
         try {
             await apiConnector("POST", RESET_PASSWORD, {
@@ -86,12 +86,14 @@ export const resetPassword = (password, confirmPassword, token, navigate) => {
                 confirmPassword,
                 token,
             });
-            navigate("/login");
+            // ✅ SUCCESS TOAST
+            toast.success("Password updated successfully 🎉");
         } catch (err) {
             alert(err.response?.data?.message || "Reset failed");
         }
     };
 };
+
 
 
 export const logoutUser = async () => {

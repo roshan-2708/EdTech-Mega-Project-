@@ -8,7 +8,6 @@ import ProfileDropDown from "../core/auth/ProfileDropDown";
 import { getAllCategories } from "../../services/operations/categoryAPI";
 import { logoutUser } from "../../services/operations/authAPI";
 import { logout } from "../../slice/AuthSlice";
-
 const Navbar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
