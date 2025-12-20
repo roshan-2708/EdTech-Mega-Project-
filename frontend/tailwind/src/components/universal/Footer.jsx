@@ -16,8 +16,8 @@ export default function Footer() {
 
                     <div className="space-y-1 text-sm">
                         <p className="text-richblack-300">Company</p>
-                        <Link to="/about">About</Link>
-                        <Link to="/careers">Careers</Link>
+                        <Link to="/about">About </Link>
+                        <Link to="/careers">Careers </Link>
                         <Link to="/affiliates">Affiliates</Link>
                     </div>
 

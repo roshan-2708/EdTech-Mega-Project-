@@ -6,7 +6,7 @@ import HighlightText from '../components/core/HomePage/HighlighText'
 import Footer from '../components/universal/Footer'
 import FoundingStory from '../assets/Images/FoundingStory.png'
 import CTAButton from '../components/core/HomePage/Button';
-
+import ContatctForm from '../components/core/HomePage/ContatctForm'
 const About = () => {
     return (
         <div className='flex flex-col items-center justify-center w-full h-full bg-richblack-900'>
@@ -242,9 +242,12 @@ const About = () => {
 
 
             {/* section-7 */}
-            <div className='mt-16'>
-
+            <div className=" py-10">
+                <div className="max-w-7xl mx-auto px-4">
+                    <ContatctForm />
+                </div>
             </div>
+
             {/* footer */}
             <Footer></Footer>
         </div>

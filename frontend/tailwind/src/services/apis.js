@@ -13,3 +13,6 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 export const categories = {
     CATEGORY_API: `${BASE_URL}/category/all`,
 };
+export const contactEndpoints = {
+    CONTACT_US: "/contact", // adjust if backend path differs
+};
