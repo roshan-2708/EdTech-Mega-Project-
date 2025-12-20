@@ -31,7 +31,8 @@ const ContatctForm = () => {
                 </div>
 
                 {/* Right Form */}
-                <div>
+                <div className="mt-10">
+                    
                     <ContactUs />
                 </div>
 

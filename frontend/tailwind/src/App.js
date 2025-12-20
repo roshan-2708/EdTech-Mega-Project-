@@ -9,7 +9,7 @@ import Signup from "./pages/Signup";
 import { Toaster } from "react-hot-toast";
 import ForgotPassword from "./pages/ForgotPassword";
 import UpdatePassword from "./pages/UpdatePassword";
-import ContactUs from "./pages/ContactUs";
+import Contact from "./pages/Contact";
 function App() {
   return (
     <div className="w-screen min-h-screen bg-richblack-800 flex flex-col font-inter">
@@ -24,7 +24,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/reset-password" element={<ForgotPassword />}></Route>
         <Route path="/update-password/:id" element={<UpdatePassword />}></Route>
-        <Route path="/contact" element={<ContactUs/>}></Route>
+        <Route path="/contact" element={<Contact/>}></Route>
       </Routes>
     </div>
   );

@@ -46,12 +46,7 @@ const ContactUs = () => {
                 onSubmit={handleSubmit(submitContactForm)}
                 className="w-full max-w-2xl bg-gray-800 p-8 rounded-2xl shadow-lg space-y-6"
             >
-                <h2 className="text-3xl font-bold text-white text-center">
-                    Contact Us
-                </h2>
-                <p className="text-gray-400 text-center">
-                    We'd love to hear from you
-                </p>
+
 
                 {/* Name */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
