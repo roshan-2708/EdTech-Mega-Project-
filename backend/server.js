@@ -16,6 +16,7 @@ const fileUpload = require("express-fileupload");
 const dotenv = require("dotenv");
 const sectionRoutes = require("./routes/sectionRoutes");
 const SubSection = require("./routes/subsectionRoutes");
+const contactRoutes = require("./routes/contactRoutes");
 dotenv.config();
 const PORT = process.env.PORT || 4000;
 
@@ -50,7 +51,8 @@ app.use("/api/v1/payment", paymentRoutes);
 app.use("/api/v1/course", courseRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/section", sectionRoutes);
-app.use("/api/v1/subsection", SubSection)
+app.use("/api/v1/subsection", SubSection);
+app.use("/api/v1/", contactRoutes);
 // Default route
 app.get("/", (req, res) => {
     return res.json({

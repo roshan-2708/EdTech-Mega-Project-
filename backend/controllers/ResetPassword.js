@@ -81,7 +81,15 @@ exports.resetPassword = async (req, res) => {
                 message: "All fields are required",
             });
         }
+        const passwordRegex = /^[A-Z](?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{7,}$/;
 
+        if (!passwordRegex.test(password)) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Password must start with capital, contain number & special char, and be 8 chars long",
+            });
+        }
         if (password !== confirmPassword) {
             return res.status(400).json({
                 success: false,
