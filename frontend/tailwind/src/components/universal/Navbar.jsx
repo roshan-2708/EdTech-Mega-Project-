@@ -6,8 +6,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { FaShoppingCart } from "react-icons/fa";
 import ProfileDropDown from "../core/auth/ProfileDropDown";
 import { getAllCategories } from "../../services/operations/categoryAPI";
-import { logoutUser } from "../../services/operations/authAPI";
-import { logout } from "../../slice/AuthSlice";
 const Navbar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -29,17 +27,6 @@ const Navbar = () => {
             setSublinks(res?.data?.data || []);
         } catch (error) {
             console.error("Could not fetch categories", error);
-        }
-    };
-
-    // Logout
-    const handleLogout = async () => {
-        try {
-            await logoutUser();
-            dispatch(logout());
-            navigate("/login");
-        } catch (error) {
-            console.error("Logout failed", error);
         }
     };
 
@@ -134,12 +121,7 @@ const Navbar = () => {
                         </div>
                     ) : (
                         <>
-                            <button
-                                onClick={handleLogout}
-                                className="px-4 py-1 bg-pink-500 text-white rounded-md hover:bg-red-500 transition"
-                            >
-                                Logout
-                            </button>
+                            
                             <ProfileDropDown />
                         </>
                     )}

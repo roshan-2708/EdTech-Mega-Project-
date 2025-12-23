@@ -33,7 +33,7 @@ export const login = (email, password, role, navigate) => {
             localStorage.setItem("token", token);
             localStorage.setItem("user", JSON.stringify(user));
 
-            navigate("/");
+            navigate("/dashboard");
         } catch (err) {
             alert(err.response?.data?.message || "Login failed");
         }
@@ -96,6 +96,19 @@ export const resetPassword = (password, confirmPassword, token) => {
 
 
 
-export const logoutUser = async () => {
-    return apiConnector("POST", "/auth/logout");
+// ! Logout
+
+export const logoutUser = (navigate) => {
+    return async (dispatch) => {
+        try {
+            await apiConnector("POST", "/auth/logout");
+
+            localStorage.removeItem("token");
+            dispatch(setUser(null));
+
+            navigate("/login");
+        } catch (error) {
+            console.error("LOGOUT ERROR:", error);
+        }
+    };
 };
