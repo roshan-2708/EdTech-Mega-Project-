@@ -1,14 +1,14 @@
 const Profile = require("../model/Profile");
 const User = require("../model/User");
 const Course = require("../model/Course");
-const { uploadImageCloudinary } = require("../utils/imageUploader");
+const { uploadFileCloudinary } = require("../utils/fileUploader");
 
 // -----------------------------------------------------------------------------------
 //  UPDATE PROFILE
 // -----------------------------------------------------------------------------------
 exports.updateProfile = async (req, res) => {
     try {
-        const { dateOfBirth = "", about = "", contactNumber, gender } = req.body;
+        const { firstName, lastName, dateOfBirth = "", about = "", contactNumber, gender } = req.body;
         const userId = req.user.id;
 
         if (!contactNumber || !gender) {
@@ -19,40 +19,36 @@ exports.updateProfile = async (req, res) => {
         }
 
         const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: "User not found",
-            });
-        }
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
         const profile = await Profile.findById(user.additionalDetail);
-        if (!profile) {
-            return res.status(404).json({
-                success: false,
-                message: "Profile not found",
-            });
-        }
+        if (!profile) return res.status(404).json({ success: false, message: "Profile not found" });
 
+        // Update profile fields
         profile.dateOfBirth = dateOfBirth;
         profile.about = about;
         profile.gender = gender;
         profile.contactNumber = contactNumber;
-
         await profile.save();
 
+        // Update user fields
+        user.firstName = firstName || user.firstName;
+        user.lastName = lastName || user.lastName;
+
+        if (req.file) {
+            user.image = req.file.path; // save file path or cloud URL
+        }
+
+        await user.save();
+
+        // Return updated user
         return res.status(200).json({
             success: true,
             message: "Profile updated successfully",
-            data: profile,
+            data: await User.findById(userId).populate("additionalDetail"), // populate profile details
         });
-
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Internal server error",
-            error: error.message,
-        });
+        return res.status(500).json({ success: false, message: "Internal server error", error: error.message });
     }
 };
 
@@ -123,40 +119,42 @@ exports.deleteAccount = async (req, res) => {
 // -----------------------------------------------------------------------------------
 //  UPDATE PROFILE PICTURE
 // -----------------------------------------------------------------------------------
+
+
 exports.updateProfilePicture = async (req, res) => {
     try {
         const userId = req.user.id;
         const imageFile = req.files?.profilePicture;
 
         if (!imageFile) {
-            return res.status(400).json({
-                success: false,
-                message: "Profile picture is required",
-            });
+            return res.status(400).json({ success: false, message: "Profile picture is required" });
         }
 
-        const uploadedImage = await uploadImageCloudinary(
+        if (!imageFile.mimetype.startsWith("image")) {
+            return res.status(400).json({ success: false, message: "Only image files allowed" });
+        }
+
+        const uploadedImage = await uploadFileCloudinary(
             imageFile,
-            process.env.FOLDER_NAME
+            "profile_pictures",
+            "image"
         );
 
         const updatedUser = await User.findByIdAndUpdate(
             userId,
-            { image: uploadedImage.secure_url }, // ✔ MATCHED MODEL FIELD
+            { image: uploadedImage.secure_url },
             { new: true }
         );
 
-        return res.status(200).json({
+        res.status(200).json({
             success: true,
             message: "Profile picture updated successfully",
             data: updatedUser,
         });
 
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Error updating profile picture",
-            error: error.message,
-        });
+        console.error(error);
+        res.status(500).json({ success: false, message: error.message });
     }
 };
+
