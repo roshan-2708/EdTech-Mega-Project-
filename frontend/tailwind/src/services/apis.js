@@ -6,8 +6,11 @@ export const authEndpoints = {
     LOGOUT: "/auth/logout",
     RESET_PASSWORD_TOKEN: "/auth/reset-password-token",
     RESET_PASSWORD: "/auth/reset-password",
-    CATEGORY_API: "/category/all"
+    CATEGORY_API: "/category/all",
+    PROFILE_IMAGE: "/profile/update-display-picture",
+    PROFILE_UPDATE : "/profile/update-profile"
 };
+
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export const categories = {

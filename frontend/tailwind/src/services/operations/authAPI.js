@@ -33,7 +33,7 @@ export const login = (email, password, role, navigate) => {
             localStorage.setItem("token", token);
             localStorage.setItem("user", JSON.stringify(user));
 
-            navigate("/dashboard");
+            navigate("/dashboard/profile");
         } catch (err) {
             alert(err.response?.data?.message || "Login failed");
         }

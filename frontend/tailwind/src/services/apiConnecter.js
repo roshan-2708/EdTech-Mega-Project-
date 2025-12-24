@@ -2,9 +2,6 @@ import axios from "axios";
 
 export const axiosInstance = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,
-    headers: {
-        "Content-Type": "application/json",
-    },
     withCredentials: true,
 });
 
@@ -12,14 +9,16 @@ export const apiConnector = (
     method,
     url,
     bodyData = null,
-    headers = null,
+    headers = {},
     params = null
 ) => {
     return axiosInstance({
         method,
         url,
         data: bodyData,
-        headers,
         params,
+        headers: {
+            ...headers, // 🔥 merge headers correctly
+        },
     });
 };
