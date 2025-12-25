@@ -2,7 +2,7 @@ const Profile = require("../model/Profile");
 const User = require("../model/User");
 const Course = require("../model/Course");
 const { uploadFileCloudinary } = require("../utils/fileUploader");
-
+const mongoose = require("mongoose");
 // -----------------------------------------------------------------------------------
 //  UPDATE PROFILE
 // -----------------------------------------------------------------------------------
@@ -86,6 +86,7 @@ exports.deleteAccount = async (req, res) => {
     try {
         const userId = req.user.id;
 
+        // Find user
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({
@@ -94,12 +95,18 @@ exports.deleteAccount = async (req, res) => {
             });
         }
 
+        // Clean up courses first
         await Course.updateMany(
             { studentEnrolled: userId },
             { $pull: { studentEnrolled: userId } }
         );
 
-        await Profile.findByIdAndDelete(user.additionalDetail);
+        // Delete profile if exists
+        if (user.additionalDetail) {
+            await Profile.findByIdAndDelete(user.additionalDetail);
+        }
+
+        // Delete user
         await User.findByIdAndDelete(userId);
 
         return res.status(200).json({
@@ -108,13 +115,15 @@ exports.deleteAccount = async (req, res) => {
         });
 
     } catch (error) {
+        console.error("DELETE ACCOUNT ERROR:", error);
         return res.status(500).json({
             success: false,
-            message: "Internal server error",
-            error: error.message,
+            message: "Failed to delete account",
         });
     }
 };
+
+
 
 // -----------------------------------------------------------------------------------
 //  UPDATE PROFILE PICTURE

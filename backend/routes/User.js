@@ -31,6 +31,11 @@ router.put("/change-password", auth, userController.changePassword);
 router.post("/reset-password-token", resetPasswordToken);
 router.post("/reset-password", resetPassword);
 
+// ✅ CORRECT - Import from profileController
+const profileController = require("../controllers/profileController");
+// Update the route
+router.delete("/delete-account", auth, profileController.deleteAccount);
+
 // Get full profile
 router.get("/profile", auth, async (req, res) => {
     try {
