@@ -33,7 +33,7 @@ export const login = (email, password, role, navigate) => {
             localStorage.setItem("token", token);
             localStorage.setItem("user", JSON.stringify(user));
 
-            navigate("/dashboard/profile");
+            navigate("/dashboard/my-profile");
         } catch (err) {
             alert(err.response?.data?.message || "Login failed");
         }
@@ -77,7 +77,6 @@ export const getPasswordResetToken = (email, setEmailSent) => {
 };
 
 // RESET PASSWORD
-// RESET PASSWORD
 export const resetPassword = (password, confirmPassword, token) => {
     return async () => {
         try {
@@ -94,8 +93,6 @@ export const resetPassword = (password, confirmPassword, token) => {
     };
 };
 
-
-
 // ! Logout
 
 export const logoutUser = (navigate) => {
@@ -111,4 +108,38 @@ export const logoutUser = (navigate) => {
             console.error("LOGOUT ERROR:", error);
         }
     };
+};
+
+
+// change password
+
+export const changePassword = async (token, oldPassword, newPassword) => {
+    const response = await fetch(
+        "http://localhost:5000/api/v1/auth/change-password",
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ oldPassword, newPassword }),
+        }
+    )
+    return response.json()
+}
+
+// delete account
+
+export const deleteAccount = async (token) => {
+    const response = await fetch(
+        "http://localhost:5000/api/v1/auth/delete-account",
+        {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+
+    return response.json();
 };
