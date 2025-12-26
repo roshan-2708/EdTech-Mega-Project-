@@ -8,7 +8,8 @@ export const authEndpoints = {
     RESET_PASSWORD: "/auth/reset-password",
     CATEGORY_API: "/category/all",
     PROFILE_IMAGE: "/profile/update-display-picture",
-    PROFILE_UPDATE : "/profile/update-profile"
+    PROFILE_UPDATE: "/profile/update-profile",
+    GET_ENROLLED_COURSES : "profile/get-enrolled-courses"
 };
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;

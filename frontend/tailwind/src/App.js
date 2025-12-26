@@ -12,8 +12,11 @@ import UpdatePassword from "./pages/UpdatePassword";
 import Contact from "./pages/Contact";
 import MyProfile from "./components/core/HomePage/MyProfile";
 import Dashboard from "./pages/Dashboard";
-import PrivateRoute from './components/core/auth/PrivateRoute'
+import PrivateRoute from "./components/core/auth/PrivateRoute";
 import Settings from "./pages/Settings";
+import EnrollCourses from "./pages/EnrollCourses";
+import Cart from "./pages/cart/Index";
+
 function App() {
   return (
     <div className="w-screen min-h-screen bg-richblack-800 flex flex-col font-inter">
@@ -30,12 +33,19 @@ function App() {
         <Route path="/update-password/:id" element={<UpdatePassword />} />
         <Route path="/contact" element={<Contact />} />
 
-        {/* ✅ NESTED DASHBOARD ROUTES */}
-        <Route path="/dashboard" element={<PrivateRoute>
-          <Dashboard />
-        </PrivateRoute>}>
+        {/* ✅ DASHBOARD ROUTES */}
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        >
           <Route path="my-profile" element={<MyProfile />} />
-          <Route path="settings" element={<Settings />} ></Route>
+          <Route path="settings" element={<Settings />} />
+          <Route path="enrolled-courses" element={<EnrollCourses />} />
+          <Route path="cart" element={<Cart />} />
         </Route>
       </Routes>
     </div>
