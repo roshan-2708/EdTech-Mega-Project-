@@ -61,7 +61,7 @@ exports.getProfileDetails = async (req, res) => {
 
         const userDetails = await User.findById(userId)
             .populate("additionalDetail")
-            .populate("courses") // ✔ YOUR MODEL HAS this field
+            .populate("courses")
             .exec();
 
         return res.status(200).json({
@@ -123,12 +123,9 @@ exports.deleteAccount = async (req, res) => {
     }
 };
 
-
-
 // -----------------------------------------------------------------------------------
 //  UPDATE PROFILE PICTURE
 // -----------------------------------------------------------------------------------
-
 
 exports.updateProfilePicture = async (req, res) => {
     try {
@@ -167,3 +164,35 @@ exports.updateProfilePicture = async (req, res) => {
     }
 };
 
+// -----------------------------------------------------------------------------------
+//  GET ENROLLED COURSES
+// -----------------------------------------------------------------------------------
+
+
+exports.getEnrolledCourses = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const userDetails = await User.findById(userId)
+            .populate("courses")
+            .exec();
+
+        if (!userDetails) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: userDetails.courses,
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
