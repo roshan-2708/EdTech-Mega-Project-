@@ -2,13 +2,12 @@ import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
-
 import { apiConnector } from "../services/apiConnecter";
 import { setUser } from "../slice/profileSlice";
 import { authEndpoints } from "../services/apis";
 import { changePassword, deleteAccount } from "../services/operations/authAPI";
 
-const { PROFILE_IMAGE, PROFILE_UPDATE } = authEndpoints;
+const { PROFILE_IMAGE, PROFILE_UPDATE, DELETE_ACCOUNT } = authEndpoints; // ✅ Added DELETE_ACCOUNT
 
 const Settings = () => {
     const dispatch = useDispatch();
@@ -40,7 +39,7 @@ const Settings = () => {
 
     const tokenPass = localStorage.getItem("token");
 
-    // Populate form when user data loads
+    // ✅ Populate form when user data loads
     useEffect(() => {
         if (user) {
             setFormData({
@@ -54,7 +53,7 @@ const Settings = () => {
         }
     }, [user]);
 
-    // Handle profile form change
+    // ✅ Handle profile form change
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -63,13 +62,14 @@ const Settings = () => {
         }));
     };
 
-    // File select
+    // ✅ File select
     const handleSelectFile = () => {
         if (fileInputRef.current) {
             fileInputRef.current.click();
         }
     };
 
+    // ✅ File change with validation
     const handleFileChange = (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -88,7 +88,7 @@ const Settings = () => {
         setPreview(URL.createObjectURL(file));
     };
 
-    // Upload profile image
+    // ✅ FIXED: Upload profile image
     const handleUploadImage = async () => {
         if (!imageFile) {
             alert("Please select an image first");
@@ -106,14 +106,17 @@ const Settings = () => {
                 PROFILE_IMAGE,
                 formDataImage,
                 {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${token || tokenPass}`, // ✅ Fallback token
                     "Content-Type": "multipart/form-data",
                 }
             );
 
+            // ✅ FIXED: Correct response structure
+            const updatedUserImage = response?.data?.data?.image || response?.data?.image;
+
             const updatedUser = {
                 ...user,
-                image: response.data.data.image,
+                image: updatedUserImage
             };
 
             dispatch(setUser(updatedUser));
@@ -121,16 +124,17 @@ const Settings = () => {
 
             setPreview(null);
             setImageFile(null);
+            if (fileInputRef.current) fileInputRef.current.value = ""; // ✅ Clear file input
             alert("Profile picture updated successfully!");
         } catch (err) {
             console.error("Image upload failed", err);
-            alert("Failed to upload image");
+            alert(`Failed to upload image: ${err.response?.data?.message || err.message}`);
         } finally {
             setLoadingImage(false);
         }
     };
 
-    // Update profile details
+    // ✅ FIXED: Update profile details
     const handleUpdateProfile = async (e) => {
         e?.preventDefault?.();
         setLoadingProfile(true);
@@ -145,11 +149,12 @@ const Settings = () => {
                 about: formData.about,
             };
 
-            await apiConnector("PUT", PROFILE_UPDATE, payload, {
-                Authorization: `Bearer ${token}`,
+            const response = await apiConnector("PUT", PROFILE_UPDATE, payload, {
+                Authorization: `Bearer ${token || tokenPass}`, // ✅ Fallback token
             });
 
-            const updatedUser = {
+            // ✅ FIXED: Use actual backend response OR construct locally
+            const updatedUser = response?.data?.data || {
                 ...user,
                 firstName: formData.firstName,
                 lastName: formData.lastName,
@@ -168,13 +173,13 @@ const Settings = () => {
             alert("Profile details updated successfully!");
         } catch (err) {
             console.error("Profile update failed", err);
-            alert("Failed to update profile details");
+            alert(`Failed to update profile: ${err.response?.data?.message || err.message}`);
         } finally {
             setLoadingProfile(false);
         }
     };
 
-    // Update password
+    // ✅ Update password
     const handlePasswordSubmit = async (e) => {
         e.preventDefault();
 
@@ -204,7 +209,7 @@ const Settings = () => {
         }
     };
 
-    // Delete account
+    // ✅ FIXED: Delete account
     const handleDeleteAccount = async () => {
         const confirmed = window.confirm(
             "Are you sure? This action cannot be undone."
@@ -212,13 +217,18 @@ const Settings = () => {
 
         if (!confirmed) return;
 
-        const res = await deleteAccount(tokenPass);
-        if (res.success) {
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-            navigate("/signup");
-        } else {
-            alert(res.message || "Failed to delete account");
+        try {
+            const res = await deleteAccount(tokenPass);
+            if (res.success) {
+                localStorage.clear();
+                dispatch(setUser(null));
+                navigate("/login"); // ✅ Redirect to login, not signup
+            } else {
+                alert(res.message || "Failed to delete account");
+            }
+        } catch (err) {
+            console.error("Delete failed", err);
+            alert(`Failed to delete account: ${err.response?.data?.message || err.message}`);
         }
     };
 

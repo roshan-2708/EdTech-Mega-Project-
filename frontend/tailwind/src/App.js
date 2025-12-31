@@ -16,6 +16,8 @@ import PrivateRoute from "./components/core/auth/PrivateRoute";
 import Settings from "./pages/Settings";
 import EnrollCourses from "./pages/EnrollCourses";
 import Cart from "./pages/cart/Index";
+import MyCourses from './pages/MyCourses'
+import AddCourse from "./pages/addCourse/AddCourse";
 
 function App() {
   return (
@@ -46,6 +48,8 @@ function App() {
           <Route path="settings" element={<Settings />} />
           <Route path="enrolled-courses" element={<EnrollCourses />} />
           <Route path="cart" element={<Cart />} />
+          <Route path="/dashboard/my-courses" element={<MyCourses></MyCourses>} />
+          <Route path="/dashboard/add-course" element={<AddCourse/>}></Route>
         </Route>
       </Routes>
     </div>
