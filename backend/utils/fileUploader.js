@@ -1,17 +1,21 @@
-const { cloudinary } = require("../config/cloudinary");
+const cloudinary = require("cloudinary").v2;
 
-exports.uploadFileCloudinary = async (file, folder, type = "image", height, quality) => {
-    if (!file || !file.tempFilePath) {
+
+exports.uploadImageCloudinary = async (
+    filePath,
+    folder,
+    type = "image",
+    height,
+    quality
+) => {
+    if (!filePath || typeof filePath !== "string") {
         throw new Error("File path missing for Cloudinary upload");
     }
 
-    const options = {
+    return await cloudinary.uploader.upload(filePath, {
         folder,
         resource_type: type,
-    };
-
-    if (height) options.height = height;
-    if (quality) options.quality = quality;
-
-    return await cloudinary.uploader.upload(file.tempFilePath, options);
+        height,
+        quality,
+    });
 };

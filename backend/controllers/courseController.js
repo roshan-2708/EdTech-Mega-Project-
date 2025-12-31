@@ -1,14 +1,14 @@
 const Course = require("../model/Course");
 const Category = require("../model/Category");
 const User = require("../model/User");
-const { uploadImageCloudinary } = require("../utils/imageUploader");
+const { uploadImageCloudinary } = require("../utils/fileUploader");
 
 exports.createCourse = async (req, res) => {
     try {
-        const { courseName, courseDescription, whatYouWillLearn, price, categoryId } = req.body;
+        const { courseName, courseDescription, courseDuration, whatYouWillLearn, price, categoryId, status } = req.body;
         const thumbnail = req.files?.thumbnailImage;
 
-        if (!courseName || !courseDescription || !whatYouWillLearn || !price || !categoryId || !thumbnail) {
+        if (!courseName || !courseDescription || !courseDuration || !whatYouWillLearn || !price || !categoryId || !thumbnail) {
             return res.status(400).json({ success: false, message: "All fields are required!" });
         }
 
@@ -32,17 +32,21 @@ exports.createCourse = async (req, res) => {
             thumbnail,
             process.env.FOLDER_NAME
         );
+        const courseStatus =
+            status === "Published" ? "Published" : "Draft";
+
 
 
         const newCourse = await Course.create({
             courseName,
             courseDescription,
+            courseDuration,
             whatYouWillLearn,
             price: Number(price),
             instructor: instructor._id,
             category: category._id,
             thumbnail: uploadedThumbnail.secure_url,
-            status: "Published"
+            status: courseStatus,
         });
 
         await User.findByIdAndUpdate(instructor._id, { $push: { courses: newCourse._id } });
@@ -59,7 +63,6 @@ exports.createCourse = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 };
-
 
 // ---------------- GET ALL COURSES ----------------
 exports.getAllCourses = async (req, res) => {
@@ -106,5 +109,34 @@ exports.getCourseDetails = async (req, res) => {
     } catch (error) {
         console.error("Get Course Details Error:", error);
         return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// ---------------- GET INSTRUCTOR COURSES ----------------
+exports.getInstructorCourses = async (req, res) => {
+    try {
+        const instructorId = req.user.id;
+
+        const instructor = await User.findById(instructorId);
+        if (!instructor || instructor.accountType !== "Instructor") {
+            return res.status(403).json({
+                success: false,
+                message: "Only instructors can access this",
+            });
+        }
+
+        const courses = await Course.find({ instructor: instructorId })
+            .sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            success: true,
+            data: courses,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
     }
 };

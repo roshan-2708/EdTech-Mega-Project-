@@ -10,6 +10,10 @@ const courseSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    courseDuration: {
+        type: Number,
+        required : true,
+    },
     instructor: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -70,6 +74,7 @@ const courseSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ["Draft", "Published"],
+        default : "Draft"
     },
 }, {
     timestamps: true
