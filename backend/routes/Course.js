@@ -25,10 +25,12 @@ router.get("/courses/all", getAllCourses);
 // Get single course details
 router.get("/courses/details/:courseId", getCourseDetails);
 
-router.get("/instructor-courses",
+router.get(
+    "/instructor-courses",
     auth,
     isInstructor,
     getInstructorCourses
 );
+
 
 module.exports = router;

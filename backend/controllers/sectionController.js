@@ -6,58 +6,71 @@ exports.createSection = async (req, res) => {
     try {
         const { sectionName, courseId } = req.body;
 
-        // 1. Validation
+        // ✅ Validation
         if (!sectionName || !courseId) {
             return res.status(400).json({
                 success: false,
-                message: "sectionName and courseId are required.",
+                message: `Missing: sectionName(${sectionName}), courseId(${courseId})`
             });
         }
 
-        // 2. Check valid course
-        const courseExists = await Course.findById(courseId);
-        if (!courseExists) {
+        // ✅ Course exists + ownership check
+        const course = await Course.findById(courseId).populate("instructor");
+        if (!course) {
             return res.status(404).json({
                 success: false,
-                message: "Course not found.",
+                message: "Course not found"
             });
         }
 
-        // 3. Create new section
-        const newSection = await Section.create({ sectionName });
+        if (course.instructor._id.toString() !== req.user.id) {
+            return res.status(403).json({
+                success: false,
+                message: "Not authorized to edit this course"
+            });
+        }
 
-        // 4. Push section ID into course
-        const updatedCourse = await Course.findByIdAndUpdate(
-            courseId,
-            { $push: { courseContent: newSection._id } },
-            { new: true }
-        )
+        // ✅ Create section
+        const newSection = await Section.create({
+            sectionName,
+            courseId  // Link to course
+        });
+
+        // ✅ Add to course.courseContent
+        course.courseContent.push(newSection._id);
+        await course.save();
+
+        // ✅ Populate response
+        const updatedCourse = await Course.findById(courseId)
             .populate({
                 path: "courseContent",
+                model: "Section",
                 populate: {
                     path: "subSection",
-                    model: "SubSection",
-                },
+                    model: "SubSection"
+                }
             })
             .populate("category")
             .populate("instructor");
 
-        // 5. Response
         return res.status(200).json({
             success: true,
-            message: "Section created successfully.",
-            data: updatedCourse,
+            message: "Section created successfully!",
+            data: {
+                section: newSection,
+                course: updatedCourse
+            }
         });
 
     } catch (error) {
         console.error("Create Section Error:", error);
         return res.status(500).json({
             success: false,
-            message: "Unable to create section.",
-            error: error.message,
+            message: error.message
         });
     }
 };
+
 
 
 exports.updateSection = async (req, res) => {

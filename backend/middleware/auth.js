@@ -4,36 +4,41 @@ require("dotenv").config();
 // AUTH
 exports.auth = async (req, res, next) => {
     try {
-        const token =
-            req.headers.authorization?.replace("Bearer ", "") ||
-            req.body.token ||
-            req.cookies.token;
+        let token;
+
+        if (req.headers.authorization?.startsWith("Bearer")) {
+            token = req.headers.authorization.split(" ")[1];
+        } else if (req.cookies?.token) {
+            token = req.cookies.token;
+        } else if (req.body?.token) {
+            token = req.body.token;
+        }
+
+        console.log("TOKEN RECEIVED:", token); // 🔍 DEBUG
 
         if (!token) {
             return res.status(401).json({
                 success: false,
-                message: "No token provided",
+                message: "Token missing",
             });
         }
 
-        const decode = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decode;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        if (!req.user) {
-            return res.status(401).json({
-                success: false,
-                message: "Invalid token",
-            });
-        }
+        console.log("DECODED USER:", decoded); // 🔍 DEBUG
 
+        req.user = decoded;
         next();
     } catch (error) {
+        console.error("AUTH ERROR:", error.message);
+
         return res.status(401).json({
             success: false,
-            message: "Unauthorized",
+            message: "Invalid or expired token",
         });
     }
 };
+
 
 // ROLE: STUDENT
 exports.isStudent = (req, res, next) => {
