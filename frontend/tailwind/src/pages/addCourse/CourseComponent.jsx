@@ -1,10 +1,11 @@
 import React from "react";
 import { FaRegCheckCircle } from "react-icons/fa";
-import { useSelector } from "react-redux";  
+import { useSelector } from "react-redux";
 import FormComponent from "./FormComponent";
-
+import CourseBuilder from "./CourseBuilder";
+import Publish from "./Publish";
 const CourseComponent = () => {
-    const { step } = useSelector((state) => state.course); 
+    const { step } = useSelector((state) => state.course);
 
     const steps = [
         { id: 1, title: "Course Info" },
@@ -37,8 +38,8 @@ const CourseComponent = () => {
                                 </div>
                                 <p
                                     className={`mt-2 text-xs text-center ${isActive || isCompleted
-                                            ? "text-slate-100"
-                                            : "text-slate-500"
+                                        ? "text-slate-100"
+                                        : "text-slate-500"
                                         }`}
                                 >
                                     {item.title}
@@ -70,10 +71,8 @@ const CourseComponent = () => {
             </p>
 
             {step === 1 && <FormComponent />}
-            {/* 
-        step === 2 && <CourseBuilder />
-        step === 3 && <PublishStep />
-      */}
+            {step === 2 && <CourseBuilder />}
+            {step === 3 && <Publish></Publish>}
         </div>
     );
 };

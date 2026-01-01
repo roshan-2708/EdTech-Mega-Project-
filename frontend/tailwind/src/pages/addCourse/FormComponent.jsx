@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";  // ✅ Removed unused dispatch
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { getAllCategories } from "../../services/operations/categoryAPI";
+import { setCourse, setStep } from "../../slice/courseSlice";
 
 const FormComponent = () => {
+    const dispatch = useDispatch();
     const { course, editCourse } = useSelector((state) => state.course);
 
     const [loading, setLoading] = useState(false);
-    const [courseCategory, setCourseCategory] = useState([]);
+    const [categories, setCategories] = useState([]);
 
     const {
         register,
         handleSubmit,
         reset,
+        getValues,
+        setValue,
         formState: { errors, isSubmitting },
     } = useForm({
         defaultValues: {
@@ -22,36 +26,84 @@ const FormComponent = () => {
             courseTags: "",
             courseBenefits: "",
             courseCategory: "",
+            courseImage: null, // Use null instead of ""
         },
     });
 
+    // Single useEffect for fetching categories and resetting form
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            const categories = await getAllCategories();
-            if (Array.isArray(categories) && categories.length > 0) {
-                setCourseCategory(categories);
-            }
+            try {
+                const res = await getAllCategories();
+                const categoryList = res?.data?.data || res || [];
+                setCategories(Array.isArray(categoryList) ? categoryList : []);
 
-            if (editCourse && course) {
-                reset({
-                    courseName: course.courseName || "",
-                    courseDescription: course.courseDescription || "",
-                    coursePrice: course.price || "",
-                    courseTags: course.tag || "",
-                    courseBenefits: course.whatYouWillLearn || "",
-                    courseCategory: course.categoryId || "",
-                });
+                // Reset form for edit mode after categories load
+                if (editCourse && course) {
+                    reset({
+                        courseName: course.courseName || "",
+                        courseDescription: course.courseDescription || "",
+                        coursePrice: course.price || "",
+                        courseTags: course.tag || "",
+                        courseBenefits: course.whatYouWillLearn || "",
+                        courseCategory: course.categoryId || "",
+                        courseImage: null,
+                    });
+                }
+            } catch (error) {
+                console.error("Failed to load categories:", error);
+            } finally {
+                setLoading(false);
             }
-
-            setLoading(false);
         };
 
         fetchData();
     }, [editCourse, course, reset]);
 
-    const onSubmit = async (data) => {
+    // Check if form has changes (optional)
+    const isFormUpdated = () => {
+        if (!course) return false;
+
+        const currentValues = getValues();
+        return (
+            currentValues.courseName !== (course.courseName || "") ||
+            currentValues.courseDescription !== (course.courseDescription || "") ||
+            currentValues.coursePrice !== (course.price || "") ||
+            currentValues.courseTags !== (course.tag || "") ||
+            currentValues.courseBenefits !== (course.whatYouWillLearn || "") ||
+            currentValues.courseCategory !== (course.categoryId || "")
+        );
+    };
+
+    // FIXED Submit handler - excludes non-serializable File
+    const onSubmit = (data) => {
         console.log("FORM DATA =>", data);
+
+        // Create serializable data for Redux
+        const serializableData = {
+            courseName: data.courseName,
+            courseDescription: data.courseDescription,
+            coursePrice: data.coursePrice,
+            courseTags: data.courseTags,
+            courseBenefits: data.courseBenefits,
+            courseCategory: data.courseCategory,
+            // courseImage excluded - handle file upload separately
+        };
+
+        dispatch(setCourse(serializableData));
+        dispatch(setStep(2));
+    };
+
+    // Handle file selection (optional - for preview or separate upload)
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setValue("courseImage", file); // Store single file reference
+            console.log("Selected file:", file.name, file.size);
+            // You can create preview URL here:
+            // const previewUrl = URL.createObjectURL(file);
+        }
     };
 
     return (
@@ -174,7 +226,7 @@ const FormComponent = () => {
                         })}
                     >
                         <option value="">Select a category</option>
-                        {courseCategory.map((cat) => (
+                        {categories.map((cat) => (
                             <option key={cat._id} value={cat._id}>
                                 {cat.name}
                             </option>
@@ -185,7 +237,7 @@ const FormComponent = () => {
                     )}
                 </div>
 
-                {/* Thumbnail */}
+                {/* Thumbnail - FIXED: Use custom handler */}
                 <div>
                     <label htmlFor="courseImage" className="mb-1 block text-sm font-medium">
                         Course Thumbnail
@@ -194,9 +246,15 @@ const FormComponent = () => {
                         id="courseImage"
                         type="file"
                         accept="image/*"
+                        onChange={handleImageChange} // Custom handler
                         className="block w-full text-sm text-slate-300 file:mr-3 file:rounded-md file:border-0 file:bg-yellow-400 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-slate-950 hover:file:bg-yellow-300"
-                        {...register("courseImage")}
                     />
+                    {/* Optional: Show selected file name */}
+                    {getValues("courseImage") && (
+                        <p className="mt-1 text-xs text-green-400">
+                            Selected: {getValues("courseImage").name}
+                        </p>
+                    )}
                 </div>
 
                 {/* Actions */}

@@ -3,35 +3,36 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     step: 1,
     course: null,
-    editCourses: false,
+    editCourse: false,        // ✅ singular (IMPORTANT)
     paymentLoading: false,
 };
 
-const courseslice = createSlice({
+const courseSlice = createSlice({
     name: "course",
     initialState,
     reducers: {
         setStep: (state, action) => {
-            state.step = action.payload; // ✅ step
+            state.step = action.payload;
         },
         setCourse: (state, action) => {
-            state.course = action.payload; // ✅ course
+            state.course = action.payload;
         },
         setEditCourse: (state, action) => {
-            state.editCourses = action.payload; // ✅ editCourses boolean
+            state.editCourse = action.payload;
         },
         setPaymentLoading: (state, action) => {
-            state.paymentLoading = action.payload; // ✅ paymentLoading boolean
+            state.paymentLoading = action.payload;
         },
-        resetCourseState: (state) => {
-            state.step = 1;
-            state.course = null;
-            state.editCourses = false;
-            state.paymentLoading = false; // reset paymentLoading too
-        },
+        resetCourseState: () => initialState, // ✅ clean reset
     },
 });
 
-export const { setStep, setCourse, setEditCourse, setPaymentLoading, resetCourseState } = courseslice.actions;
+export const {
+    setStep,
+    setCourse,
+    setEditCourse,
+    setPaymentLoading,
+    resetCourseState,
+} = courseSlice.actions;
 
-export default courseslice.reducer;
+export default courseSlice.reducer;
