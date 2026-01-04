@@ -16,11 +16,13 @@ router.put("/update-profile", auth, updateProfile);
 
 // ✅ FIXED ROUTE (THIS IS THE KEY LINE)
 router.put(
-    "/update-display-picture",
-    auth,
-    upload.single("profilePicture"), // 👈 MUST MATCH Postman
-    updateProfilePicture
+  "/update-display-picture",
+  auth,                         // 1️⃣ auth
+  upload.single("profilePicture"), // 2️⃣ multer
+  updateProfilePicture          // 3️⃣ controller
 );
+
+
 
 router.delete("/delete-account", auth, deleteAccount);
 router.get("/get-user-details", auth, getProfileDetails);

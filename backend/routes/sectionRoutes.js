@@ -1,15 +1,14 @@
+// routes/Section.js
 const express = require("express");
 const router = express.Router();
 
 const {
     createSection,
     updateSection,
-    deleteSection
+    deleteSection,
 } = require("../controllers/sectionController");
 
 const { auth, isInstructor } = require("../middleware/auth");
-
-// ---------------- ROUTES ----------------
 
 // Create a new section
 router.post("/create", auth, isInstructor, createSection);

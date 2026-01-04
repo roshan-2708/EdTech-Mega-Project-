@@ -1,27 +1,48 @@
+// routes/subSectionRoutes.js
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
 
 // Controllers
 const {
     createSubSection,
     updateSubSection,
-    deleteSubSection
+    deleteSubSection,
 } = require("../controllers/subsectionController");
 
-// Middlewares
+// Middleware
 const { auth, isInstructor } = require("../middleware/auth");
 
-// =======================================================
-//                 SUB-SECTION ROUTES
-// =======================================================
+// Multer config (memory storage for Cloudinary upload)
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
+});
 
-// Create SubSection (Instructor only)
-router.post("/sub/create", auth, isInstructor, createSubSection);
+// Create SubSection
+router.post(
+    "/createSubSection",
+    auth,
+    isInstructor,
+    upload.single("video"), // req.file
+    createSubSection
+);
 
-// Update SubSection (Instructor only)
-router.put("/subsection/update", auth, isInstructor, updateSubSection);
+// Update SubSection
+router.put(
+    "/updateSubSection",
+    auth,
+    isInstructor,
+    upload.single("video"), // optional video
+    updateSubSection
+);
 
-// Delete SubSection (Instructor only)
-router.delete("/subsection/delete", auth, isInstructor, deleteSubSection);
+// Delete SubSection
+router.delete(
+    "/deleteSubSection",
+    auth,
+    isInstructor,
+    deleteSubSection
+);
 
 module.exports = router;

@@ -1,26 +1,23 @@
+// utils/fileUploader.js
 const { cloudinary } = require("../config/cloudinary");
 
-// Upload file (image or video) to Cloudinary
-// type = "image" or "video"
-exports.uploadFileCloudinary = async (file, folder, type = "image", height, quality) => {
-    try {
-        if (!file || !file.tempFilePath) {
-            throw new Error("File path missing for Cloudinary upload");
-        }
-
+// Upload file buffer to Cloudinary (for multer.memoryStorage)
+exports.uploadFileCloudinary = (fileBuffer, folder, type = "image", height, quality) => {
+    return new Promise((resolve, reject) => {
         const options = {
             folder: folder || "default-folder",
-            resource_type: type,   // ✅ use the type parameter
+            resource_type: type,
         };
 
         if (height) options.height = height;
         if (quality) options.quality = quality;
 
-        const uploadedFile = await cloudinary.uploader.upload(file.tempFilePath, options);
-        return uploadedFile;
+        const stream = cloudinary.uploader.upload_stream(options, (err, result) => {
+            if (err) return reject(err);
+            resolve(result);
+        });
 
-    } catch (error) {
-        console.error("Cloudinary Upload Error:", error);
-        throw error;
-    }
+        // send buffer to Cloudinary
+        stream.end(fileBuffer);
+    });
 };

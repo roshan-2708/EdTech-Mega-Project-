@@ -1,36 +1,33 @@
 const express = require("express");
 const router = express.Router();
+const upload = require("../middleware/fileParser"); // adjust path if needed
 
-// ---------------- Controllers ----------------
+
+// ✅ Controllers - Only import what EXISTS
 const {
     createCourse,
     getAllCourses,
     getCourseDetails,
     getInstructorCourses,
+    deleteCourse,
+    // updateCourse, // ❌ Commented out - doesn't exist yet
 } = require("../controllers/courseController");
 
-// ---------------- Middlewares ----------------
-const { auth, isInstructor, isStudent } = require("../middleware/auth");
+// Middlewares
+const { auth, isInstructor } = require("../middleware/auth");
 
-// =======================================================
-//                 COURSE ROUTES 
-// =======================================================
-
-// Create a new course (Only Instructor)
-router.post("/courses/create", auth, isInstructor, createCourse);
-
-// Get all published courses
-router.get("/courses/all", getAllCourses);
-
-// Get single course details
-router.get("/courses/details/:courseId", getCourseDetails);
-
-router.get(
-    "/instructor-courses",
+// ✅ Routes that MATCH your existing controllers
+router.post(
+    "/createCourse",
     auth,
     isInstructor,
-    getInstructorCourses
+    upload.single("thumbnailImage"), // 🔥 REQUIRED
+    createCourse
 );
 
+router.get("/allCourses", getAllCourses);
+router.get("/getFullCourseDetails/:courseId", getCourseDetails);
+router.delete("/:courseId", auth, isInstructor, deleteCourse);  // ✅ FIXED
+router.get("/instructor-courses", auth, isInstructor, getInstructorCourses);
 
 module.exports = router;
