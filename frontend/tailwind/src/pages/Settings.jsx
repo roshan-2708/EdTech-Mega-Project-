@@ -2,26 +2,31 @@ import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
+
 import { apiConnector } from "../services/apiConnecter";
 import { setUser } from "../slice/profileSlice";
-import { authEndpoints } from "../services/apis";
+import { profileEndpoints } from "../services/apis";
 import { changePassword, deleteAccount } from "../services/operations/authAPI";
 
-const { PROFILE_IMAGE, PROFILE_UPDATE, DELETE_ACCOUNT } = authEndpoints; // ✅ Added DELETE_ACCOUNT
+const { PROFILE_IMAGE, PROFILE_UPDATE } = profileEndpoints;
 
 const Settings = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
     const { user } = useSelector((state) => state.profile);
-    const { token } = useSelector((state) => state.auth);
 
     const fileInputRef = useRef(null);
 
+    /* ================= STATES ================= */
     const [imageFile, setImageFile] = useState(null);
     const [preview, setPreview] = useState(null);
     const [loadingImage, setLoadingImage] = useState(false);
     const [loadingProfile, setLoadingProfile] = useState(false);
+
+    const [oldPassword, setOldPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [loadingPassword, setLoadingPassword] = useState(false);
+    const [passwordMessage, setPasswordMessage] = useState("");
 
     const [formData, setFormData] = useState({
         firstName: "",
@@ -32,14 +37,7 @@ const Settings = () => {
         about: "",
     });
 
-    const [oldPassword, setOldPassword] = useState("");
-    const [newPassword, setNewPassword] = useState("");
-    const [loadingPassword, setLoadingPassword] = useState(false);
-    const [passwordMessage, setPasswordMessage] = useState("");
-
-    const tokenPass = localStorage.getItem("token");
-
-    // ✅ Populate form when user data loads
+    /* ================= POPULATE FORM ================= */
     useEffect(() => {
         if (user) {
             setFormData({
@@ -53,34 +51,27 @@ const Settings = () => {
         }
     }, [user]);
 
-    // ✅ Handle profile form change
+    /* ================= COMMON HANDLERS ================= */
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // ✅ File select
     const handleSelectFile = () => {
-        if (fileInputRef.current) {
-            fileInputRef.current.click();
-        }
+        fileInputRef.current?.click();
     };
 
-    // ✅ File change with validation
     const handleFileChange = (e) => {
-        const file = e.target.files?.[0];
+        const file = e.target.files[0];
         if (!file) return;
 
         if (!file.type.startsWith("image")) {
-            alert("Only image files are allowed");
+            alert("Only image files allowed");
             return;
         }
 
         if (file.size > 2 * 1024 * 1024) {
-            alert("Image must be less than 2MB");
+            alert("Image must be under 2MB");
             return;
         }
 
@@ -88,103 +79,61 @@ const Settings = () => {
         setPreview(URL.createObjectURL(file));
     };
 
-    // ✅ FIXED: Upload profile image
+    /* ================= IMAGE UPLOAD ================= */
     const handleUploadImage = async () => {
-        if (!imageFile) {
-            alert("Please select an image first");
-            return;
-        }
+        if (!imageFile) return alert("Select an image first");
 
         setLoadingImage(true);
-
-        const formDataImage = new FormData();
-        formDataImage.append("profilePicture", imageFile);
+        const fd = new FormData();
+        fd.append("profilePicture", imageFile);
 
         try {
-            const response = await apiConnector(
-                "PUT",
-                PROFILE_IMAGE,
-                formDataImage,
-                {
-                    Authorization: `Bearer ${token || tokenPass}`, // ✅ Fallback token
-                    "Content-Type": "multipart/form-data",
-                }
-            );
+            const res = await apiConnector("PUT", PROFILE_IMAGE, fd);
 
-            // ✅ FIXED: Correct response structure
-            const updatedUserImage = response?.data?.data?.image || response?.data?.image;
+            const updatedImage =
+                res?.data?.data?.image || res?.data?.image;
 
-            const updatedUser = {
-                ...user,
-                image: updatedUserImage
-            };
-
+            const updatedUser = { ...user, image: updatedImage };
             dispatch(setUser(updatedUser));
             localStorage.setItem("user", JSON.stringify(updatedUser));
 
-            setPreview(null);
             setImageFile(null);
-            if (fileInputRef.current) fileInputRef.current.value = ""; // ✅ Clear file input
-            alert("Profile picture updated successfully!");
+            setPreview(null);
+            if (fileInputRef.current) fileInputRef.current.value = "";
+
+            alert("Profile picture updated");
         } catch (err) {
-            console.error("Image upload failed", err);
-            alert(`Failed to upload image: ${err.response?.data?.message || err.message}`);
+            alert(err.response?.data?.message || "Image upload failed");
         } finally {
             setLoadingImage(false);
         }
     };
 
-    // ✅ FIXED: Update profile details
+    /* ================= PROFILE UPDATE ================= */
     const handleUpdateProfile = async (e) => {
-        e?.preventDefault?.();
+        e.preventDefault();
         setLoadingProfile(true);
 
         try {
-            const payload = {
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                dateOfBirth: formData.dateOfBirth,
-                gender: formData.gender,
-                contactNumber: formData.contactNumber,
-                about: formData.about,
-            };
+            const res = await apiConnector("PUT", PROFILE_UPDATE, formData);
 
-            const response = await apiConnector("PUT", PROFILE_UPDATE, payload, {
-                Authorization: `Bearer ${token || tokenPass}`, // ✅ Fallback token
-            });
+            dispatch(setUser(res.data.data));
+            localStorage.setItem("user", JSON.stringify(res.data.data));
 
-            // ✅ FIXED: Use actual backend response OR construct locally
-            const updatedUser = response?.data?.data || {
-                ...user,
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                additionalDetail: {
-                    ...user?.additionalDetail,
-                    dateOfBirth: formData.dateOfBirth,
-                    gender: formData.gender,
-                    contactNumber: formData.contactNumber,
-                    about: formData.about,
-                },
-            };
-
-            dispatch(setUser(updatedUser));
-            localStorage.setItem("user", JSON.stringify(updatedUser));
-
-            alert("Profile details updated successfully!");
+            alert("Profile updated successfully");
         } catch (err) {
-            console.error("Profile update failed", err);
-            alert(`Failed to update profile: ${err.response?.data?.message || err.message}`);
+            alert(err.response?.data?.message || "Profile update failed");
         } finally {
             setLoadingProfile(false);
         }
     };
 
-    // ✅ Update password
+    /* ================= PASSWORD UPDATE ================= */
     const handlePasswordSubmit = async (e) => {
         e.preventDefault();
 
         if (!oldPassword || !newPassword) {
-            setPasswordMessage("All fields are required.");
+            setPasswordMessage("All fields are required");
             return;
         }
 
@@ -192,46 +141,36 @@ const Settings = () => {
         setPasswordMessage("");
 
         try {
-            const res = await changePassword(tokenPass, oldPassword, newPassword);
-
-            if (res.success) {
+            const res = await changePassword(oldPassword, newPassword);
+            if (res.data.success) {
                 setPasswordMessage("✅ Password changed successfully");
                 setOldPassword("");
                 setNewPassword("");
-            } else {
-                setPasswordMessage(res.message || "Password update failed");
             }
-        } catch (error) {
-            console.error(error);
-            setPasswordMessage("Something went wrong");
+        } catch {
+            setPasswordMessage("Password update failed");
         } finally {
             setLoadingPassword(false);
         }
     };
 
-    // ✅ FIXED: Delete account
+    /* ================= DELETE ACCOUNT ================= */
     const handleDeleteAccount = async () => {
-        const confirmed = window.confirm(
-            "Are you sure? This action cannot be undone."
-        );
-
-        if (!confirmed) return;
+        if (!window.confirm("Are you sure?")) return;
 
         try {
-            const res = await deleteAccount(tokenPass);
-            if (res.success) {
+            const res = await deleteAccount();
+            if (res.data.success) {
                 localStorage.clear();
                 dispatch(setUser(null));
-                navigate("/login"); // ✅ Redirect to login, not signup
-            } else {
-                alert(res.message || "Failed to delete account");
+                navigate("/login");
             }
-        } catch (err) {
-            console.error("Delete failed", err);
-            alert(`Failed to delete account: ${err.response?.data?.message || err.message}`);
+        } catch {
+            alert("Delete account failed");
         }
     };
 
+    /* ================= JSX ================= */
     return (
         <main className="min-h-screen bg-transparent flex justify-center px-4 py-10">
             <div className="w-full max-w-5xl space-y-8">
@@ -536,3 +475,6 @@ const Settings = () => {
 };
 
 export default Settings;
+
+
+
