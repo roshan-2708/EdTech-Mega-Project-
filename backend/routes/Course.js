@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const upload = require("../middleware/fileParser"); // adjust path if needed
-
+const upload = require("../middleware/fileParser"); 
 
 // ✅ Controllers - Only import what EXISTS
 const {
@@ -10,7 +9,7 @@ const {
     getCourseDetails,
     getInstructorCourses,
     deleteCourse,
-    // updateCourse, // ❌ Commented out - doesn't exist yet
+    editCourseDetails
 } = require("../controllers/courseController");
 
 // Middlewares
@@ -23,6 +22,20 @@ router.post(
     isInstructor,
     upload.single("thumbnailImage"), // 🔥 REQUIRED
     createCourse
+);
+// router.put(
+//     "/editCourse",
+//     auth,
+//     isInstructor,
+//     upload.single("thumbnailImage"),
+//     editCourseDetails
+// );
+router.put(
+    "/editCourse",
+    auth,
+    isInstructor,
+    upload.none(),  // parses formData fields without expecting a file
+    editCourseDetails
 );
 
 router.get("/allCourses", getAllCourses);

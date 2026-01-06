@@ -267,3 +267,121 @@ exports.deleteCourse = async (req, res) => {
     }
 };
 
+exports.editCourseDetails = async (req, res) => {
+    try {
+        console.log("EDIT req.body:", req.body);
+        console.log("EDIT req.file:", req.file);
+
+        const {
+            courseId,
+            courseName,
+            courseDescription,
+            price,
+            tag,
+            whatYouWillLearn,
+            category,
+            status,
+        } = req.body;
+
+        // ----------------------------
+        // Validation
+        // ----------------------------
+        if (!courseId) {
+            return res.status(400).json({
+                success: false,
+                message: "Course ID is required",
+            });
+        }
+
+        // ----------------------------
+        // Find Course
+        // ----------------------------
+        const course = await Course.findById(courseId).populate("instructor");
+        if (!course) {
+            return res.status(404).json({
+                success: false,
+                message: "Course not found",
+            });
+        }
+
+        // ----------------------------
+        // Authorization
+        // ----------------------------
+        if (course.instructor._id.toString() !== req.user.id) {
+            return res.status(403).json({
+                success: false,
+                message: "Not authorized to edit this course",
+            });
+        }
+
+        // ----------------------------
+        // Update Fields (ONLY if sent)
+        // ----------------------------
+        if (courseName !== undefined) {
+            course.courseName = courseName.trim();
+        }
+
+        if (courseDescription !== undefined) {
+            course.courseDescription = courseDescription.trim();
+        }
+
+        if (price !== undefined) {
+            course.price = Number(price);
+        }
+
+        if (whatYouWillLearn !== undefined) {
+            course.whatYouWillLearn = whatYouWillLearn;
+        }
+
+        if (tag !== undefined) {
+            course.tag = tag.split(",").map((t) => t.trim());
+        }
+
+        if (status !== undefined) {
+            course.status = status;
+        }
+
+        // ----------------------------
+        // Category update (if changed)
+        // ----------------------------
+        if (category !== undefined) {
+            const categoryDoc = await Category.findById(category);
+            if (!categoryDoc) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid category",
+                });
+            }
+            course.category = category;
+        }
+
+        // ----------------------------
+        // Thumbnail update (OPTIONAL)
+        // ----------------------------
+        if (req.file) {
+            const uploadedThumbnail = await uploadImageCloudinary(
+                req.file.path,
+                process.env.FOLDER_NAME || "courses"
+            );
+            course.thumbnail = uploadedThumbnail.secure_url;
+        }
+
+        // ----------------------------
+        // Save Course
+        // ----------------------------
+        const updatedCourse = await course.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Course updated successfully",
+            data: updatedCourse,
+        });
+
+    } catch (error) {
+        console.error("❌ EditCourse error:", error);
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
