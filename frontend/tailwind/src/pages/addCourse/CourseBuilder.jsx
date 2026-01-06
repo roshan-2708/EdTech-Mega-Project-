@@ -60,6 +60,7 @@ const CourseBuilder = () => {
             const payload = {
                 sectionName,
                 courseId: course._id,
+                ...(editSectionId && { sectionId: editSectionId }),
             };
 
             console.log(`📤 ${editSectionId ? "Update" : "Create"} section:`, payload);
@@ -73,7 +74,6 @@ const CourseBuilder = () => {
                 toast.success("✅ Section created successfully!");
             }
 
-            // Update Redux with populated course
             dispatch(setCourse(updatedCourse));
             cancelEdit();
 
@@ -85,6 +85,7 @@ const CourseBuilder = () => {
             setLoading(false);
         }
     };
+
 
     const handleChangeEditSectionName = (sectionId, sectionName) => {
         if (editSectionId === sectionId) {
