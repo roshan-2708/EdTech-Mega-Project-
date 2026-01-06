@@ -17,9 +17,19 @@ const courseSlice = createSlice({
         setStep: (state, action) => {
             state.step = action.payload;
         },
+        // setCourse: (state, action) => {
+        //     state.course = action.payload;
+        // },
         setCourse: (state, action) => {
-            state.course = action.payload;
+            const courseData = action.payload;
+
+            state.course = {
+                ...courseData,
+                id: courseData._id || courseData.id, // ✅ normalize once
+                courseContent: courseData.courseContent || [],
+            };
         },
+
         setEditCourse: (state, action) => {
             state.editCourse = action.payload;
         },
