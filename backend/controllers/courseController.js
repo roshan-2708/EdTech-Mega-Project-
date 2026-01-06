@@ -71,24 +71,21 @@ exports.createCourse = async (req, res) => {
             });
         }
 
-        // ----------------------------
-        // Handle Thumbnail
-        // ----------------------------
+        
         let thumbnailUrl =
             "https://via.placeholder.com/300x200/6366F1/FFFFFF?text=Course+Thumbnail";
 
-        const thumbnail = req.files?.thumbnailImage;
-        if (thumbnail) {
+        if (req.file) {
             const uploadedThumbnail = await uploadImageCloudinary(
-                thumbnail.tempFilePath,
+                req.file.path,
                 process.env.FOLDER_NAME || "courses"
             );
             thumbnailUrl = uploadedThumbnail.secure_url;
         }
 
-        // ----------------------------
-        // Create Course
-        // ----------------------------
+
+
+        
         const newCourse = await Course.create({
             courseName: courseName.trim(),
             courseDescription: courseDescription.trim(),
@@ -103,9 +100,7 @@ exports.createCourse = async (req, res) => {
             courseContent: [],
         });
 
-        // ----------------------------
-        // Update User & Category
-        // ----------------------------
+        
         await User.findByIdAndUpdate(instructor._id, {
             $push: { courses: newCourse._id },
         });
@@ -114,9 +109,7 @@ exports.createCourse = async (req, res) => {
             $push: { courses: newCourse._id },
         });
 
-        // ----------------------------
-        // Return Response
-        // ----------------------------
+        
         return res.status(201).json({
             success: true,
             message: "Course created successfully!",
