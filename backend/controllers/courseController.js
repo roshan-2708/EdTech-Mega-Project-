@@ -6,7 +6,7 @@ const { uploadImageCloudinary } = require("../utils/fileUploader");
 const mongoose = require("mongoose");
 
 
-
+// create course
 exports.createCourse = async (req, res) => {
     try {
         console.log("RAW req.body:", req.body);
@@ -219,7 +219,7 @@ exports.getInstructorCourses = async (req, res) => {
 // Delete course
 exports.deleteCourse = async (req, res) => {
     try {
-        const { id: courseId } = req.params;
+        const { courseId } = req.params; // ✅ FIXED
 
         if (!courseId || !mongoose.Types.ObjectId.isValid(courseId)) {
             return res.status(400).json({
@@ -273,3 +273,4 @@ exports.deleteCourse = async (req, res) => {
         });
     }
 };
+

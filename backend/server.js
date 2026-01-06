@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; 
 
 const userRoutes = require("./routes/User");
 const profileRoutes = require("./routes/Profile");

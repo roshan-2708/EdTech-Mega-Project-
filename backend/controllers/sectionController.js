@@ -71,18 +71,7 @@ exports.updateSection = async (req, res) => {
     try {
         const { sectionName, sectionId, courseId } = req.body;
 
-        const course = await Course.findById(courseId).populate("instructor");
-        if (!course) {
-            return res.status(404).json({ success: false, message: "Course not found" });
-        }
-
-        if (course.instructor._id.toString() !== req.user.id) {
-            return res.status(403).json({
-                success: false,
-                message: "Not authorized",
-            });
-        }
-
+        // ✅ 1. Validate inputs FIRST
         if (!sectionName || !sectionId || !courseId) {
             return res.status(400).json({
                 success: false,
@@ -90,6 +79,24 @@ exports.updateSection = async (req, res) => {
             });
         }
 
+        // ✅ 2. Find course
+        const course = await Course.findById(courseId).populate("instructor");
+        if (!course) {
+            return res.status(404).json({
+                success: false,
+                message: "Course not found",
+            });
+        }
+
+        // ✅ 3. Authorization check
+        if (course.instructor._id.toString() !== req.user.id) {
+            return res.status(403).json({
+                success: false,
+                message: "Not authorized",
+            });
+        }
+
+        // ✅ 4. Section exists?
         const sectionExists = await Section.findById(sectionId);
         if (!sectionExists) {
             return res.status(404).json({
@@ -98,12 +105,14 @@ exports.updateSection = async (req, res) => {
             });
         }
 
+        // ✅ 5. Update section
         await Section.findByIdAndUpdate(
             sectionId,
             { sectionName },
             { new: true }
         );
 
+        // ✅ 6. Return updated course
         const updatedCourse = await Course.findById(courseId)
             .populate({
                 path: "courseContent",
@@ -120,6 +129,7 @@ exports.updateSection = async (req, res) => {
             message: "Section updated successfully.",
             data: updatedCourse,
         });
+
     } catch (error) {
         console.error("Update Section Error:", error);
         return res.status(500).json({
@@ -129,6 +139,7 @@ exports.updateSection = async (req, res) => {
         });
     }
 };
+
 
 exports.deleteSection = async (req, res) => {
     try {
