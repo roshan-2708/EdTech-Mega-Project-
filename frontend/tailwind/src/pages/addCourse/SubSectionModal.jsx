@@ -125,95 +125,96 @@ const SubSectionModal = ({ modalData, setModalData, add = false, view = false, e
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-            <div className="bg-white w-full max-w-2xl max-h-[90vh] rounded-lg shadow-lg overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+            <div className="w-full max-w-2xl max-h-[90vh] overflow-hidden rounded-2xl bg-slate-900 shadow-2xl border border-slate-700">
 
                 {/* Header */}
-                <div className="bg-gray-800 p-6 border-b border-gray-200">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                            {add && <CiCirclePlus className="text-green-400" />}
-                            {edit && <MdOutlineModeEditOutline className="text-blue-400" />}
-                            {view && <FaEye className="text-gray-400" />}
-                            <span>
-                                {add && "Add New Lecture"}
-                                {edit && "Edit Lecture"}
-                                {view && "Lecture Preview"}
-                            </span>
-                        </h2>
-                        <button
-                            onClick={closeModal}
-                            className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
-                            disabled={loading}
-                        >
-                            <FaTimes className="text-white text-lg" />
-                        </button>
-                    </div>
+                <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700">
+                    <h2 className="text-lg font-semibold text-gray-100 flex items-center gap-2">
+                        {add && <CiCirclePlus className="text-emerald-400" />}
+                        {edit && <MdOutlineModeEditOutline className="text-indigo-400" />}
+                        {view && <FaEye className="text-gray-400" />}
+                        <span>
+                            {add && "Add Lecture"}
+                            {edit && "Edit Lecture"}
+                            {view && "Lecture Preview"}
+                        </span>
+                    </h2>
+
+                    <button
+                        onClick={closeModal}
+                        disabled={loading}
+                        className="p-2 rounded-lg hover:bg-slate-800 transition disabled:opacity-50"
+                    >
+                        <FaTimes className="text-gray-300" />
+                    </button>
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
+                <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-5 overflow-y-auto max-h-[75vh]">
 
                     {/* Title */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Lecture Title {view ? "" : <span className="text-red-500">*</span>}
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                            Lecture Title {!view && <span className="text-red-400">*</span>}
                         </label>
                         <input
                             type="text"
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
-                            placeholder="Enter lecture title"
+                            disabled={view || loading}
+                            placeholder="Lecture title"
+                            className="w-full rounded-xl bg-slate-800 px-4 py-3 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-60"
                             {...register("title", {
                                 required: "Lecture title is required",
-                                minLength: { value: 5, message: "Title must be at least 5 characters" }
+                                minLength: { value: 5, message: "Minimum 5 characters" },
                             })}
-                            disabled={view || loading}
                         />
                         {errors.title && (
-                            <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
+                            <p className="mt-1 text-sm text-red-400">{errors.title.message}</p>
                         )}
                     </div>
 
                     {/* Description */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
                             Description
                         </label>
                         <textarea
                             rows={4}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical disabled:bg-gray-100"
-                            placeholder="Enter lecture description"
-                            {...register("description")}
                             disabled={view || loading}
+                            placeholder="Short description (optional)"
+                            className="w-full rounded-xl bg-slate-800 px-4 py-3 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none disabled:opacity-60"
+                            {...register("description")}
                         />
                     </div>
 
                     {/* Duration */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
                             Duration (MM:SS)
                         </label>
                         <input
                             type="text"
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
+                            disabled={view || loading}
                             placeholder="05:30"
+                            className="w-full rounded-xl bg-slate-800 px-4 py-3 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-60"
                             {...register("timeDuration", {
                                 pattern: {
                                     value: /^\d{1,2}:\d{2}$/,
-                                    message: "Use MM:SS format (e.g., 05:30)"
-                                }
+                                    message: "Use MM:SS format",
+                                },
                             })}
-                            disabled={view || loading}
                         />
                         {errors.timeDuration && (
-                            <p className="mt-1 text-sm text-red-600">{errors.timeDuration.message}</p>
+                            <p className="mt-1 text-sm text-red-400">
+                                {errors.timeDuration.message}
+                            </p>
                         )}
                     </div>
 
                     {/* Video Upload */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-3">
-                            Video Lecture {add && <span className="text-red-500">*</span>}
+                        <label className="block text-sm font-medium text-gray-300 mb-3">
+                            Lecture Video {add && <span className="text-red-400">*</span>}
                         </label>
 
                         <input
@@ -221,67 +222,67 @@ const SubSectionModal = ({ modalData, setModalData, add = false, view = false, e
                             accept="video/*"
                             className="hidden"
                             ref={fileInputRef}
+                            disabled={view || loading}
                             onChange={(e) => {
                                 const file = e.target.files[0];
-                                if (file) {
-                                    setValue("LectureVideo", [file]); // Manually set the file value
-                                }
+                                if (file) setValue("LectureVideo", [file]);
                             }}
-                            disabled={view || loading}
                         />
 
                         <div
-                            className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 cursor-pointer bg-gray-50 hover:bg-blue-50 transition-colors"
                             onClick={() => !view && !loading && fileInputRef.current?.click()}
+                            className="rounded-xl border border-dashed border-slate-600 bg-slate-800/60 p-6 text-center cursor-pointer hover:border-indigo-500 transition"
                         >
                             {videoPreview ? (
                                 <div className="space-y-3">
                                     <video
                                         src={videoPreview}
                                         controls
-                                        className="w-full max-h-48 mx-auto rounded-lg"
+                                        className="w-full max-h-48 rounded-lg"
                                     />
-                                    <button
-                                        type="button"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setValue("LectureVideo", null);
-                                            setVideoPreview(null);
-                                            fileInputRef.current.value = "";
-                                        }}
-                                        className="text-sm text-gray-500 hover:text-gray-700 underline"
-                                    >
-                                        Remove video
-                                    </button>
+                                    {!view && (
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setValue("LectureVideo", null);
+                                                setVideoPreview(null);
+                                                fileInputRef.current.value = "";
+                                            }}
+                                            className="text-sm text-gray-400 hover:text-red-400"
+                                        >
+                                            Remove video
+                                        </button>
+                                    )}
                                 </div>
                             ) : (
-                                <div className="flex flex-col items-center gap-2">
-                                    <CiCirclePlus className="text-3xl text-blue-500" />
-                                    <p className="text-gray-700 font-medium">
-                                        {add ? "Upload Lecture Video" : "Replace Video"}
+                                <div className="flex flex-col items-center gap-2 text-gray-400">
+                                    <CiCirclePlus className="text-3xl text-indigo-400" />
+                                    <p className="font-medium">
+                                        {add ? "Upload lecture video" : "Replace video"}
                                     </p>
-                                    <p className="text-xs text-gray-500">MP4, MOV, up to 500MB</p>
+                                    <p className="text-xs">MP4 / MOV • up to 500MB</p>
                                 </div>
                             )}
                         </div>
                     </div>
 
-
                     {/* Actions */}
-                    <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
+                    <div className="flex justify-end gap-3 pt-6 border-t border-slate-700">
                         <button
                             type="button"
                             onClick={closeModal}
-                            className="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors disabled:opacity-50"
                             disabled={loading}
+                            className="px-6 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-gray-200 transition disabled:opacity-50"
                         >
                             Cancel
                         </button>
+
                         {!view && (
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="px-8 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
+                                className="px-8 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition disabled:opacity-50 flex items-center gap-2"
                             >
                                 {loading ? (
                                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -289,10 +290,12 @@ const SubSectionModal = ({ modalData, setModalData, add = false, view = false, e
                             </button>
                         )}
                     </div>
+
                 </form>
             </div>
         </div>
     );
+
 };
 
 export default SubSectionModal;

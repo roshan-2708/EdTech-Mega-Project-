@@ -307,7 +307,7 @@ const FormComponent = () => {
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center justify-between pt-8 border-t border-slate-700/50">
+                <div className="flex items-center justify-between pt-8 mt-24 border-t border-slate-700/50">
                     <button
                         type="button"
                         onClick={goBack}

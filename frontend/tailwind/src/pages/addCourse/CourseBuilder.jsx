@@ -141,91 +141,82 @@ const CourseBuilder = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-6xl mx-auto">
+        <div className="min-h-screen bg-slate-950 px-4 py-10 text-gray-100">
+            <div className="mx-auto max-w-6xl space-y-10">
+
                 {/* Header */}
-                <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-slate-800 bg-clip-text text-transparent mb-4">
+                <div className="text-center space-y-4">
+                    <h1 className="text-4xl font-semibold">
                         Course Builder
                     </h1>
-                    <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-slate-200/50 max-w-2xl mx-auto">
+
+                    <div className="mx-auto max-w-2xl rounded-xl bg-slate-900 p-5 border border-slate-800">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h2 className="text-2xl font-bold text-gray-900">
+                                <h2 className="text-xl font-medium">
                                     {course.courseName}
                                 </h2>
-                                <p className="text-sm text-gray-600 mt-1">
-                                    ID: <code className="bg-slate-100 px-2 py-1 rounded text-xs font-mono">
+                                <p className="text-sm text-gray-400">
+                                    ID:{" "}
+                                    <code className="bg-slate-800 px-2 py-0.5 rounded text-emerald-400">
                                         {course._id?.slice(-8) || "Missing"}
                                     </code>
                                 </p>
                             </div>
-                            <div className="text-right">
-                                <p className="text-lg font-semibold text-emerald-600">
-                                    {course.courseContent?.length || 0} Sections
-                                </p>
-                            </div>
+
+                            <p className="text-sm font-medium text-emerald-400">
+                                {course.courseContent?.length || 0} Sections
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                {/* Add/Edit Section Form */}
-                <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-slate-200/50 mb-12">
-                    <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-                        {editSectionId ? "✏️ Edit Section" : "➕ Add New Section"}
+                {/* Add / Edit Section */}
+                <div className="rounded-xl bg-slate-900 p-6 border border-slate-800">
+                    <h3 className="mb-4 text-lg font-medium">
+                        {editSectionId ? "Edit Section" : "Add Section"}
                     </h3>
 
-                    <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl">
-                        <div className="relative">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-xl">
+                        <div>
                             <input
                                 type="text"
-                                className="w-full p-6 text-xl border-2 border-dashed border-slate-300 rounded-2xl focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all bg-white/50 hover:border-slate-400 shadow-lg"
-                                placeholder="e.g., 'Introduction to React', 'Advanced Hooks', 'Final Project'..."
+                                disabled={loading}
+                                placeholder="Section name"
+                                className="w-full rounded-lg bg-slate-800 px-4 py-3 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
                                 {...register("sectionName", {
                                     required: "Section name is required",
-                                    minLength: {
-                                        value: 3,
-                                        message: "Section name must be at least 3 characters",
-                                    },
-                                    maxLength: {
-                                        value: 60,
-                                        message: "Section name too long",
-                                    },
+                                    minLength: { value: 3, message: "Minimum 3 characters" },
+                                    maxLength: { value: 60, message: "Maximum 60 characters" },
                                 })}
-                                disabled={loading}
                             />
+
                             {errors.sectionName && (
-                                <p className="mt-3 text-sm text-red-500 bg-red-50 p-3 rounded-xl border-l-4 border-red-400">
+                                <p className="mt-2 text-sm text-red-400">
                                     {errors.sectionName.message}
                                 </p>
                             )}
                         </div>
 
-                        <div className="flex gap-4 mt-8 pt-8 border-t border-slate-200">
+                        <div className="flex gap-3">
                             <button
                                 type="submit"
-                                disabled={loading || !course?._id}
-                                className="flex-1 flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold rounded-2xl shadow-xl hover:shadow-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={loading}
+                                className="px-6 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 font-medium transition disabled:opacity-50"
                             >
-                                {loading ? (
-                                    <>
-                                        <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                        {editSectionId ? "Updating..." : "Creating..."}
-                                    </>
-                                ) : (
-                                    <>
-                                        <IoAddCircleSharp className="text-xl" />
-                                        {editSectionId ? "Update Section" : "Create Section"}
-                                    </>
-                                )}
+                                {loading
+                                    ? "Saving..."
+                                    : editSectionId
+                                        ? "Update"
+                                        : "Create"}
                             </button>
 
                             {editSectionId && (
                                 <button
                                     type="button"
                                     onClick={cancelEdit}
-                                    className="px-8 py-4 bg-slate-500 hover:bg-slate-600 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl"
                                     disabled={loading}
+                                    className="px-6 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition disabled:opacity-50"
                                 >
                                     Cancel
                                 </button>
@@ -234,43 +225,48 @@ const CourseBuilder = () => {
                     </form>
                 </div>
 
-                {/* Existing Sections */}
+                {/* Course Outline */}
                 {course?.courseContent?.length > 0 ? (
-                    <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-slate-200/50">
-                        <h3 className="text-2xl font-bold text-gray-800 mb-6">📋 Course Outline</h3>
+                    <div className="rounded-xl bg-slate-900 p-6 border border-slate-800">
+                        <h3 className="mb-4 text-lg font-medium">
+                            Course Outline
+                        </h3>
                         <NestedView handleChangeEditSectionName={handleChangeEditSectionName} />
                     </div>
                 ) : (
-                    <div className="text-center py-20 bg-white/50 rounded-3xl shadow-xl border border-dashed border-slate-300">
-                        <div className="text-6xl mb-6 opacity-20">📚</div>
-                        <h3 className="text-2xl font-bold text-gray-600 mb-4">No sections yet</h3>
-                        <p className="text-gray-500 mb-8 max-w-md mx-auto">
-                            Add your first section above to start building your course structure.
+                    <div className="rounded-xl bg-slate-900 p-12 text-center border border-slate-800">
+                        <p className="text-gray-400">
+                            No sections added yet
                         </p>
                     </div>
                 )}
 
                 {/* Navigation */}
-                <div className="flex flex-col sm:flex-row gap-4 pt-12 mt-24 border-t-4 border-slate-200 bg-white/50 backdrop-blur-xl rounded-3xl p-8 shadow-2xl sticky bottom-0">
-                    <button
-                        onClick={goBack}
-                        className="flex-1 px-8 py-4 bg-gradient-to-r from-slate-500 to-slate-600 hover:from-slate-600 hover:to-slate-700 text-white font-bold rounded-2xl shadow-xl hover:shadow-2xl transition-all"
-                    >
-                        ← Back to Details
-                    </button>
+                <div className="sticky bottom-0 bg-slate-950 pt-6 border-t border-slate-800">
+                    <div className="flex flex-col sm:flex-row gap-3 max-w-6xl mx-auto">
+                        <button
+                            onClick={goBack}
+                            className="flex-1 rounded-lg bg-slate-700 hover:bg-slate-600 py-3 font-medium transition"
+                        >
+                            Back
+                        </button>
 
-                    <button
-                        onClick={goToNext}
-                        disabled={!course?._id || loading}
-                        className="flex items-center justify-center gap-3 px-12 py-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white font-bold text-lg rounded-2xl shadow-2xl hover:shadow-3xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        <CgCalendarNext className="text-xl" />
-                        Next: Add Lectures & Publish
-                    </button>
+                        <button
+                            onClick={goToNext}
+                            disabled={loading}
+                            className="flex-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 py-3 font-medium transition disabled:opacity-50 flex items-center justify-center gap-2"
+                        >
+                            <CgCalendarNext />
+                            Next
+                        </button>
+                    </div>
                 </div>
+
             </div>
         </div>
     );
+
+
 };
 
 export default CourseBuilder;
