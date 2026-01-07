@@ -18,6 +18,7 @@ import EnrollCourses from "./pages/EnrollCourses";
 import Cart from "./pages/cart/Index";
 import MyCourses from './pages/MyCourses'
 import AddCourse from "./pages/addCourse/AddCourse";
+import EditCourseDetails from "./pages/EditCourse/EditCourseDetails";
 
 function App() {
   return (
@@ -49,7 +50,8 @@ function App() {
           <Route path="enrolled-courses" element={<EnrollCourses />} />
           <Route path="cart" element={<Cart />} />
           <Route path="/dashboard/my-courses" element={<MyCourses></MyCourses>} />
-          <Route path="/dashboard/add-course" element={<AddCourse/>}></Route>
+          <Route path="/dashboard/add-course" element={<AddCourse />}></Route>
+          <Route path="/dashboard/edit-course/:courseId" element={<EditCourseDetails />} />
         </Route>
       </Routes>
     </div>
