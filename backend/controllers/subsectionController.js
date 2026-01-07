@@ -11,7 +11,7 @@ exports.createSubSection = async (req, res) => {
     try {
         const { sectionId, title, description, timeDuration, courseId } = req.body;
 
-        // 1️⃣ Basic validation
+        // Basic validation
         if (!sectionId || !title || !courseId) {
             return res.status(400).json({
                 success: false,
@@ -19,7 +19,7 @@ exports.createSubSection = async (req, res) => {
             });
         }
 
-        // 2️⃣ Find section and ensure it has a courseId
+        // Find section and ensure it has a courseId
         const section = await Section.findById(sectionId);
         if (!section) {
             return res.status(404).json({ success: false, message: "Section not found" });
@@ -31,7 +31,7 @@ exports.createSubSection = async (req, res) => {
             await section.save();
         }
 
-        // 3️⃣ Get the course to check ownership
+        // Get the course to check ownership
         const course = await Course.findById(section.courseId).populate("instructor");
         if (!course) {
             return res.status(404).json({ success: false, message: "Course not found" });
@@ -41,7 +41,7 @@ exports.createSubSection = async (req, res) => {
             return res.status(403).json({ success: false, message: "Not authorized" });
         }
 
-        // 4️⃣ Parse timeDuration "MM:SS" → seconds
+        // Parse timeDuration "MM:SS" → seconds
         let durationInSeconds = 0;
         if (timeDuration) {
             const [minutes, seconds] = timeDuration.split(":").map(Number);
@@ -54,7 +54,7 @@ exports.createSubSection = async (req, res) => {
             durationInSeconds = minutes * 60 + seconds;
         }
 
-        // 5️⃣ Upload video if provided
+        // Upload video if provided
         let videoUrl = "";
         if (req.file) {
             const uploadedVideo = await uploadFileCloudinary(
@@ -65,7 +65,7 @@ exports.createSubSection = async (req, res) => {
             videoUrl = uploadedVideo.secure_url;
         }
 
-        // 6️⃣ Create new subsection
+        // Create new subsection
         const newSubSection = await SubSection.create({
             sectionId: section._id,
             courseId: section.courseId,
@@ -75,11 +75,11 @@ exports.createSubSection = async (req, res) => {
             videoUrl,
         });
 
-        // 7️⃣ Add reference to section
+        // Add reference to section
         section.subSection.push(newSubSection._id);
         await section.save();
 
-        // 8️⃣ Return updated course with populated sections/subsections
+        // Return updated course with populated sections/subsections
         const updatedCourse = await Course.findById(course._id)
             .populate({
                 path: "courseContent",
