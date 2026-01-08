@@ -65,7 +65,8 @@ const Navbar = () => {
                                                 sublinks.map((cat) => (
                                                     <Link
                                                         key={cat._id}
-                                                        to={`/catalog/${cat._id}`}
+                                                        // to={`/catalog/${cat.name}`}
+                                                        to={`/catalog/${encodeURIComponent(cat.name)}`}
                                                         className="block py-1 hover:text-yellow-25 transition"
                                                     >
                                                         {cat.name}
@@ -78,8 +79,8 @@ const Navbar = () => {
                                     <Link
                                         to={link.path}
                                         className={`${isActive(link.path)
-                                                ? "text-yellow-25"
-                                                : "text-richblack-5"
+                                            ? "text-yellow-25"
+                                            : "text-richblack-5"
                                             } hover:text-yellow-25 transition`}
                                     >
                                         {link.title}
@@ -121,7 +122,7 @@ const Navbar = () => {
                         </div>
                     ) : (
                         <>
-                            
+
                             <ProfileDropDown />
                         </>
                     )}

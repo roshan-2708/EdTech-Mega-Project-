@@ -32,6 +32,11 @@ export const profileEndpoints = {
 export const categoryEndpoints = {
     GET_ALL_CATEGORIES: "/category/all",
 };
+
+export const catalogData = {
+    CATEGORY_PAGEDATA_API : "/category/details"
+}
+
 // ✅ Contact endpoints
 export const contactEndpoints = {
     CONTACT_US: `${BASE_URL}/contact`,
