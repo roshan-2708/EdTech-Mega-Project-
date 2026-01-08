@@ -13,7 +13,7 @@ const Catalog = () => {
     const [catalogPageData, setCatalogPageData] = useState(null);
     const [categoryId, setCategoryId] = useState(null);
     const [active, setActive] = useState(false);
-    
+
     // Fetch categories
     useEffect(() => {
         const getCategotyDetails = async () => {
@@ -77,21 +77,20 @@ const Catalog = () => {
                         <p>New</p>
                     </div>
                     <div>
-                        <CourseSlider
-                            Course={catalogPageData?.selectedCategory?.courses}
-                        />
-
+                        <CourseSlider Courses={catalogPageData?.selectedCategory?.courses} />
                     </div>
                 </div>
                 {/* subsection-2 */}
                 <div>
                     <p>Top Courses in {name}</p>
                     <div>
-                        <CourseSlider
-                            Course={catalogPageData?.otherCategories?.flatMap(cat => cat.courses)}
-                        />
+                        <CourseSlider Courses={catalogPageData?.selectedCategory?.courses} />
+                        {/* <CourseSlider
+                            Courses={catalogPageData?.topSellingCourses?.flatMap(cat => cat.courses)}
+                        /> */}
 
                     </div>
+
                 </div>
                 {/* section-3 */}
                 <div>
