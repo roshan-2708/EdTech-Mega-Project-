@@ -66,50 +66,55 @@ exports.CategoryPageDetails = async (req, res) => {
         if (!categoryId) {
             return res.status(400).json({
                 success: false,
-                message: "Category ID is required."
+                message: "Category ID is required.",
             });
         }
 
         const selectedCategory = await Category.findById(categoryId)
+            .select("name description courses")
             .populate({
                 path: "courses",
                 match: { status: "Published" },
-                populate: { path: "instructor", select: "firstName lastName email" }
-            })
-            .exec();
+                populate: {
+                    path: "instructor",
+                    select: "firstName lastName email",
+                },
+            });
 
         if (!selectedCategory) {
             return res.status(404).json({
                 success: false,
-                message: "Category not found."
+                message: "Category not found.",
             });
         }
 
-        const otherCategories = await Category.find({ _id: { $ne: categoryId } })
-            .populate({
-                path: "courses",
-                match: { status: "Published" }
-            })
-            .exec();
+        const otherCategories = await Category.find({
+            _id: { $ne: categoryId },
+        }).populate({
+            path: "courses",
+            match: { status: "Published" },
+        });
 
         const topSellingCourses = await Course.find({ status: "Published" })
             .sort({ studentEnrolled: -1 })
             .limit(10)
-            .populate("instructor category")
-            .exec();
+            .populate("instructor category");
 
         return res.status(200).json({
             success: true,
             message: "Category page data fetched successfully.",
-            data: { selectedCategory, otherCategories, topSellingCourses }
+            data: {
+                selectedCategory,
+                otherCategories,
+                topSellingCourses,
+            },
         });
-
     } catch (error) {
         console.error("CategoryPageDetails Error:", error);
         return res.status(500).json({
             success: false,
             message: "Internal server error.",
-            error: error.message
+            error: error.message,
         });
     }
 };
