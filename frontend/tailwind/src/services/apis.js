@@ -25,6 +25,14 @@ export const authEndpoints = {
 export const profileEndpoints = {
     PROFILE_IMAGE: "/profile/update-display-picture",
     PROFILE_UPDATE: "/profile/update-profile",
+    GET_ENROLLED_COURSES :"/profile/get-enrolled-courses"
+};
+
+// student endpoints
+export const studentEndpoints = {
+    COURSE_PAYMENT_API: "/payment/capture-payment",
+    COURSE_VERIFY_API: "/payment/verify-payment",
+    SEND_PAYMENT_SUCCESS_EMAIL_API: "/payment/send-payment-success-email",
 };
 
 
@@ -47,6 +55,7 @@ export const sectionEndpoints = {
     UPDATE_SECTION: "/section/update",
     DELETE_SECTION: "/section/delete",
 };
+
 
 export const subSectionEndpoints = {
     CREATE_SUBSECTION: "/subsection/createSubSection",

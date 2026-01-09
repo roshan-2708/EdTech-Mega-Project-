@@ -20,6 +20,8 @@ import MyCourses from './pages/MyCourses'
 import AddCourse from "./pages/addCourse/AddCourse";
 import EditCourseDetails from "./pages/EditCourse/EditCourseDetails";
 import Catalog from "./pages/Catalog";
+import CourseDetails from "./pages/addCourse/CourseDetails";
+
 
 function App() {
   return (
@@ -37,6 +39,7 @@ function App() {
         <Route path="/update-password/:id" element={<UpdatePassword />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/catalog/:name" element={<Catalog />} />
+        <Route path="/course/:courseId" element={<CourseDetails />} />
         {/* ✅ DASHBOARD ROUTES */}
         <Route
           path="/dashboard"
@@ -53,7 +56,7 @@ function App() {
           <Route path="/dashboard/my-courses" element={<MyCourses></MyCourses>} />
           <Route path="/dashboard/add-course" element={<AddCourse />}></Route>
           <Route path="/dashboard/edit-course/:courseId" element={<EditCourseDetails />} />
-          
+
         </Route>
       </Routes>
     </div>
