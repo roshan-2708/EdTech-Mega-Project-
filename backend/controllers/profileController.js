@@ -214,10 +214,7 @@ exports.getEnrolledCourses = async (req, res) => {
         const userDetails = await User.findById(userId)
             .populate({
                 path: "courses",
-                populate: {
-                    path: "course",
-                    model: "Course"
-                }
+                select: "courseName courseDescription thumbnail totalDuration",
             })
             .select("courses")
             .exec();
@@ -231,8 +228,9 @@ exports.getEnrolledCourses = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            data: userDetails.courses || [],
+            data: userDetails.courses,
         });
+
     } catch (error) {
         console.error("GET COURSES ERROR:", error);
         return res.status(500).json({
@@ -241,3 +239,4 @@ exports.getEnrolledCourses = async (req, res) => {
         });
     }
 };
+

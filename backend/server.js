@@ -4,18 +4,16 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 const userRoutes = require("./routes/User");
 const profileRoutes = require("./routes/Profile");
-const paymentRoutes = require("./routes/Payment");
 const courseRoutes = require("./routes/Course");
 const categoryRoutes = require("./routes/createCategory");
 const sectionRoutes = require("./routes/sectionRoutes");
 const subSectionRoutes = require("./routes/subsectionRoutes");
-
 const database = require("./config/database");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const { cloudinaryConnect } = require("./config/cloudinary");
 const dotenv = require("dotenv");
-
+const paymentRoutes = require("./routes/payments")
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 
