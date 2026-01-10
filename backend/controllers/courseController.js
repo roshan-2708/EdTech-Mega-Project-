@@ -4,6 +4,7 @@ const Category = require("../model/Category");
 const User = require("../model/User");
 const { uploadImageCloudinary } = require("../utils/fileUploader");
 const mongoose = require("mongoose");
+const RatingAndReview = require("../model/RatingAndReview"); // ✅ REQUIRED
 
 
 // create course

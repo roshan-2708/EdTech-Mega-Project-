@@ -23,13 +23,7 @@ router.post(
     upload.single("thumbnailImage"), // 🔥 REQUIRED
     createCourse
 );
-// router.put(
-//     "/editCourse",
-//     auth,
-//     isInstructor,
-//     upload.single("thumbnailImage"),
-//     editCourseDetails
-// );
+
 router.put(
     "/editCourse",
     auth,
