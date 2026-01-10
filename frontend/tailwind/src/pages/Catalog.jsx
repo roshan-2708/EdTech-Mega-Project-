@@ -7,35 +7,33 @@ import { getCatalogPageData } from "../services/operations/pageAndComponentData"
 import CourseSlider from "./CourseSlider";
 import Course_Card from "../components/catalog/Course_Card";
 
-
 const Catalog = () => {
     const { name } = useParams();
     const [catalogPageData, setCatalogPageData] = useState(null);
     const [categoryId, setCategoryId] = useState(null);
-    const [active, setActive] = useState(false);
+    const [activeTab, setActiveTab] = useState("popular"); // popular | new
 
     // Fetch categories
     useEffect(() => {
-        const getCategotyDetails = async () => {
-            const res = await apiConnector("GET", categoryEndpoints.GET_ALL_CATEGORIES);
-
-            console.log("URL param name:", name);
-            console.log("All categories:", res?.data?.data);
+        const getCategoryDetails = async () => {
+            const res = await apiConnector(
+                "GET",
+                categoryEndpoints.GET_ALL_CATEGORIES
+            );
 
             const category = res?.data?.data?.find(
                 (ct) => ct.name.toLowerCase() === name.toLowerCase()
             );
-
-            console.log("Matched category:", category);
 
             if (category?._id) {
                 setCategoryId(category._id);
             }
         };
 
-        if (name) getCategotyDetails();
+        if (name) getCategoryDetails();
     }, [name]);
 
+    // Fetch catalog data
     useEffect(() => {
         if (!categoryId) return;
 
@@ -47,74 +45,110 @@ const Catalog = () => {
         getCategory();
     }, [categoryId]);
 
+    // 🔥 Course filtering logic
+    const courses = catalogPageData?.selectedCategory?.courses || [];
 
-    if (!name) {
-        return <div>Category not found</div>;
-    }
+    const popularCourses = [...courses].sort(
+        (a, b) =>
+            (b.ratingAndReview?.length || 0) -
+            (a.ratingAndReview?.length || 0)
+    );
+
+    const newCourses = [...courses].sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+
+    const displayCourses =
+        activeTab === "popular" ? popularCourses : newCourses;
+
+    if (!name) return <div className="text-white">Category not found</div>;
 
     return (
-        <div className="text-white">
-            {/* section-1 */}
-            <div>
-                <p>{`Home/Catalog/${name}`}</p>
-                <h1 className="text-2xl font-bold">
-                    Category: {name}
-                </h1>
-                <p>
-                    {catalogPageData?.data?.selectedCategory?.description || "No description available"}
+        <div className="min-h-screen bg-richblack-900 text-white">
+            {/* =================== HERO SECTION =================== */}
+            <div className="mx-auto max-w-7xl px-4 py-10">
+                <p className="text-sm text-richblack-300">
+                    Home / Catalog / <span className="text-yellow-50">{name}</span>
                 </p>
 
+                <h1 className="mt-3 text-3xl font-bold text-richblack-5">
+                    {name}
+                </h1>
+
+                <p className="mt-2 max-w-3xl text-richblack-200">
+                    {catalogPageData?.data?.selectedCategory?.description ||
+                        "No description available"}
+                </p>
             </div>
-            {/* section-2 */}
-            <div>
-                {/* subsection-1 */}
-                <div>
-                    <div>
+
+            {/* =================== SECTION 2 =================== */}
+            <div className="mx-auto max-w-7xl px-4">
+                {/* ---------- Toggle Header ---------- */}
+                <div className="flex flex-col gap-4 border-b border-richblack-700 pb-4 sm:flex-row sm:items-center sm:justify-between">
+                    <h2 className="text-xl font-semibold">
                         Courses to get you started
-                    </div>
-                    <div className="flex gap-x-3">
-                        <p>Most Popular</p>
-                        <p>New</p>
-                    </div>
-                    <div>
-                        <CourseSlider Courses={catalogPageData?.selectedCategory?.courses} />
+                    </h2>
+
+                    <div className="flex gap-6 text-sm font-medium">
+                        <button
+                            onClick={() => setActiveTab("popular")}
+                            className={`pb-2 transition-all ${activeTab === "popular"
+                                    ? "border-b-2 border-yellow-50 text-yellow-50"
+                                    : "text-richblack-300 hover:text-richblack-5"
+                                }`}
+                        >
+                            Most Popular
+                        </button>
+
+                        <button
+                            onClick={() => setActiveTab("new")}
+                            className={`pb-2 transition-all ${activeTab === "new"
+                                    ? "border-b-2 border-yellow-50 text-yellow-50"
+                                    : "text-richblack-300 hover:text-richblack-5"
+                                }`}
+                        >
+                            New
+                        </button>
                     </div>
                 </div>
-                {/* subsection-2 */}
-                <div>
-                    <p>Top Courses in {name}</p>
-                    <div>
-                        <CourseSlider Courses={catalogPageData?.selectedCategory?.courses} />
-                        {/* <CourseSlider
-                            Courses={catalogPageData?.topSellingCourses?.flatMap(cat => cat.courses)}
-                        /> */}
 
-                    </div>
-
+                {/* ---------- Slider ---------- */}
+                <div className="py-6">
+                    <CourseSlider Courses={displayCourses} />
                 </div>
-                {/* section-3 */}
-                <div>
-                    <p>Frequently Bought</p>
-                    <div className="py-8">
-                        <div className="grid grid-cols-1 lg:grid-cols-2">
-                            {catalogPageData?.selectedCategory?.courses?.length > 0 ? (
-                                catalogPageData.selectedCategory.courses.map((course) => (
-                                    <Course_Card
-                                        key={course._id}
-                                        course={course}
-                                        Height="h-[200px]"
-                                    />
-                                ))
-                            ) : (
-                                <p className="text-white">No courses found</p>
-                            )}
 
-                        </div>
+                {/* =================== TOP COURSES =================== */}
+                <div className="py-10">
+                    <h2 className="mb-6 text-xl font-semibold">
+                        Top Courses in {name}
+                    </h2>
 
+                    <CourseSlider Courses={popularCourses} />
+                </div>
+
+                {/* =================== FREQUENTLY BOUGHT =================== */}
+                <div className="py-10">
+                    <h2 className="mb-6 text-xl font-semibold">
+                        Frequently Bought
+                    </h2>
+
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                        {courses.length > 0 ? (
+                            courses.map((course) => (
+                                <Course_Card
+                                    key={course._id}
+                                    course={course}
+                                    Height="h-[100px]"
+                                />
+                            ))
+                        ) : (
+                            <p className="text-richblack-300">No courses found</p>
+                        )}
                     </div>
                 </div>
             </div>
-            <Footer></Footer>
+
+            <Footer />
         </div>
     );
 };

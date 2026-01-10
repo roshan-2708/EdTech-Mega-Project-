@@ -43,68 +43,6 @@ export const createCourse = async (courseData, token) => {
     }
 };
 
-// export const editCourseDetails = async (courseData, token) => {
-//     try {
-//         console.log("📤 Editing course with:", courseData);
-
-//         const formData = new FormData();
-
-//         // 🔴 REQUIRED
-//         formData.append("courseId", courseData.courseId);
-
-//         // 🟡 OPTIONAL FIELDS (append only if present)
-//         if (courseData.courseName)
-//             formData.append("courseName", courseData.courseName);
-
-//         if (courseData.courseDescription)
-//             formData.append("courseDescription", courseData.courseDescription);
-
-//         if (courseData.coursePrice !== undefined)
-//             formData.append("price", courseData.coursePrice);
-
-//         if (courseData.courseTags)
-//             formData.append("tag", courseData.courseTags);
-
-//         if (courseData.whatYouWillLearn || courseData.courseBenefits)
-//             formData.append(
-//                 "whatYouWillLearn",
-//                 courseData.whatYouWillLearn || courseData.courseBenefits
-//             );
-
-//         if (courseData.courseCategory)
-//             formData.append("category", courseData.courseCategory);
-
-//         if (courseData.status)
-//             formData.append("status", courseData.status);
-
-//         // 🖼️ Thumbnail (ONLY if changed)
-//         if (courseData.thumbnail) {
-//             formData.append("thumbnailImage", courseData.thumbnail);
-//         }
-
-//         const result = await apiConnector(
-//             "PUT",
-//             EDIT_COURSE_API,
-//             formData,
-//             {
-//                 Authorization: `Bearer ${token}`,
-//                 "Content-Type": "multipart/form-data",
-//             }
-//         );
-
-//         console.log("✅ Edit course response:", result);
-
-//         if (!result?.data?.success) {
-//             throw new Error("Course update failed");
-//         }
-
-//         return result.data.data;
-//     } catch (error) {
-//         console.error("❌ EditCourse error:", error.response?.data || error);
-//         throw error;
-//     }
-// };
-
 export const editCourseDetails = async (courseData, token) => {
     try {
         console.log("📤 Editing course with:", courseData);

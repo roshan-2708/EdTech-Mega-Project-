@@ -110,12 +110,12 @@ const Navbar = () => {
                     {!token ? (
                         <div className="flex gap-3">
                             <Link to="/login">
-                                <button className="border border-yellow-50 px-4 py-1 rounded-md hover:bg-yellow-50 hover:text-black transition">
+                                <button className="text-white border border-yellow-50 px-4 py-1 rounded-md hover:bg-yellow-50 hover:text-black transition">
                                     Sign in
                                 </button>
                             </Link>
                             <Link to="/verify-email">
-                                <button className="border border-yellow-50 px-4 py-1 rounded-md hover:bg-yellow-50 hover:text-black transition">
+                                <button className="text-white border border-yellow-50 px-4 py-1 rounded-md hover:bg-yellow-50 hover:text-black transition">
                                     Sign up
                                 </button>
                             </Link>
