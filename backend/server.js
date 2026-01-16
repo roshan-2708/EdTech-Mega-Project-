@@ -8,6 +8,8 @@ const courseRoutes = require("./routes/Course");
 const categoryRoutes = require("./routes/createCategory");
 const sectionRoutes = require("./routes/sectionRoutes");
 const subSectionRoutes = require("./routes/subsectionRoutes");
+const courseProgressRoute = require("./routes/courseProgressRoutes");
+const ratingAndReviewRoutes = require("./routes/ratingAndReviewRoutes");
 const database = require("./config/database");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -40,6 +42,8 @@ app.use("/api/v1/course", courseRoutes);
 app.use("/api/v1/section", sectionRoutes);
 app.use("/api/v1/subsection", subSectionRoutes);
 app.use("/api/v1/category", categoryRoutes);
+app.use("/api/v1/rating", ratingAndReviewRoutes);
+app.use("/api/v1/progress", courseProgressRoute);
 
 // ================= TEST =================
 app.get("/", (req, res) => {

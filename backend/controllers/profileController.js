@@ -3,8 +3,7 @@ const User = require("../model/User");
 const Course = require("../model/Course");
 const { uploadImageCloudinary } = require("../utils/fileUploader");
 
-// -----------------------------------------------------------------------------------
-// UPDATE PROFILE (Fixed for Cloudinary)
+
 exports.updateProfile = async (req, res) => {
     try {
         const { firstName, lastName, dateOfBirth = "", about = "", contactNumber, gender } = req.body;
@@ -71,8 +70,6 @@ exports.updateProfile = async (req, res) => {
     }
 };
 
-// -----------------------------------------------------------------------------------
-// UPDATE PROFILE PICTURE (Fixed for Cloudinary)
 exports.updateProfilePicture = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -112,10 +109,6 @@ exports.updateProfilePicture = async (req, res) => {
     }
 };
 
-
-// -----------------------------------------------------------------------------------
-// GET FULL PROFILE DETAILS (Fixed)
-// -----------------------------------------------------------------------------------
 exports.getProfileDetails = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -147,9 +140,6 @@ exports.getProfileDetails = async (req, res) => {
     }
 };
 
-// -----------------------------------------------------------------------------------
-// DELETE ACCOUNT (Production Ready)
-// -----------------------------------------------------------------------------------
 exports.deleteAccount = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -204,9 +194,8 @@ exports.deleteAccount = async (req, res) => {
 };
 
 
-// -----------------------------------------------------------------------------------
-// GET ENROLLED COURSES (Fixed)
-// -----------------------------------------------------------------------------------
+
+
 exports.getEnrolledCourses = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -214,7 +203,13 @@ exports.getEnrolledCourses = async (req, res) => {
         const userDetails = await User.findById(userId)
             .populate({
                 path: "courses",
-                select: "courseName courseDescription thumbnail totalDuration",
+                populate: {    // ✅ Nested populate for courseContent
+                    path: "courseContent",
+                    populate: {
+                        path: "subSection"
+                    }
+                },
+                select: "courseName courseDescription thumbnail totalDuration courseContent"  
             })
             .select("courses")
             .exec();
@@ -239,4 +234,5 @@ exports.getEnrolledCourses = async (req, res) => {
         });
     }
 };
+
 
