@@ -21,9 +21,14 @@ import AddCourse from "./pages/addCourse/AddCourse";
 import EditCourseDetails from "./pages/EditCourse/EditCourseDetails";
 import Catalog from "./pages/Catalog";
 import CourseDetails from "./pages/addCourse/CourseDetails";
+import ViewCourse from "./pages/ViewCourse";
+import { ACCOUNT_TYPE } from "./utils/constants";
+import VideoDetails from "./pages/VideoDetails";
+import { useSelector } from "react-redux";
 
 
 function App() {
+  const { user } = useSelector((state) => state.profile);
   return (
     <div className="w-screen min-h-screen bg-richblack-800 flex flex-col font-inter">
       <Toaster position="top-center" />
@@ -40,6 +45,15 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/catalog/:name" element={<Catalog />} />
         <Route path="/course/:courseId" element={<CourseDetails />} />
+        <Route path="view-course/:courseId" element={<PrivateRoute><ViewCourse /></PrivateRoute>}>
+          <Route
+            path="section/:sectionId/sub-section/:subSectionId"
+            element={<VideoDetails />}
+          />
+        </Route>
+
+
+
         {/* ✅ DASHBOARD ROUTES */}
         <Route
           path="/dashboard"

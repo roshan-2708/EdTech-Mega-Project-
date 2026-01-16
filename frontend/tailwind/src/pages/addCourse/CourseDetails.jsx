@@ -148,6 +148,8 @@ const CourseDetails = () => {
                         <span>{totalNumberOfLec} lectures</span>
                         <span>{courseDuration} hours</span>
                     </div>
+
+                    section
                 </div>
             </div>
 
@@ -158,6 +160,7 @@ const CourseDetails = () => {
                     handleBuyCourse={handleBuyCourse}
                 />
             </div>
+
         </div>
     );
 

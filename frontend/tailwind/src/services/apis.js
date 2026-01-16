@@ -25,7 +25,7 @@ export const authEndpoints = {
 export const profileEndpoints = {
     PROFILE_IMAGE: "/profile/update-display-picture",
     PROFILE_UPDATE: "/profile/update-profile",
-    GET_ENROLLED_COURSES :"/profile/get-enrolled-courses"
+    GET_ENROLLED_COURSES: "/profile/get-enrolled-courses"
 };
 
 // student endpoints
@@ -42,7 +42,7 @@ export const categoryEndpoints = {
 };
 
 export const catalogData = {
-    CATEGORY_PAGEDATA_API : "/category/details"
+    CATEGORY_PAGEDATA_API: "/category/details"
 }
 
 // ✅ Contact endpoints
@@ -74,4 +74,6 @@ export const courseEndpoints = {
     ENROLL_IN_COURSE: (courseId) => `/payment/enroll/${courseId}`,
     RATE_COURSE: "/course/rateCourse",
     DELETE_COURSE_ADMIN: (courseId) => `/admin/delete-course/${courseId}`,
+    LECTURE_COMPLETION_API:"/course/updateCourseProgress",
+    CREATE_RATING_API:  "/rating/create",
 };

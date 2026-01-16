@@ -76,9 +76,10 @@ const Catalog = () => {
                 </h1>
 
                 <p className="mt-2 max-w-3xl text-richblack-200">
-                    {catalogPageData?.data?.selectedCategory?.description ||
+                    {catalogPageData?.selectedCategory?.description ||
                         "No description available"}
                 </p>
+
             </div>
 
             {/* =================== SECTION 2 =================== */}
@@ -93,8 +94,8 @@ const Catalog = () => {
                         <button
                             onClick={() => setActiveTab("popular")}
                             className={`pb-2 transition-all ${activeTab === "popular"
-                                    ? "border-b-2 border-yellow-50 text-yellow-50"
-                                    : "text-richblack-300 hover:text-richblack-5"
+                                ? "border-b-2 border-yellow-50 text-yellow-50"
+                                : "text-richblack-300 hover:text-richblack-5"
                                 }`}
                         >
                             Most Popular
@@ -103,8 +104,8 @@ const Catalog = () => {
                         <button
                             onClick={() => setActiveTab("new")}
                             className={`pb-2 transition-all ${activeTab === "new"
-                                    ? "border-b-2 border-yellow-50 text-yellow-50"
-                                    : "text-richblack-300 hover:text-richblack-5"
+                                ? "border-b-2 border-yellow-50 text-yellow-50"
+                                : "text-richblack-300 hover:text-richblack-5"
                                 }`}
                         >
                             New
