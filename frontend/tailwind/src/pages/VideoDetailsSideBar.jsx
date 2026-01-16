@@ -10,23 +10,29 @@ const VideoDetailsSideBar = ({ setReviewModal }) => {
     const navigate = useNavigate();
     const { sectionId, subSectionId } = useParams();
 
-    // 🔥 OPTIMIZED SELECTORS WITH shallowEqual - FIXES INFINITE RERENDER
+    // ✅ Redux selectors
     const completedLectures = useSelector(
-        state => state?.viewCourse?.completedLectures || [],
+        state => state.viewCourse.completedLectures,
         shallowEqual
     );
     const courseSectionData = useSelector(
-        state => state?.viewCourse?.courseSectionData || [],
+        state => state.viewCourse.courseSectionData,
         shallowEqual
     );
     const courseEntireData = useSelector(
-        state => state?.viewCourse?.courseEntireData || null
+        state => state.viewCourse.courseEntireData
     );
     const totalNoOfLectures = useSelector(
-        state => state?.viewCourse?.totalNoOfLectures || 0
+        state => state.viewCourse.totalNoOfLectures
+    );
+    const isCourseLoading = useSelector(
+        state => state.viewCourse.isCourseLoading
+    );
+    const isProgressLoading = useSelector(
+        state => state.viewCourse.isProgressLoading
     );
 
-    // Set active section/subsection from URL or defaults
+    // ✅ Set active section / subsection from URL
     useEffect(() => {
         if (sectionId) {
             setActiveSection(sectionId);
@@ -41,10 +47,12 @@ const VideoDetailsSideBar = ({ setReviewModal }) => {
         }
     }, [sectionId, subSectionId, courseSectionData]);
 
-    // Auto-open first subsection if none is active
+    // ✅ Auto open first subsection
     useEffect(() => {
         if (activeSection && !activeSubSection) {
-            const section = courseSectionData.find(s => s._id === activeSection);
+            const section = courseSectionData.find(
+                s => s._id === activeSection
+            );
             if (section?.subSection?.length > 0) {
                 setActiveSubSection(section.subSection[0]._id);
             }
@@ -53,10 +61,23 @@ const VideoDetailsSideBar = ({ setReviewModal }) => {
 
     const handleNavigate = (secId, subId) => {
         if (!courseEntireData?._id) return;
+
         setActiveSection(secId);
         setActiveSubSection(subId);
-        navigate(`/view-course/${courseEntireData._id}/section/${secId}/sub-section/${subId}`);
+
+        navigate(
+            `/view-course/${courseEntireData._id}/section/${secId}/sub-section/${subId}`
+        );
     };
+
+    // ✅ Correct loading guard (IMPORTANT)
+    if (isCourseLoading || isProgressLoading) {
+        return (
+            <div className="w-80 bg-richblack-900 flex items-center justify-center text-white">
+                Loading course progress...
+            </div>
+        );
+    }
 
     if (!courseEntireData || courseSectionData.length === 0) {
         return (
@@ -82,6 +103,7 @@ const VideoDetailsSideBar = ({ setReviewModal }) => {
                         customClasses="flex-1"
                     />
                 </div>
+
                 <div>
                     <h1 className="text-2xl font-bold text-white mb-2">
                         {courseEntireData.courseName}
@@ -107,30 +129,45 @@ const VideoDetailsSideBar = ({ setReviewModal }) => {
                                 setActiveSubSection('');
                             }}
                         >
-                            <span className="font-semibold text-white">{section.sectionName}</span>
+                            <span className="font-semibold text-white">
+                                {section.sectionName}
+                            </span>
                         </div>
 
                         {/* Subsections */}
                         {activeSection === section._id && (
                             <div className="ml-4 space-y-2">
-                                {section.subSection?.map(sub => (
-                                    <div
-                                        key={sub._id}
-                                        className={`flex items-center gap-3 p-4 rounded-lg cursor-pointer transition-all ${activeSubSection === sub._id
-                                                ? 'bg-yellow-200 text-richblack-900 font-semibold shadow-md'
-                                                : 'bg-richblack-800 hover:bg-richblack-700 text-white border border-richblack-700'
-                                            }`}
-                                        onClick={() => handleNavigate(section._id, sub._id)}
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            checked={completedLectures.includes(sub._id)}
-                                            readOnly
-                                            className="w-4 h-4 text-yellow-500 rounded border-gray-300"
-                                        />
-                                        <span className="flex-1 py-1">{sub.title}</span>
-                                    </div>
-                                ))}
+                                {section.subSection?.map(sub => {
+                                    const isCompleted = completedLectures.some(
+                                        id => String(id) === String(sub._id)
+                                    );
+
+                                    return (
+                                        <div
+                                            key={sub._id}
+                                            className={`flex items-center gap-3 p-4 rounded-lg cursor-pointer transition-all ${activeSubSection === sub._id
+                                                    ? 'bg-yellow-200 text-richblack-900 font-semibold shadow-md'
+                                                    : 'bg-richblack-800 hover:bg-richblack-700 text-white border border-richblack-700'
+                                                }`}
+                                            onClick={() =>
+                                                handleNavigate(
+                                                    section._id,
+                                                    sub._id
+                                                )
+                                            }
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                checked={isCompleted}
+                                                readOnly
+                                                className="w-4 h-4 text-yellow-500 rounded border-gray-300"
+                                            />
+                                            <span className="flex-1 py-1">
+                                                {sub.title}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         )}
                     </div>
