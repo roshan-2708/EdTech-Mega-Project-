@@ -2,7 +2,8 @@ const Profile = require("../model/Profile");
 const User = require("../model/User");
 const Course = require("../model/Course");
 const { uploadImageCloudinary } = require("../utils/fileUploader");
-
+const CourseProgress = require("../model/CourseProgress");
+const convertSecondsToDuration = require("../utils/convertSecondsToDuration");
 
 exports.updateProfile = async (req, res) => {
     try {
@@ -194,24 +195,28 @@ exports.deleteAccount = async (req, res) => {
 };
 
 
-
-
 exports.getEnrolledCourses = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user?.id; // Auth middleware should set req.user
 
-        const userDetails = await User.findById(userId)
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized: user not authenticated",
+            });
+        }
+
+        // Fetch user with populated courses, content, and subSections
+        let userDetails = await User.findById(userId)
             .populate({
                 path: "courses",
-                populate: {    // ✅ Nested populate for courseContent
+                populate: {
                     path: "courseContent",
                     populate: {
-                        path: "subSection"
-                    }
+                        path: "subSection",
+                    },
                 },
-                select: "courseName courseDescription thumbnail totalDuration courseContent"  
             })
-            .select("courses")
             .exec();
 
         if (!userDetails) {
@@ -221,18 +226,89 @@ exports.getEnrolledCourses = async (req, res) => {
             });
         }
 
+        // Convert to plain object for modification
+        userDetails = userDetails.toObject();
+
+        const courses = userDetails.courses || [];
+
+        // Loop over each course to calculate total duration and progress
+        for (let i = 0; i < courses.length; i++) {
+            let totalDurationInSeconds = 0;
+            let subSectionCount = 0;
+
+            const course = courses[i];
+
+            if (course.courseContent && course.courseContent.length > 0) {
+                for (let j = 0; j < course.courseContent.length; j++) {
+                    const content = course.courseContent[j];
+
+                    // Sum up total duration of all subSections safely
+                    const contentSubSections = content.subSection || [];
+                    totalDurationInSeconds += contentSubSections.reduce(
+                        (acc, curr) => acc + parseInt(curr.timeDuration || 0),
+                        0
+                    );
+
+                    subSectionCount += contentSubSections.length;
+                }
+            }
+
+            // Convert total seconds to readable duration
+            course.totalDuration = convertSecondsToDuration(totalDurationInSeconds);
+
+            // Fetch user progress for this course
+            let courseProgress = await CourseProgress.findOne({
+                courseID: course._id,
+                userId: userId,
+            });
+
+            const completedVideos = courseProgress?.completedVideos?.length || 0;
+
+            // Calculate progress percentage
+            course.progressPercentage =
+                subSectionCount === 0
+                    ? 100
+                    : Math.round((completedVideos / subSectionCount) * 100 * 100) / 100; // 2 decimal points
+        }
+
         return res.status(200).json({
             success: true,
-            data: userDetails.courses,
+            data: courses,
         });
-
     } catch (error) {
-        console.error("GET COURSES ERROR:", error);
+        console.error("Error in getEnrolledCourses:", error);
         return res.status(500).json({
             success: false,
-            message: error.message,
+            message: "Failed to fetch enrolled courses",
+            error: error.message,
         });
     }
 };
 
+exports.instructorDashboard = async (req, res) => {
+    try {
+        const courseDetails = await Course.find({ instructor: req.user.id })
 
+        const courseData = courseDetails.map((course) => {
+            const totalStudentsEnrolled = course.studentsEnroled.length
+            const totalAmountGenerated = totalStudentsEnrolled * course.price
+
+            // Create a new object with the additional fields
+            const courseDataWithStats = {
+                _id: course._id,
+                courseName: course.courseName,
+                courseDescription: course.courseDescription,
+                // Include other course properties as needed
+                totalStudentsEnrolled,
+                totalAmountGenerated,
+            }
+
+            return courseDataWithStats
+        })
+
+        res.status(200).json({ courses: courseData })
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: "Server Error" })
+    }
+}
