@@ -1,19 +1,18 @@
-
-
 import React, { useEffect, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFullCourseDetails } from '../services/operations/courseAPI';
-import { startCourseLoading } from '../slice/viewCourseSlice';
 import {
     setCourseSectionData,
     setEntireCourseData,
     setCompletedLectures,
     setTotalNoOfLectures,
 } from '../slice/viewCourseSlice';
-import { resetViewCourse } from '../slice/viewCourseSlice';
 import VideoDetailsSideBar from './VideoDetailsSideBar';
 import CourseReviewModal from './CourseReviewModal';
+
+
+
 const ViewCourse = () => {
     const [reviewModal, setReviewModal] = useState(false);
     const { courseId } = useParams();
@@ -22,99 +21,34 @@ const ViewCourse = () => {
 
     const viewCourse = useSelector((state) => state.viewCourse);
 
-    // ✅ HOOKS ALWAYS RUN
-    // useEffect(() => {
-    //     if (!viewCourse || !courseId || !token) return;
-
-    //     const fetchCourseDetails = async () => {
-    //         try {
-    //             // const courseData = await getFullCourseDetails(courseId, token);
-
-    //             // const totalLectures = (courseData.courseContent ?? []).reduce(
-    //             //     (sum, sec) => sum + (sec.subSection?.length ?? 0),
-    //             //     0
-    //             // );
-
-    //             // dispatch(setCourseSectionData(courseData.courseContent ?? []));
-    //             // dispatch(setCompletedLectures(courseData.completedVideos ?? []));
-    //             // dispatch(setTotalNoOfLectures(totalLectures));
-    //             // dispatch(setEntireCourseData(courseData));
-
-    //             const courseData = await getFullCourseDetails(courseId, token);
-
-    //             dispatch(setCourseSectionData(courseData.courseContent || []));
-    //             dispatch(setCompletedLectures(courseData.completedVideos || []));
-    //             dispatch(setTotalNoOfLectures(
-    //                 (courseData.courseContent || []).reduce(
-    //                     (sum, sec) => sum + (sec.subSection?.length || 0), 0
-    //                 )
-    //             ));
-    //             dispatch(setEntireCourseData(courseData));
-
-    //         } catch (error) {
-    //             console.error("❌ Course load error:", error);
-    //         }
-    //     };
-
-    //     fetchCourseDetails();
-    // }, [viewCourse, courseId, token, dispatch]);
-    // useEffect(() => {
-    //     if (!courseId || !token) return;
-
-    //     const fetchCourseDetails = async () => {
-    //         try {
-    //             const courseData = await getFullCourseDetails(courseId, token);
-
-    //             dispatch(setCourseSectionData(courseData.courseContent || []));
-    //             dispatch(setCompletedLectures(courseData.completedVideos || []));
-    //             dispatch(setTotalNoOfLectures(
-    //                 (courseData.courseContent || []).reduce(
-    //                     (sum, sec) => sum + (sec.subSection?.length || 0),
-    //                     0
-    //                 )
-    //             ));
-    //             dispatch(setEntireCourseData(courseData));
-    //         } catch (error) {
-    //             console.error("Course fetch error:", error);
-    //         }
-    //     };
-
-    //     fetchCourseDetails();
-    // }, [courseId, token, dispatch]); // ✅ ONLY THESE
-
-
-
+    
     useEffect(() => {
-        if (!courseId || !token) return;
+    (async () => {
+        const courseData = await getFullCourseDetails(courseId, token);
 
-        const fetchCourseDetails = async () => {
-            try {
-                dispatch(startCourseLoading());
+        if (!courseData?.data?.courseDetails) {
+            console.error("❌ Course data not found");
+            return;
+        }
 
-                const courseData = await getFullCourseDetails(courseId, token);
+        const { courseDetails, completedVideos } = courseData.data;
 
-                dispatch(setCourseSectionData(courseData.courseContent || []));
-                dispatch(setCompletedLectures(courseData.completedVideos || []));
-                dispatch(setTotalNoOfLectures(
-                    (courseData.courseContent || []).reduce(
-                        (sum, sec) => sum + (sec.subSection?.length || 0), 0
-                    )
-                ));
-                dispatch(setEntireCourseData(courseData));
-            } catch (error) {
-                console.error("Course fetch error:", error);
-            }
-        };
+        dispatch(setCourseSectionData(courseDetails.courseContent));
+        dispatch(setEntireCourseData(courseDetails));
+        dispatch(setCompletedLectures(completedVideos));
 
-        fetchCourseDetails();
-    }, [courseId, token, dispatch]);
+        let lectures = 0;
+        courseDetails.courseContent.forEach((sec) => {
+            lectures += sec.subSection.length;
+        });
 
-    useEffect(() => {
-        return () => {
-            dispatch(resetViewCourse());
-        };
-    }, [dispatch]);
-    // ✅ CONDITIONAL RENDER AFTER HOOKS
+        dispatch(setTotalNoOfLectures(lectures));
+    })();
+}, [courseId, token, dispatch]);
+
+
+
+
     if (!viewCourse) {
         return (
             <div style={{ color: "red", padding: "20px" }}>
@@ -143,3 +77,6 @@ const ViewCourse = () => {
 
 
 export default ViewCourse;
+
+
+

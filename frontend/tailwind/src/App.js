@@ -25,6 +25,7 @@ import ViewCourse from "./pages/ViewCourse";
 import { ACCOUNT_TYPE } from "./utils/constants";
 import VideoDetails from "./pages/VideoDetails";
 import { useSelector } from "react-redux";
+import InstructorDashBoard from "./pages/InstructorDashBoard";
 
 
 function App() {
@@ -70,6 +71,7 @@ function App() {
           <Route path="/dashboard/my-courses" element={<MyCourses></MyCourses>} />
           <Route path="/dashboard/add-course" element={<AddCourse />}></Route>
           <Route path="/dashboard/edit-course/:courseId" element={<EditCourseDetails />} />
+          <Route path="/dashboard/Instructor" element={<InstructorDashBoard/>} />
 
         </Route>
       </Routes>

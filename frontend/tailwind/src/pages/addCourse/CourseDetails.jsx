@@ -3,7 +3,7 @@ import { buyCourse } from "../../services/operations/studentFeatureApi";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { getFullCourseDetails } from "../../services/operations/courseAPI";
+import { fetchCourseDetails } from "../../services/operations/courseAPI";
 import GetAvgRating from "../../utils/avgRating";
 import ErrorPage from "../ErrorPage";
 import RatingStars from "../../components/common/RatingStars";
@@ -23,13 +23,19 @@ const CourseDetails = () => {
     const [averageReview, setAverageReview] = useState(0);
     const [totalNumberOfLec, setTotalNumberOfLec] = useState(0);
 
-    // Fetch course details
+
     useEffect(() => {
-        const fetchCourseDetails = async () => {
+        const loadCourseDetails = async () => {
             setLoading(true);
             try {
-                const result = await getFullCourseDetails(courseId, token);
-                setCourseData(result); // ✅ result IS the course
+                const response = await fetchCourseDetails(courseId);
+
+                if (!response) {
+                    setCourseData(null);
+                    return;
+                }
+
+                setCourseData(response.data.course); // ✅ SAFE
             } catch (error) {
                 console.error("Could not fetch course details", error);
                 setCourseData(null);
@@ -38,8 +44,9 @@ const CourseDetails = () => {
             }
         };
 
-        fetchCourseDetails();
-    }, [courseId, token]);
+        loadCourseDetails();
+    }, [courseId]);
+
 
     // Average rating
     useEffect(() => {

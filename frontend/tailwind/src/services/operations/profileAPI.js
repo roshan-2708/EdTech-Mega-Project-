@@ -25,24 +25,3 @@ export async function getUserEnrolledCourses(token) {
 }
 
 
-// export const getUserEnrolledCourses = async (token) => {
-//     let result = []
-//     try {
-//         const response = await apiConnector(
-//             "GET",
-//             profileEndpoints.GET_ENROLLED_COURSES,
-//             null,
-//             {
-//                 Authorization: `Bearer ${token}`,
-//             }
-//         );
-
-
-//         // response.data = { success, data }
-//         result = response?.data?.data
-//     } catch (error) {
-//         console.log("GET_ENROLLED_COURSES ERROR:", error)
-//         throw error
-//     }
-//     return result
-// }

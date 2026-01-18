@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import React from "react";
+import { useForm, Controller } from "react-hook-form";
 import { useSelector } from "react-redux";
 import ReactStar from "react-star-ratings";
 import { createRating } from "../services/operations/courseAPI";
@@ -9,26 +9,20 @@ const CourseReviewModal = ({ setReviewModal }) => {
     const { token } = useSelector((state) => state.auth);
     const { courseEntireData } = useSelector((state) => state.viewCourse);
 
-    const [rating, setRating] = useState(0);
-
     const {
-        register,
+        control,
         handleSubmit,
-        setValue,
         formState: { errors },
-    } = useForm();
+        reset,
+        watch,
+    } = useForm({
+        defaultValues: {
+            courseRating: 0,
+            courseExperience: "",
+        },
+    });
 
-    // Register courseRating explicitly for validation
-    useEffect(() => {
-        register("courseRating", { required: true });
-        setValue("courseExperience", "");
-        setValue("courseRating", 0);
-    }, [register, setValue]);
-
-    const ratingChanged = (newRating) => {
-        setRating(newRating);
-        setValue("courseRating", newRating, { shouldValidate: true });
-    };
+    const currentRating = watch("courseRating");
 
     const onSubmit = async (data) => {
         if (!courseEntireData?._id) return;
@@ -44,6 +38,7 @@ const CourseReviewModal = ({ setReviewModal }) => {
         const success = await createRating(payload, token);
         if (success) {
             setReviewModal(false);
+            reset(); // reset form after submission
         }
     };
 
@@ -73,23 +68,37 @@ const CourseReviewModal = ({ setReviewModal }) => {
                 {/* Form */}
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
-                    {/* Rating */}
-                    <ReactStar
-                        count={5}
-                        size={24}
-                        rating={rating}
-                        changeRating={ratingChanged}
-                        activeColor="#ffd700"
+                    {/* Star Rating */}
+                    <Controller
+                        name="courseRating"
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field }) => (
+                            <ReactStar
+                                count={5}
+                                size={24}
+                                rating={field.value}
+                                changeRating={(newRating) => field.onChange(newRating)}
+                                activeColor="#ffd700"
+                            />
+                        )}
                     />
                     {errors.courseRating && (
                         <p className="text-red-400 text-sm">Rating is required</p>
                     )}
 
                     {/* Review Textarea */}
-                    <textarea
-                        className="w-full p-2 rounded bg-richblack-700 resize-none"
-                        placeholder="Share your experience..."
-                        {...register("courseExperience", { required: true })}
+                    <Controller
+                        name="courseExperience"
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field }) => (
+                            <textarea
+                                {...field}
+                                className="w-full p-2 rounded bg-richblack-700 resize-none"
+                                placeholder="Share your experience..."
+                            />
+                        )}
                     />
                     {errors.courseExperience && (
                         <p className="text-red-400 text-sm">Review is required</p>
@@ -107,14 +116,15 @@ const CourseReviewModal = ({ setReviewModal }) => {
 
                         <button
                             type="submit"
-                            className={`w-full py-2 rounded text-black ${rating === 0 ? "bg-yellow-200 cursor-not-allowed" : "bg-yellow-400 hover:bg-yellow-500"
+                            className={`w-full py-2 rounded text-black ${currentRating === 0
+                                    ? "bg-yellow-200 cursor-not-allowed"
+                                    : "bg-yellow-400 hover:bg-yellow-500"
                                 } transition`}
-                            disabled={rating === 0}
+                            disabled={currentRating === 0}
                         >
                             Submit Review
                         </button>
                     </div>
-
                 </form>
             </div>
         </div>

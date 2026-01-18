@@ -6,11 +6,13 @@ import GetAvgRating from "../../utils/avgRating";
 const Course_Card = ({ course, Height = "h-[100px]" }) => {
     const [avgReviewCount, setAvgReviewCount] = useState(0);
 
-    const reviews = course?.ratingAndReview || course?.reviews || [];
+    const reviews = (course?.ratingAndReview || []).filter(r => r?.rating !== undefined);
 
     useEffect(() => {
-        setAvgReviewCount(GetAvgRating(reviews));
-    }, [reviews]);
+        const count = GetAvgRating(course.ratingAndReview);
+        setAvgReviewCount(count);
+    }, [course]);
+
 
     return (
         <Link to={`/course/${course?._id}`} className="block">

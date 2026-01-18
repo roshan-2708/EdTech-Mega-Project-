@@ -5,8 +5,9 @@ import toast from "react-hot-toast";
 const CREATE_COURSE_API = `/course/createCourse`;
 const EDIT_COURSE_API = `/course/editCourse`;
 const INSTRUCTOR_COURSES_API = `/course/instructor-courses`;
-const COURSE_DETAILS_API = (courseId) => `/course/getFullCourseDetails/${courseId}`;
+const COURSE_DETAILS_API = (courseId) => `/course/getCourseDetails/${courseId}`;
 const COURSE_DELETE_API = (courseId) => `/course/${courseId}`; // ✅ PERFECT!
+const GET_FULL_COURSE_DETAILS = "/course/getFullCourseDetails"
 const CREATE_RATING_API = `/rating/create`
 const LECTURE_COMPLETION_API = `/progress/update`
 
@@ -104,17 +105,30 @@ export const getInstructorCourses = async (token) => {
     }
 };
 
+
 export const getFullCourseDetails = async (courseId, token) => {
     try {
-        const result = await apiConnector("GET", COURSE_DETAILS_API(courseId), null, {
-            Authorization: `Bearer ${token}`,
-        });
-        return result.data.course || result.data.data || null;
+        const response = await apiConnector(
+            "POST",                       // ✅ POST
+            GET_FULL_COURSE_DETAILS,      // ✅ STRING
+            { courseId },                 // ✅ body
+            {
+                Authorization: `Bearer ${token}`,
+            }
+        );
+
+        if (!response?.data?.success) {
+            throw new Error(response?.data?.message);
+        }
+
+        return response.data;
     } catch (error) {
         console.error("❌ GetCourseDetails error:", error);
-        throw error;
+        return null;
     }
 };
+
+
 
 // ✅ PERFECT deleteCourse
 export const deleteCourse = async (courseId, token) => {
@@ -138,59 +152,34 @@ export const deleteCourse = async (courseId, token) => {
 };
 
 // mark a lecture as complete
-// export const markLectureAsComplete = async (data, token) => {
-//     let result = null
-//     console.log("mark complete data", data)
-//     const toastId = toast.loading("Loading...")
-//     try {
-//         const response = await apiConnector("POST", LECTURE_COMPLETION_API, data, {
-//             Authorization: `Bearer ${token}`,
-//         })
-//         console.log(
-//             "MARK_LECTURE_AS_COMPLETE_API API RESPONSE............",
-//             response
-//         )
-
-//         if (!response.data.message) {
-//             throw new Error(response.data.error)
-//         }
-//         toast.success("Lecture Completed")
-//         result = true
-//     } catch (error) {
-//         console.log("MARK_LECTURE_AS_COMPLETE_API API ERROR............", error)
-//         toast.error(error.message)
-//         result = false
-//     }
-//     toast.dismiss(toastId)
-//     return result
-// }
 export const markLectureAsComplete = async (data, token) => {
-    let result = false
+    let result = null
+    console.log("mark complete data", data)
     const toastId = toast.loading("Loading...")
-
     try {
-        const response = await apiConnector(
-            "POST",
-            LECTURE_COMPLETION_API,
-            data,
-            {
-                Authorization: `Bearer ${token}`,
-            }
+        const response = await apiConnector("POST", LECTURE_COMPLETION_API, data, {
+            Authorization: `Bearer ${token}`,
+        })
+        console.log(
+            "MARK_LECTURE_AS_COMPLETE_API API RESPONSE............",
+            response
         )
 
+        if (!response.data.message) {
+            throw new Error(response.data.error)
+        }
         toast.success("Lecture Completed")
         result = true
-
     } catch (error) {
-        console.log("MARK_LECTURE_AS_COMPLETE_API ERROR:", error)
+        console.log("MARK_LECTURE_AS_COMPLETE_API API ERROR............", error)
         toast.error(error.message)
+        result = false
     }
-
     toast.dismiss(toastId)
     return result
 }
 
-// create a rating for course
+
 export const createRating = async (data, token) => {
     const toastId = toast.loading("Loading...")
     let success = false
@@ -212,4 +201,23 @@ export const createRating = async (data, token) => {
     toast.dismiss(toastId)
     return success
 }
+
+
+export const fetchCourseDetails = async (courseId) => {
+    try {
+        const response = await apiConnector(
+            "GET",
+            COURSE_DETAILS_API(courseId) // ✅ NOT getFullCourseDetails
+        );
+
+        if (!response?.data?.success) {
+            throw new Error(response?.data?.message);
+        }
+
+        return response.data;
+    } catch (error) {
+        console.error("course detail api error", error);
+        return null;
+    }
+};
 

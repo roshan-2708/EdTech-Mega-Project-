@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import {
+    TiStarFullOutline,
+    TiStarHalfOutline,
+    TiStarOutline,
+} from "react-icons/ti";
 
-const RatingStars = ({ rating = 0, size = 20 }) => {
+function RatingStars({ Review_Count, Star_Size }) {
     const [starCount, setStarCount] = useState({
         full: 0,
         half: 0,
@@ -9,31 +13,31 @@ const RatingStars = ({ rating = 0, size = 20 }) => {
     });
 
     useEffect(() => {
-        // Clamp rating between 0 and 5
-        const safeRating = Math.max(0, Math.min(5, rating));
+        const count = Number(Review_Count) || 0; // ✅ ensure it's a number
+        const fullStars = Math.floor(count);      // full stars
+        const halfStars = count % 1 >= 0.5 ? 1 : 0; // half star if decimal >= 0.5
+        const emptyStars = 5 - fullStars - halfStars; // remaining empty
 
-        const full = Math.floor(safeRating);
-        const half = safeRating % 1 !== 0 ? 1 : 0;
-        const empty = 5 - full - half;
-
-        setStarCount({ full, half, empty });
-    }, [rating]);
+        setStarCount({
+            full: fullStars,
+            half: halfStars,
+            empty: emptyStars,
+        });
+    }, [Review_Count]);
 
     return (
-        <div className="flex gap-1 text-yellow-400">
+        <div className="flex gap-1 text-yellow-100">
             {[...Array(starCount.full)].map((_, i) => (
-                <FaStar key={`full-${i}`} size={size} />
+                <TiStarFullOutline key={`full-${i}`} size={Star_Size || 20} />
             ))}
-
             {[...Array(starCount.half)].map((_, i) => (
-                <FaStarHalfAlt key={`half-${i}`} size={size} />
+                <TiStarHalfOutline key={`half-${i}`} size={Star_Size || 20} />
             ))}
-
             {[...Array(starCount.empty)].map((_, i) => (
-                <FaRegStar key={`empty-${i}`} size={size} />
+                <TiStarOutline key={`empty-${i}`} size={Star_Size || 20} />
             ))}
         </div>
     );
-};
+}
 
 export default RatingStars;
