@@ -3,23 +3,23 @@ const router = express.Router();
 
 const upload = require("../middleware/fileParser"); // ✅ multer
 const {
-    updateProfile,
-    deleteAccount,
-    getProfileDetails,
-    updateProfilePicture,
-    getEnrolledCourses
+  updateProfile,
+  deleteAccount,
+  getProfileDetails,
+  updateProfilePicture,
+  getEnrolledCourses,
+  instructorDashboard,
 } = require("../controllers/profileController");
 
-const { auth } = require("../middleware/auth");
+const { auth, isInstructor } = require("../middleware/auth");
 
 router.put("/update-profile", auth, updateProfile);
 
-// ✅ FIXED ROUTE (THIS IS THE KEY LINE)
 router.put(
   "/update-display-picture",
-  auth,                         // 1️⃣ auth
-  upload.single("profilePicture"), // 2️⃣ multer
-  updateProfilePicture          // 3️⃣ controller
+  auth,
+  upload.single("profilePicture"),
+  updateProfilePicture
 );
 
 
@@ -27,5 +27,6 @@ router.put(
 router.delete("/delete-account", auth, deleteAccount);
 router.get("/get-user-details", auth, getProfileDetails);
 router.get("/get-enrolled-courses", auth, getEnrolledCourses);
+router.get("/instructorDashboard", auth, isInstructor, instructorDashboard);
 
 module.exports = router;
