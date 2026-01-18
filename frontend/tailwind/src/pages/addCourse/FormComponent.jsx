@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { getAllCategories } from "../../services/operations/categoryAPI";
-import { createCourse } from "../../services/operations/courseAPI";
+import { createCourse, editCourseDetails } from "../../services/operations/courseAPI";
 import { setCourse, setStep } from "../../slice/courseSlice";
 
 const FormComponent = () => {

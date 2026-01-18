@@ -68,7 +68,7 @@ export const editCourseDetails = async (courseData, token) => {
             );
         }
         if (courseData.courseCategory) formData.append("category", courseData.courseCategory);
-        if (courseData.thumbnail) formData.append("thumbnailImage", courseData.thumbnail);
+        if (courseData.thumbnail) formData.append("thumbnail", courseData.thumbnail);
 
         const result = await apiConnector(
             "PUT",

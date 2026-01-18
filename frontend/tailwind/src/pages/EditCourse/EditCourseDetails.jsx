@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import CourseComponent from '../addCourse/CourseComponent';
 import { getFullCourseDetails } from '../../services/operations/courseAPI';
 import { setCourse, setEditCourse } from '../../slice/courseSlice';
+
 const EditCourseDetails = () => {
     const dispatch = useDispatch();
     const { courseId } = useParams();
@@ -15,11 +16,11 @@ const EditCourseDetails = () => {
         const populateCourseDetails = async () => {
             setLoading(true);
 
-            const courseDetails = await getFullCourseDetails(courseId, token);
+            const response = await getFullCourseDetails(courseId, token);
 
-            if (courseDetails) {
+            if (response?.data?.courseDetails) {
                 dispatch(setEditCourse(true));
-                dispatch(setCourse(courseDetails));
+                dispatch(setCourse(response.data.courseDetails));
             }
 
             setLoading(false);
@@ -29,11 +30,12 @@ const EditCourseDetails = () => {
     }, [courseId, token, dispatch]);
 
 
+
     if (loading) return <div>Loading...</div>;
 
     return (
         <div>
-            <h1>Edit Course</h1>
+            <h1 className='text-white'>Edit Course</h1>
             {course && course._id ? <CourseComponent /> : <p>Course Not Found</p>
             }
         </div>

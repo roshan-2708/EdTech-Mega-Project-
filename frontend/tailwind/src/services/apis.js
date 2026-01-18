@@ -25,7 +25,8 @@ export const authEndpoints = {
 export const profileEndpoints = {
     PROFILE_IMAGE: "/profile/update-display-picture",
     PROFILE_UPDATE: "/profile/update-profile",
-    GET_ENROLLED_COURSES: "/profile/get-enrolled-courses"
+    GET_ENROLLED_COURSES: "/profile/get-enrolled-courses",
+    GET_INSTRUCTOR_DATA_API : "/profile/instructorDashboard"
 };
 
 // student endpoints
