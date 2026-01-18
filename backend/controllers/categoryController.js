@@ -75,9 +75,12 @@ exports.CategoryPageDetails = async (req, res) => {
             .populate({
                 path: "courses",
                 match: { status: "Published" },
+
                 populate: {
                     path: "instructor",
                     select: "firstName lastName email",
+                    path: "ratingAndReview",
+                    select: "rating"
                 },
             });
 

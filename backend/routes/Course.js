@@ -7,6 +7,7 @@ const {
     createCourse,
     getAllCourses,
     getCourseDetails,
+    getFullCourseDetails,
     getInstructorCourses,
     deleteCourse,
     editCourseDetails
@@ -33,8 +34,8 @@ router.put(
 );
 
 router.get("/allCourses", getAllCourses);
-router.get("/getFullCourseDetails/:courseId", getCourseDetails);
+router.get("/getCourseDetails/:courseId", getCourseDetails);
 router.delete("/:courseId", auth, isInstructor, deleteCourse);  // ✅ FIXED
 router.get("/instructor-courses", auth, isInstructor, getInstructorCourses);
-
+router.post("/getFullCourseDetails", auth, getFullCourseDetails);
 module.exports = router;

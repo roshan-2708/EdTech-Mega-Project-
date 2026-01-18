@@ -2,9 +2,7 @@ const RatingAndReview = require("../model/RatingAndReview");
 const Course = require("../model/Course");
 const mongoose = require("mongoose");
 
-// ------------------------------------------------------
-// ⭐ CREATE RATING
-// ------------------------------------------------------
+
 exports.createRating = async (req, res) => {
     try {
         const userId = req.user.id;   // FIXED
@@ -74,67 +72,70 @@ exports.createRating = async (req, res) => {
     }
 };
 
-// ------------------------------------------------------
-// ⭐ GET AVERAGE RATING
-// ------------------------------------------------------
+
 exports.getAverageRating = async (req, res) => {
     try {
-        const { courseId } = req.body;
+        const courseId = req.body.courseId
 
+        // Calculate the average rating using the MongoDB aggregation pipeline
         const result = await RatingAndReview.aggregate([
             {
                 $match: {
-                    course: new mongoose.Types.ObjectId(courseId)
-                }
+                    course: new mongoose.Types.ObjectId(courseId), // Convert courseId to ObjectId
+                },
             },
             {
                 $group: {
                     _id: null,
-                    averageRating: { $avg: "$rating" }
-                }
-            }
-        ]);
+                    averageRating: { $avg: "$rating" },
+                },
+            },
+        ])
 
-        if (result.length === 0) {
+        if (result.length > 0) {
             return res.status(200).json({
                 success: true,
-                averageRating: 0,
-            });
+                averageRating: result[0].averageRating,
+            })
         }
 
-        return res.status(200).json({
-            success: true,
-            averageRating: result[0].averageRating,
-        });
-
+        // If no ratings are found, return 0 as the default rating
+        return res.status(200).json({ success: true, averageRating: 0 })
     } catch (error) {
+        console.error(error)
         return res.status(500).json({
             success: false,
-            message: error.message,
-        });
+            message: "Failed to retrieve the rating for the course",
+            error: error.message,
+        })
     }
-};
+}
 
-// ------------------------------------------------------
-// ⭐ GET ALL RATINGS (High → Low)
-// ------------------------------------------------------
+
 exports.getAllRatings = async (req, res) => {
     try {
-        const ratings = await RatingAndReview.find({})
-            .populate("user", "firstName lastName email image")
-            .populate("course", "courseName thumbnail")
-            .sort({ rating: -1 });  // high to low
+        const allReviews = await RatingAndReview.find({})
+            .sort({ rating: "desc" })
+            .populate({
+                path: "user",
+                select: "firstName lastName email image", // Specify the fields you want to populate from the "Profile" model
+            })
+            .populate({
+                path: "course",
+                select: "courseName", //Specify the fields you want to populate from the "Course" model
+            })
+            .exec()
 
-        return res.status(200).json({
+        res.status(200).json({
             success: true,
-            message: "All ratings fetched successfully",
-            data: ratings,
-        });
-
+            data: allReviews,
+        })
     } catch (error) {
+        console.error(error)
         return res.status(500).json({
             success: false,
-            message: error.message,
-        });
+            message: "Failed to retrieve the rating and review for the course",
+            error: error.message,
+        })
     }
 };

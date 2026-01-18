@@ -197,27 +197,15 @@ exports.deleteAccount = async (req, res) => {
 
 exports.getEnrolledCourses = async (req, res) => {
     try {
-        const userId = req.user?.id; // Auth middleware should set req.user
+        const userId = req.user.id;
 
-        if (!userId) {
-            return res.status(401).json({
-                success: false,
-                message: "Unauthorized: user not authenticated",
-            });
-        }
-
-        // Fetch user with populated courses, content, and subSections
-        let userDetails = await User.findById(userId)
-            .populate({
-                path: "courses",
-                populate: {
-                    path: "courseContent",
-                    populate: {
-                        path: "subSection",
-                    },
-                },
-            })
-            .exec();
+        let userDetails = await User.findById(userId).populate({
+            path: "courses",
+            populate: {
+                path: "courseContent",
+                populate: { path: "subSection" },
+            },
+        });
 
         if (!userDetails) {
             return res.status(404).json({
@@ -226,57 +214,46 @@ exports.getEnrolledCourses = async (req, res) => {
             });
         }
 
-        // Convert to plain object for modification
-        userDetails = userDetails.toObject();
+        userDetails = userDetails.toObject(); // ✅ ONLY ONCE
 
-        const courses = userDetails.courses || [];
-
-        // Loop over each course to calculate total duration and progress
-        for (let i = 0; i < courses.length; i++) {
+        for (let i = 0; i < userDetails.courses.length; i++) {
             let totalDurationInSeconds = 0;
-            let subSectionCount = 0;
+            let totalSubsections = 0;
 
-            const course = courses[i];
+            for (let j = 0; j < userDetails.courses[i].courseContent.length; j++) {
+                const subSections = userDetails.courses[i].courseContent[j].subSection;
 
-            if (course.courseContent && course.courseContent.length > 0) {
-                for (let j = 0; j < course.courseContent.length; j++) {
-                    const content = course.courseContent[j];
+                totalSubsections += subSections.length;
 
-                    // Sum up total duration of all subSections safely
-                    const contentSubSections = content.subSection || [];
-                    totalDurationInSeconds += contentSubSections.reduce(
-                        (acc, curr) => acc + parseInt(curr.timeDuration || 0),
-                        0
-                    );
-
-                    subSectionCount += contentSubSections.length;
-                }
+                totalDurationInSeconds += subSections.reduce(
+                    (acc, curr) => acc + Number(curr.timeDuration || 0),
+                    0
+                );
             }
 
-            // Convert total seconds to readable duration
-            course.totalDuration = convertSecondsToDuration(totalDurationInSeconds);
+            userDetails.courses[i].totalDuration =
+                convertSecondsToDuration(totalDurationInSeconds);
 
-            // Fetch user progress for this course
-            let courseProgress = await CourseProgress.findOne({
-                courseID: course._id,
-                userId: userId,
+            const courseProgress = await CourseProgress.findOne({
+                courseId: userDetails.courses[i]._id, // ✅ FIXED
+                userId,
             });
 
-            const completedVideos = courseProgress?.completedVideos?.length || 0;
+            const completedCount = courseProgress?.completedVideos?.length || 0;
 
-            // Calculate progress percentage
-            course.progressPercentage =
-                subSectionCount === 0
+            userDetails.courses[i].progressPercentage =
+                totalSubsections === 0
                     ? 100
-                    : Math.round((completedVideos / subSectionCount) * 100 * 100) / 100; // 2 decimal points
+                    : Math.round((completedCount / totalSubsections) * 10000) / 100;
         }
 
         return res.status(200).json({
             success: true,
-            data: courses,
+            data: userDetails.courses,
         });
+
     } catch (error) {
-        console.error("Error in getEnrolledCourses:", error);
+        console.error("❌ getEnrolledCourses error:", error);
         return res.status(500).json({
             success: false,
             message: "Failed to fetch enrolled courses",

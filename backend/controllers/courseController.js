@@ -6,6 +6,7 @@ const { uploadImageCloudinary } = require("../utils/fileUploader");
 const mongoose = require("mongoose");
 const RatingAndReview = require("../model/RatingAndReview"); // ✅ REQUIRED
 const convertSecondsToDuration = require("../utils/convertSecondsToDuration");
+const CourseProgress = require("../model/CourseProgress");
 
 
 // create course
@@ -128,18 +129,43 @@ exports.createCourse = async (req, res) => {
 
 
 // Get all courses
+
+// exports.getAllCourses = async (req, res) => {
+//     try {
+//         const courses = await Course.find({})
+//             .populate("instructor")
+//             .populate("category");
+
+//         return res.status(200).json({ success: true, data: courses });
+//     } catch (error) {
+//         console.error("Get All Courses Error:", error);
+//         return res.status(500).json({ success: false, message: error.message });
+//     }
+// };
 exports.getAllCourses = async (req, res) => {
     try {
         const courses = await Course.find({})
-            .populate("instructor")
-            .populate("category");
+            .populate("instructor", "firstName lastName")
+            .populate("category", "name")
+            .populate({
+                path: "ratingAndReview",
+                select: "rating"   // 🔥 THIS IS REQUIRED
+            });
 
-        return res.status(200).json({ success: true, data: courses });
+        return res.status(200).json({
+            success: true,
+            data: courses,
+        });
     } catch (error) {
         console.error("Get All Courses Error:", error);
-        return res.status(500).json({ success: false, message: error.message });
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
     }
 };
+
+
 
 // Get single course details
 exports.getCourseDetails = async (req, res) => {
@@ -169,90 +195,30 @@ exports.getCourseDetails = async (req, res) => {
                 .status(404)
                 .json({ success: false, message: "Course not found" });
         }
-        
+        let totalDurationInSeconds = 0
+        course.courseContent.forEach((content) => {
+            content.subSection.forEach((subSection) => {
+                const timeDurationInSeconds = parseInt(subSection.timeDuration)
+                totalDurationInSeconds += timeDurationInSeconds
+            })
+        })
+
+        const totalDuration = convertSecondsToDuration(totalDurationInSeconds)
         return res.status(200).json({
             success: true,
             message: "Course fetched successfully",
-            data: course,
+            data: {
+                course,
+                totalDuration,
+            }
         });
     } catch (error) {
         console.error("Get Course Details Error:", error);
         return res.status(500).json({ success: false, message: error.message });
     }
 };
-// Get single course details
-// exports.getCourseDetails = async (req, res) => {
-//     try {
-//         const { courseId } = req.params;
-//         const userId = req.user?.id; // ✅ SAFE
-
-//         if (!courseId) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "Course ID is required",
-//             });
-//         }
-
-//         const course = await Course.findById(courseId)
-//             .populate({
-//                 path: "instructor",
-//                 populate: { path: "additionalDetail" },
-//             })
-//             .populate("category")
-//             .populate("ratingAndReview")
-//             .populate({
-//                 path: "courseContent",
-//                 populate: { path: "subSection" },
-//             });
-
-//         if (!course) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: "Course not found",
-//             });
-//         }
-
-//         let completedLectures = [];
-
-//         if (userId) {
-//             const courseProgressDetails = await CourseProgress.findOne({
-//                 courseId,
-//                 userId,
-//             });
-
-//             completedLectures = courseProgressDetails?.completedVideos || [];
-//         }
-
-//         let totalDurationInSeconds = 0;
-
-//         course.courseContent.forEach((section) => {
-//             section.subSection.forEach((subSection) => {
-//                 totalDurationInSeconds += Number(subSection.timeDuration || 0);
-//             });
-//         });
-
-//         const totalDuration = convertSecondsToDuration(totalDurationInSeconds);
-
-//         return res.status(200).json({
-//             success: true,
-//             message: "Course fetched successfully",
-//             data: {
-//                 course,
-//                 totalDuration,
-//                 completedLectures,
-//             },
-//         });
-//     } catch (error) {
-//         console.error("Get Course Details Error:", error);
-//         return res.status(500).json({
-//             success: false,
-//             message: "Failed to fetch course details",
-//         });
-//     }
-// };
 
 
-// Get instructor courses
 exports.getInstructorCourses = async (req, res) => {
     try {
         const instructorId = req.user.id;
@@ -459,74 +425,68 @@ exports.editCourseDetails = async (req, res) => {
     }
 };
 
+
 exports.getFullCourseDetails = async (req, res) => {
     try {
-        const { courseId } = req.body
-        const userId = req.user.id
-        const courseDetails = await Course.findOne({
-            _id: courseId,
-        })
-            .populate({
-                path: "instructor",
-                populate: {
-                    path: "additionalDetails",
-                },
-            })
-            .populate("category")
-            .populate("ratingAndReviews")
-            .populate({
-                path: "courseContent",
-                populate: {
-                    path: "subSection",
-                },
-            })
-            .exec()
+        const { courseId } = req.body;
+        const userId = req.user.id;
 
-        let courseProgressCount = await CourseProgress.findOne({
-            courseID: courseId,
-            userId: userId,
-        })
-
-        console.log("courseProgressCount : ", courseProgressCount)
-
-        if (!courseDetails) {
+        if (!courseId) {
             return res.status(400).json({
                 success: false,
-                message: `Could not find course with id: ${courseId}`,
-            })
+                message: "CourseId is required",
+            });
         }
 
-        // if (courseDetails.status === "Draft") {
-        //   return res.status(403).json({
-        //     success: false,
-        //     message: `Accessing a draft course is forbidden`,
-        //   });
-        // }
+        const courseDetails = await Course.findById(courseId)
+            .populate({
+                path: "instructor",
+                populate: { path: "additionalDetail" },
+            })
+            .populate("category")
+            .populate("ratingAndReview")
+            .populate({
+                path: "courseContent",
+                populate: { path: "subSection" },
+            });
 
-        let totalDurationInSeconds = 0
+        if (!courseDetails) {
+            return res.status(404).json({
+                success: false,
+                message: "Course not found",
+            });
+        }
+
+        const courseProgress = await CourseProgress.findOne({
+            userId,
+            courseId,
+        });
+
+        let totalDurationInSeconds = 0;
         courseDetails.courseContent.forEach((content) => {
             content.subSection.forEach((subSection) => {
-                const timeDurationInSeconds = parseInt(subSection.timeDuration)
-                totalDurationInSeconds += timeDurationInSeconds
-            })
-        })
+                totalDurationInSeconds += Number(subSection.timeDuration || 0);
+            });
+        });
 
-        const totalDuration = convertSecondsToDuration(totalDurationInSeconds)
+        // ✅ TEMP SAFE
+        const totalDuration = totalDurationInSeconds;
 
         return res.status(200).json({
             success: true,
             data: {
                 courseDetails,
                 totalDuration,
-                completedVideos: courseProgressCount?.completedVideos
-                    ? courseProgressCount?.completedVideos
-                    : [],
+                completedVideos: courseProgress?.completedVideos ?? [],
             },
-        })
+        });
     } catch (error) {
+        console.error("❌ getFullCourseDetails error:", error);
         return res.status(500).json({
             success: false,
             message: error.message,
-        })
+        });
     }
-}
+};
+
+

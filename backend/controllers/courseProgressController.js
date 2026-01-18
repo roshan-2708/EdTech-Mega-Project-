@@ -24,8 +24,8 @@ exports.updateCourseProgress = async (req, res) => {
 
         // ✅ find existing progress
         let courseProgress = await CourseProgress.findOne({
-            userId,
-            courseId,
+            userId : userId,
+            courseId : courseId,
         });
 
         // ✅ create if not exists
