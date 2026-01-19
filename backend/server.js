@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 const userRoutes = require("./routes/User");
 const profileRoutes = require("./routes/Profile");
@@ -15,7 +14,8 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const { cloudinaryConnect } = require("./config/cloudinary");
 const dotenv = require("dotenv");
-const paymentRoutes = require("./routes/payments")
+const paymentRoutes = require("./routes/payments");
+
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 
@@ -23,12 +23,17 @@ const PORT = process.env.PORT || 5000;
 database.connect();
 
 // ================= MIDDLEWARE =================
-app.use(cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-}));
+app.use(
+    cors({
+        origin: [
+            "http://localhost:3000",
+            "https://ed-tech-mega-project.vercel.app",
+        ],
+        credentials: true,
+    })
+);
 
-app.use(express.json({ limit: "50mb" })); // ✅ ONLY JSON
+app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
 
 // ================= CLOUDINARY =================
@@ -51,5 +56,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`🚀 Server: http://localhost:${PORT}`);
+    console.log(`🚀 Server running on port ${PORT}`);
 });
