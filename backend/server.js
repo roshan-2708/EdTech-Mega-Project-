@@ -28,7 +28,8 @@ database.connect();
 // ================= CORS =================
 const allowedOrigins = [
     "http://localhost:3000",
-    "https://ed-tech-mega-project.vercel.app"
+    "https://ed-tech-mega-project.vercel.app",
+    "https://ed-tech-mega-project-2k0771xkv.vercel.app"
 ];
 
 app.use(
