@@ -48,7 +48,7 @@ export const catalogData = {
 
 // ✅ Contact endpoints
 export const contactEndpoints = {
-    CONTACT_US: `${BASE_URL}/contact`,
+    CONTACT_US: `/contact`,
 };
 
 export const sectionEndpoints = {
