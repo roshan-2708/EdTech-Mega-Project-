@@ -22,44 +22,41 @@ const { cloudinaryConnect } = require("./config/cloudinary");
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 
-// ================= DATABASE =================
+// ================= DATABASE & CLOUDINARY =================
 database.connect();
+cloudinaryConnect();
 
-// ================= CORS =================
+// ================= CORS CONFIGURATION =================
 const allowedOrigins = [
     "http://localhost:3000",
-    "https://ed-tech-mega-project.vercel.app",
-    "https://ed-tech-mega-project-2k0771xkv.vercel.app"
+    "https://ed-tech-mega-project.vercel.app"
 ];
 
 const corsOptions = {
     origin: function (origin, callback) {
-        // Check if origin is in allowedOrigins or ends with .vercel.app
-        if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
+        // Allow requests with no origin (like Postman or mobile apps)
+        if (!origin) return callback(null, true);
+
+        // Allow if in whitelist OR if it's any Vercel deployment/preview URL
+        if (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app") || origin.includes("vercel.app")) {
             callback(null, true);
         } else {
-            console.log("Blocked by CORS:", origin); // Log blocked origins for debugging
+            console.error("CORS Error: Origin not allowed ->", origin);
             callback(new Error("Not allowed by CORS"));
         }
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
 };
 
-// 1. Add this line explicitly for preflight requests
-app.options("*", cors(corsOptions));
-
-// 2. Then use the middleware globally
+// Handle Preflight requests explicitly using the new (.*) syntax to avoid Node 22 crashes
+app.options("(.*)", cors(corsOptions));
 app.use(cors(corsOptions));
-
 
 // ================= MIDDLEWARE =================
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
-
-// ================= CLOUDINARY =================
-cloudinaryConnect();
 
 // ================= ROUTES =================
 app.use("/api/v1/auth", userRoutes);
@@ -72,9 +69,13 @@ app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/rating", ratingAndReviewRoutes);
 app.use("/api/v1/progress", courseProgressRoute);
 
-// ================= TEST =================
+// ================= HEALTH CHECK =================
 app.get("/", (req, res) => {
-    res.json({ success: true, message: "🚀 Server Perfect!" });
+    res.json({
+        success: true,
+        message: "🚀 Server is up and running!",
+        timestamp: new Date().toISOString()
+    });
 });
 
 // ================= START SERVER =================
