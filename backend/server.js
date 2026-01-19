@@ -23,16 +23,27 @@ const PORT = process.env.PORT || 5000;
 database.connect();
 
 // ================= MIDDLEWARE =================
+const allowedOrigins = [
+    "http://localhost:3000",
+    "https://ed-tech-mega-project.vercel.app",
+    "https://ed-tech-mega-project-5rzi.vercel.app",
+];
+
 app.use(
     cors({
-        origin: [
-            "http://localhost:3000",
-            "https://ed-tech-mega-project.vercel.app",
-            "https://ed-tech-mega-project-5rzi.vercel.app",
-        ],
+        origin: function (origin, callback) {
+            // allow requests with no origin (like mobile apps or curl)
+            if (!origin) return callback(null, true);
+            if (allowedOrigins.indexOf(origin) === -1) {
+                const msg = `The CORS policy for this site does not allow access from the specified Origin.`;
+                return callback(new Error(msg), false);
+            }
+            return callback(null, true);
+        },
         credentials: true,
     })
 );
+
 
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
