@@ -32,24 +32,27 @@ const allowedOrigins = [
     "https://ed-tech-mega-project-2k0771xkv.vercel.app"
 ];
 
-app.use(
-    cors({
-        origin: function (origin, callback) {
-            // Allow requests with no origin (like Postman)
-            if (!origin) return callback(null, true);
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Check if origin is in allowedOrigins or ends with .vercel.app
+        if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
+            callback(null, true);
+        } else {
+            console.log("Blocked by CORS:", origin); // Log blocked origins for debugging
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
+};
 
-            // Allow localhost, main Vercel URL, and any Vercel preview URL
-            if (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
-                return callback(null, true);
-            } else {
-                return callback(new Error("CORS not allowed for this origin"), false);
-            }
-        },
-        credentials: true, // <=== crucial for cookies/auth
-        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"]
-    })
-);
+// 1. Add this line explicitly for preflight requests
+app.options("*", cors(corsOptions));
+
+// 2. Then use the middleware globally
+app.use(cors(corsOptions));
+
 
 // ================= MIDDLEWARE =================
 app.use(express.json({ limit: "50mb" }));
