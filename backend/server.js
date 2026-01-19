@@ -51,7 +51,9 @@ const corsOptions = {
 };
 
 // Handle Preflight requests explicitly using the new (.*) syntax to avoid Node 22 crashes
-app.options("(.*)", cors(corsOptions));
+// ✅ CORRECT (Regex object)
+app.options(/.*/, cors(corsOptions)); 
+
 app.use(cors(corsOptions));
 
 // ================= MIDDLEWARE =================
