@@ -92,7 +92,7 @@ exports.signUp = async (req, res) => {
             });
         }
         // Validate accountType
-        const validAccountTypes = ["Student", "Instructor"];
+        const validAccountTypes = ["Student", "Instructor", "Admin"];
 
         if (!accountType || !validAccountTypes.includes(accountType)) {
             return res.status(400).json({
