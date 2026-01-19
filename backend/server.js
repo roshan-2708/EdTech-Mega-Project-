@@ -9,30 +9,24 @@ const sectionRoutes = require("./routes/sectionRoutes");
 const subSectionRoutes = require("./routes/subsectionRoutes");
 const courseProgressRoute = require("./routes/courseProgressRoutes");
 const ratingAndReviewRoutes = require("./routes/ratingAndReviewRoutes");
+const paymentRoutes = require("./routes/payments");
 const database = require("./config/database");
 const cookieParser = require("cookie-parser");
-const cors = require("cors");
 const { cloudinaryConnect } = require("./config/cloudinary");
 const dotenv = require("dotenv");
-const paymentRoutes = require("./routes/payments");
 
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 
-// Database
+// ================= DATABASE =================
 database.connect();
 
 // ================= MIDDLEWARE =================
-const allowedOrigins = [
-    "http://localhost:3000",
-    "https://ed-tech-mega-project.vercel.app",
-    "https://ed-tech-mega-project-5rzi.vercel.app",
-    "https://ed-tech-mega-p-git-da883f-roshan-kumar-patras-projects-b5264ca9.vercel.app"
-];
-
+// Dynamic CORS for localhost and any Vercel deployment
 app.use((req, res, next) => {
     const origin = req.headers.origin;
-    if (allowedOrigins.includes(origin)) {
+
+    if (origin && (origin === "http://localhost:3000" || origin.endsWith(".vercel.app"))) {
         res.header("Access-Control-Allow-Origin", origin);
         res.header("Access-Control-Allow-Credentials", "true");
         res.header(
@@ -45,16 +39,13 @@ app.use((req, res, next) => {
         );
     }
 
-    // Preflight requests
+    // Handle preflight requests
     if (req.method === "OPTIONS") {
         return res.sendStatus(200);
     }
 
     next();
 });
-
-
-
 
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
@@ -78,6 +69,7 @@ app.get("/", (req, res) => {
     res.json({ success: true, message: "🚀 Server Perfect!" });
 });
 
+// ================= START SERVER =================
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });
