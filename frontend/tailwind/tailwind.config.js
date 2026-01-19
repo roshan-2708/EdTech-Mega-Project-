@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  mode: 'jit', // optional, makes builds faster
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     fontFamily: {
@@ -41,17 +42,14 @@ module.exports = {
           800: "#01212A",
           900: "#001B22",
         },
-        caribbeangreen: {
-          100: "#06D6A0",
-        },
-        pink: {
-          200: "#EF476F",
-        },
-        yellow: {
-          50: "#FFD60A",
-        },
+        caribbeangreen: { 100: "#06D6A0" },
+        pink: { 200: "#EF476F" },
+        yellow: { 50: "#FFD60A" },
       },
     },
   },
+  safelist: [
+    // add dynamic classes here if needed
+  ],
   plugins: [],
 };
