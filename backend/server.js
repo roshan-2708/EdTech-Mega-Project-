@@ -26,31 +26,33 @@ database.connect();
 const allowedOrigins = [
     "http://localhost:3000",
     "https://ed-tech-mega-project.vercel.app",
+    "https://ed-tech-mega-project-5rzi.vercel.app",
+    "https://ed-tech-mega-p-git-da883f-roshan-kumar-patras-projects-b5264ca9.vercel.app"
 ];
 
-// CORS middleware
 app.use((req, res, next) => {
     const origin = req.headers.origin;
-    if (
-        allowedOrigins.includes(origin) ||
-        (origin && origin.endsWith(".vercel.app"))
-    ) {
-        res.setHeader("Access-Control-Allow-Origin", origin);
-        res.setHeader("Access-Control-Allow-Credentials", "true");
-        res.setHeader(
+    if (allowedOrigins.includes(origin)) {
+        res.header("Access-Control-Allow-Origin", origin);
+        res.header("Access-Control-Allow-Credentials", "true");
+        res.header(
             "Access-Control-Allow-Headers",
             "Origin, X-Requested-With, Content-Type, Accept, Authorization"
         );
-        res.setHeader(
+        res.header(
             "Access-Control-Allow-Methods",
             "GET, POST, PUT, PATCH, DELETE, OPTIONS"
         );
     }
+
+    // Preflight requests
     if (req.method === "OPTIONS") {
         return res.sendStatus(200);
     }
+
     next();
 });
+
 
 
 
