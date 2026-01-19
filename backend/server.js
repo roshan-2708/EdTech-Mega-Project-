@@ -33,28 +33,15 @@ const allowedOrigins = [
 ];
 
 const corsOptions = {
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like Postman or mobile apps)
-        if (!origin) return callback(null, true);
-
-        // Allow if in whitelist OR if it's any Vercel deployment/preview URL
-        if (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app") || origin.includes("vercel.app")) {
-            callback(null, true);
-        } else {
-            console.error("CORS Error: Origin not allowed ->", origin);
-            callback(new Error("Not allowed by CORS"));
-        }
-    },
+    origin: true, // reflect request origin
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
+    allowedHeaders: ["Content-Type", "Authorization"],
 };
 
-// Handle Preflight requests explicitly using the new (.*) syntax to avoid Node 22 crashes
-// ✅ CORRECT (Regex object)
-app.options(/.*/, cors(corsOptions)); 
-
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
 
 // ================= MIDDLEWARE =================
 app.use(express.json({ limit: "50mb" }));
