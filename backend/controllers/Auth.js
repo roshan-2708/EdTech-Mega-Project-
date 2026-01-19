@@ -215,11 +215,18 @@ exports.login = async (req, res) => {
             expiresIn: "2h",
         });
 
+        // const cookieOptions = {
+        //     httpOnly: true,
+        //     secure: process.env.NODE_ENV === "production",
+        //     expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+        // };
         const cookieOptions = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
+            secure: true,           // ALWAYS true on Render
+            sameSite: "None",       // REQUIRED for cross-domain
             expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
         };
+
 
         user.password = undefined;
 
@@ -247,11 +254,17 @@ exports.login = async (req, res) => {
 exports.logout = async (req, res) => {
     try {
         // Clear cookie
+        // res.clearCookie("token", {
+        //     httpOnly: true,
+        //     sameSite: "lax",
+        //     secure: process.env.NODE_ENV === "production",
+        // });
         res.clearCookie("token", {
             httpOnly: true,
-            sameSite: "lax",
-            secure: process.env.NODE_ENV === "production",
+            secure: true,
+            sameSite: "None",
         });
+
 
         return res.status(200).json({
             success: true,
