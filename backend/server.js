@@ -28,6 +28,7 @@ app.use(
         origin: [
             "http://localhost:3000",
             "https://ed-tech-mega-project.vercel.app",
+            "https://ed-tech-mega-project-5rzi.vercel.app",
         ],
         credentials: true,
     })
