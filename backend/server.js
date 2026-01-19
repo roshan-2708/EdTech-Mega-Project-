@@ -27,7 +27,9 @@ const allowedOrigins = [
     "http://localhost:3000",
     "https://ed-tech-mega-project.vercel.app",
     "https://ed-tech-mega-project-5rzi.vercel.app",
+    "https://ed-tech-mega-p-git-da883f-roshan-kumar-patras-projects-b5264ca9.vercel.app"
 ];
+
 
 app.use(
     cors({
