@@ -1,8 +1,13 @@
+const dotenv = require("dotenv");
+dotenv.config();
+
 const express = require("express");
 const app = express();
-const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+
+// Your routes, database, etc.
+
 
 // ================= ROUTES =================
 const userRoutes = require("./routes/User");
@@ -28,7 +33,7 @@ cloudinaryConnect();
 
 // ================= CORS (NODE 22 SAFE) =================
 const corsOptions = {
-    origin: true, // reflects request origin (Vercel, localhost, previews)
+    origin: true,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],

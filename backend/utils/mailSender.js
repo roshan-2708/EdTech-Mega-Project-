@@ -1,32 +1,35 @@
 const nodemailer = require("nodemailer");
 
-const mailSender = async (email, subject, htmlBody) => {
+// Create transporter using Gmail SMTP
+const transporter = nodemailer.createTransport({
+    host: process.env.MAIL_HOST, // smtp.gmail.com
+    port: process.env.MAIL_PORT, // 587
+    secure: false, // false for port 587
+    auth: {
+        user: process.env.MAIL_USER, // your Gmail
+        pass: process.env.MAIL_PASS, // app password
+    },
+});
+transporter.verify((err, success) => {
+    if (err) console.error("❌ SMTP connection failed:", err);
+    else console.log("✅ SMTP connection successful");
+});
+
+// Mail sender function
+const mailSender = async (email, title, body) => {
     try {
-        // Create Transporter
-        const transporter = nodemailer.createTransport({
-            host: process.env.MAIL_HOST,
-            port: 587,
-            secure: false, // For TLS
-            auth: {
-                user: process.env.MAIL_USER,
-                pass: process.env.MAIL_PASS,
-            },
-        });
-
-        // Mail Options
-        const info = await transporter.sendMail({
-            from: `"Mega Learning" <${process.env.MAIL_USER}>`,
+        const mailOptions = {
+            from: `"StudyNotion" <${process.env.MAIL_USER}>`,
             to: email,
-            subject: subject,
-            html: htmlBody,
-        });
+            subject: title,
+            html: body,
+        };
 
-        console.log("📧 Email sent:", info.messageId);
-        return info;
-
+        await transporter.sendMail(mailOptions);
+        console.log("✅ Email sent to:", email);
     } catch (error) {
-        console.error("❌ Error in mailSender:", error.message);
-        return null;
+        console.error("❌ Gmail SMTP Mail Error:", error.message);
+        throw error;
     }
 };
 
