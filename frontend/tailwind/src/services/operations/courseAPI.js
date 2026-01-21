@@ -92,13 +92,19 @@ export const editCourseDetails = async (courseData, token) => {
         throw error;
     }
 };
-
+// ! add this
 export const getInstructorCourses = async (token) => {
     try {
-        const result = await apiConnector("GET", INSTRUCTOR_COURSES_API, null, {
-            Authorization: `Bearer ${token}`,
-        });
-        return result.data.courses || result.data.data || [];
+        const response = await apiConnector(
+            "GET",
+            INSTRUCTOR_COURSES_API,
+            null,
+            {
+                Authorization: `Bearer ${token}`,
+            }
+        );
+
+        return response.data?.data || [];
     } catch (error) {
         console.error("❌ GetInstructorCourses error:", error);
         throw error;

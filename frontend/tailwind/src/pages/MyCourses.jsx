@@ -5,6 +5,8 @@ import { FaEdit } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { deleteCourse } from "../services/operations/courseAPI";
 import toast from "react-hot-toast";
+// ! add this
+import { getInstructorCourses } from "../services/operations/courseAPI";
 
 const InstructorCourses = () => {
     const [courses, setCourses] = useState([]);
@@ -12,23 +14,12 @@ const InstructorCourses = () => {
     const [deletingId, setDeletingId] = useState(null);
     const { token } = useSelector((state) => state.auth);
 
-    // ✅ Fixed: Use token from Redux consistently
+    // ! add this
     const fetchInstructorCourses = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await fetch("http://localhost:5000/api/v1/course/instructor-courses", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch courses');
-            }
-
-            const data = await response.json();
-            console.log("Instructor Courses:", data);
-            setCourses(data.data || []);
+            const coursesData = await getInstructorCourses(token);
+            setCourses(coursesData);
         } catch (error) {
             console.error("Error fetching instructor courses:", error);
             toast.error("Failed to fetch courses");
@@ -37,6 +28,7 @@ const InstructorCourses = () => {
             setLoading(false);
         }
     }, [token]);
+
 
     // Replace your handleDeleteCourse with this safe version:
     const handleDeleteCourse = async (courseId, courseName) => {
