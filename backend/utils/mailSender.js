@@ -59,41 +59,28 @@
 // module.exports = mailSender;
 
 
-const nodemailer = require("nodemailer");
+const SibApiV3Sdk = require("sib-api-v3-sdk");
 
-// Create transporter using Brevo SMTP
-const transporter = nodemailer.createTransport({
-    host: process.env.MAIL_HOST, // smtp-relay.brevo.com
-    port: process.env.MAIL_PORT, // 587
-    secure: false,
-    auth: {
-        user: process.env.MAIL_USER, // "apikey"
-        pass: process.env.MAIL_PASS, // Brevo SMTP key
-    },
-});
+const client = SibApiV3Sdk.ApiClient.instance;
+client.authentications["api-key"].apiKey = process.env.BREVO_API_KEY;
 
-// Optional: verify connection once at startup
-transporter.verify((err, success) => {
-    if (err) {
-        console.error("❌ Brevo SMTP connection failed:", err.message);
-    } else {
-        console.log("✅ Brevo SMTP connected successfully");
-    }
-});
+const tranEmailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
 const mailSender = async (email, title, body) => {
     try {
-        const mailOptions = {
-            from: `"StudyNotion" <${process.env.MAIL_FROM}>`,
-            to: email,
+        await tranEmailApi.sendTransacEmail({
+            sender: {
+                name: "StudyNotion",
+                email: process.env.MAIL_FROM,
+            },
+            to: [{ email }],
             subject: title,
-            html: body,
-        };
+            htmlContent: body,
+        });
 
-        await transporter.sendMail(mailOptions);
-        console.log("✅ Email sent via Brevo to:", email);
+        console.log("✅ Email sent via Brevo API to:", email);
     } catch (error) {
-        console.error("❌ Brevo Email Error:", error.message);
+        console.error("❌ Brevo API Email Error:", error);
         throw error;
     }
 };
