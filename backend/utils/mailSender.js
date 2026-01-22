@@ -36,53 +36,27 @@
 // module.exports = mailSender;
 
 
-// const { Resend } = require("resend");
+const { Resend } = require("resend");
 
-// const resend = new Resend(process.env.RESEND_API_KEY);
-
-// const mailSender = async (email, title, body) => {
-//     try {
-//         await resend.emails.send({
-//             from: "StudyNotion <onboarding@resend.dev>",
-//             to: email,
-//             subject: title,
-//             html: body,
-//         });
-
-//         console.log("✅ Email sent via Resend to:", email);
-//     } catch (error) {
-//         console.error("❌ Resend Email Error:", error);
-//         throw error;
-//     }
-// };
-
-// module.exports = mailSender;
-
-
-const SibApiV3Sdk = require("sib-api-v3-sdk");
-
-const client = SibApiV3Sdk.ApiClient.instance;
-client.authentications["api-key"].apiKey = process.env.BREVO_API_KEY;
-
-const tranEmailApi = new SibApiV3Sdk.TransactionalEmailsApi();
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const mailSender = async (email, title, body) => {
     try {
-        await tranEmailApi.sendTransacEmail({
-            sender: {
-                name: "StudyNotion",
-                email: process.env.MAIL_FROM,
-            },
-            to: [{ email }],
+        await resend.emails.send({
+            from: "StudyNotion <onboarding@resend.dev>",
+            to: email,
             subject: title,
-            htmlContent: body,
+            html: body,
         });
 
-        console.log("✅ Email sent via Brevo API to:", email);
+        console.log("✅ Email sent via Resend to:", email);
     } catch (error) {
-        console.error("❌ Brevo API Email Error:", error);
+        console.error("❌ Resend Email Error:", error);
         throw error;
     }
 };
 
 module.exports = mailSender;
+
+
+
