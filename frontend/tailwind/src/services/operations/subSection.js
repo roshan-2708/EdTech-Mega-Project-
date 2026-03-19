@@ -9,11 +9,20 @@ const {
     DELETE_SUBSECTION,
 } = subSectionEndpoints;
 
+// export const createSubSection = async (data, token) => {
+//     const response = await apiConnector("POST", CREATE_SUBSECTION, data, {
+//         Authorization: `Bearer ${token}`,
+//     });
+//     return response.data; // return full data (success, message, data)
+// };
+
 export const createSubSection = async (data, token) => {
+    // Adding a 5-minute timeout specifically for this heavy upload
     const response = await apiConnector("POST", CREATE_SUBSECTION, data, {
         Authorization: `Bearer ${token}`,
-    });
-    return response.data; // return full data (success, message, data)
+    }, null, { timeout: 300000 }); // 300,000ms = 5 minutes
+
+    return response.data;
 };
 
 export const updateSubSection = async (data, token) => {

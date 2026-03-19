@@ -6,7 +6,6 @@ import CourseBuilder from "./CourseBuilder";
 import Publish from "./Publish";
 const CourseComponent = () => {
     const { step } = useSelector((state) => state.course);
-
     const steps = [
         { id: 1, title: "Course Info" },
         { id: 2, title: "Course Builder" },
