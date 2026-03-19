@@ -6,9 +6,6 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
-// Your routes, database, etc.
-
-
 // ================= ROUTES =================
 const userRoutes = require("./routes/User");
 const profileRoutes = require("./routes/Profile");
@@ -21,15 +18,16 @@ const ratingAndReviewRoutes = require("./routes/ratingAndReviewRoutes");
 const paymentRoutes = require("./routes/payments");
 
 // ================= CONFIG =================
-const database = require("./config/database");
+// 1. Yahan destructuring sahi hai
+const { connectDB } = require("./config/database");
 const { cloudinaryConnect } = require("./config/cloudinary");
 
-dotenv.config();
 const PORT = process.env.PORT || 5000;
 
 // ================= DATABASE & CLOUDINARY =================
-database.connect();
-cloudinaryConnect();
+// 2. YAHAN GALTI THI — Isse aise likho:
+connectDB();          // ✅ Ab ye sahi function call karega
+cloudinaryConnect();   // ✅ Ye bhi sahi hai
 
 // ================= CORS (NODE 22 SAFE) =================
 const corsOptions = {
@@ -39,7 +37,6 @@ const corsOptions = {
     allowedHeaders: ["Content-Type", "Authorization"],
 };
 
-// ✅ ONLY THIS — DO NOT ADD app.options("*")
 app.use(cors(corsOptions));
 
 // ================= MIDDLEWARE =================
