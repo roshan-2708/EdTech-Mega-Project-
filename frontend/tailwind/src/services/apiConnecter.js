@@ -33,6 +33,6 @@ export const apiConnector = async (
         url,
         data: bodyData,
         headers,
-        ...config,
+        ...extraConfig,
     });
 };
