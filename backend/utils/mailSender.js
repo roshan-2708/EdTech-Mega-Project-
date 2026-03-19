@@ -1,34 +1,22 @@
-// const nodemailer = require("nodemailer");
 
-// // Create transporter using Gmail SMTP
-// const transporter = nodemailer.createTransport({
-//     host: process.env.MAIL_HOST, // smtp.gmail.com
-//     port: process.env.MAIL_PORT, // 587
-//     secure: false, // false for port 587
-//     auth: {
-//         user: process.env.MAIL_USER, // your Gmail
-//         pass: process.env.MAIL_PASS, // app password
-//     },
-// });
-// transporter.verify((err, success) => {
-//     if (err) console.error("❌ SMTP connection failed:", err);
-//     else console.log("✅ SMTP connection successful");
-// });
 
-// // Mail sender function
+
+// const { Resend } = require("resend");
+
+// const resend = new Resend(process.env.RESEND_API_KEY);
+
 // const mailSender = async (email, title, body) => {
 //     try {
-//         const mailOptions = {
-//             from: `"StudyNotion" <${process.env.MAIL_USER}>`,
+//         await resend.emails.send({
+//             from: "StudyNotion <onboarding@resend.dev>",
 //             to: email,
 //             subject: title,
 //             html: body,
-//         };
+//         });
 
-//         await transporter.sendMail(mailOptions);
-//         console.log("✅ Email sent to:", email);
+//         console.log("✅ Email sent via Resend to:", email);
 //     } catch (error) {
-//         console.error("❌ Gmail SMTP Mail Error:", error.message);
+//         console.error("❌ Resend Email Error:", error);
 //         throw error;
 //     }
 // };
@@ -36,27 +24,39 @@
 // module.exports = mailSender;
 
 
-const { Resend } = require("resend");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+
+const SibApiV3Sdk = require('sib-api-v3-sdk');
 
 const mailSender = async (email, title, body) => {
     try {
-        await resend.emails.send({
-            from: "StudyNotion <onboarding@resend.dev>",
-            to: email,
-            subject: title,
-            html: body,
-        });
+        const defaultClient = SibApiV3Sdk.ApiClient.instance;
 
-        console.log("✅ Email sent via Resend to:", email);
+        // API Key setup
+        const apiKey = defaultClient.authentications['api-key'];
+        // apiKey.apiKey = process.env.MAIL_PASS; // Aapki v3 API Key yahan jayegi
+        apiKey.apiKey = process.env.BREVO_API_KEY; // ✅ correct
+
+        const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+        const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
+        // Email Configuration
+        sendSmtpEmail.subject = title;
+        sendSmtpEmail.htmlContent = body;
+        sendSmtpEmail.sender = { "name": "Study Notion", "email": process.env.MAIL_USER };
+        sendSmtpEmail.to = [{ "email": email }];
+
+        // Send call
+        const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
+
+        console.log("✅ OTP Sent Successfully:", data.messageId);
+        return data;
+
     } catch (error) {
-        console.error("❌ Resend Email Error:", error);
-        throw error;
+        // Detailed error for debugging
+        console.error("❌ Brevo SDK Error:", error.response ? error.response.body : error.message);
+        throw new Error("Email delivery failed");
     }
 };
 
 module.exports = mailSender;
-
-
-
