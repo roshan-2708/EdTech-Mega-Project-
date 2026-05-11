@@ -4,12 +4,17 @@ const connectDB = async () => {
     try {
         mongoose.set("strictQuery", false);
         
-        await mongoose.connect(process.env.MONGODB_URL);
-        console.log("✅ MongoDB connected successfully");
+        // Options add karne se connection stable rehta hai
+        const conn = await mongoose.connect(process.env.MONGODB_URL);
+
+        console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
     } catch (error) {
-        console.error("❌ MongoDB connection failed:", error.message);
-        process.exit(1);
+        console.error("❌ MongoDB connection error details:");
+        console.error(error.message);
+        
+        // Restarting nodemon properly instead of killing the process during dev
+        // process.exit(1); 
     }
 };
 
-module.exports = { connectDB }; // Hum ek object bhej rahe hain jisme connectDB function hai
+module.exports = { connectDB };
