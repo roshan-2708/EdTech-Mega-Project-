@@ -26,20 +26,24 @@ import { ACCOUNT_TYPE } from "./utils/constants";
 import VideoDetails from "./pages/VideoDetails";
 import { useSelector } from "react-redux";
 import InstructorDashBoard from "./pages/InstructorDashBoard";
-
 function App() {
 
   const { user } = useSelector((state) => state.profile);
 
   return (
-    <div className="flex min-h-screen w-screen flex-col bg-richblack-800 font-inter">
+    <div className="min-h-screen w-screen bg-richblack-900 font-inter text-white">
 
+      {/* TOASTER */}
       <Toaster position="top-center" />
 
+      {/* NAVBAR */}
       <Navbar />
 
-      <div className="flex-1 pt-16">
+      {/* MAIN CONTENT */}
+      <main className="pt-16 min-h-[calc(100vh-64px)]">
         <Routes>
+
+          {/* PUBLIC ROUTES */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
@@ -51,14 +55,22 @@ function App() {
           <Route path="/catalog/:name" element={<Catalog />} />
           <Route path="/course/:courseId" element={<CourseDetails />} />
 
-          <Route path="view-course/:courseId" element={<PrivateRoute><ViewCourse /></PrivateRoute>}>
+          {/* VIEW COURSE */}
+          <Route
+            path="view-course/:courseId"
+            element={
+              <PrivateRoute>
+                <ViewCourse />
+              </PrivateRoute>
+            }
+          >
             <Route
               path="section/:sectionId/sub-section/:subSectionId"
               element={<VideoDetails />}
             />
           </Route>
 
-          {/* ✅ DASHBOARD ROUTES */}
+          {/* DASHBOARD */}
           <Route
             path="/dashboard"
             element={
@@ -73,11 +85,18 @@ function App() {
             <Route path="cart" element={<Cart />} />
             <Route path="my-courses" element={<MyCourses />} />
             <Route path="add-course" element={<AddCourse />} />
-            <Route path="edit-course/:courseId" element={<EditCourseDetails />} />
-            <Route path="Instructor" element={<InstructorDashBoard />} />
+            <Route
+              path="edit-course/:courseId"
+              element={<EditCourseDetails />}
+            />
+            <Route
+              path="Instructor"
+              element={<InstructorDashBoard />}
+            />
           </Route>
+
         </Routes>
-      </div>
+      </main>
 
     </div>
   );
