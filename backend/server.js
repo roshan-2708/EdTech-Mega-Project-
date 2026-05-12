@@ -67,3 +67,8 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });
+
+// ================= UPTIME BOOT =================
+app.get('/health', (req, res) => {
+  res.status(200).send('Server is active');
+});
