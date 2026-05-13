@@ -13,7 +13,7 @@ const Design = ({ icon, title, description, bgColor }) => {
 
             {/* Texts */}
             <div>
-                <h2 className="text-lg font-semibold">{title}</h2>
+                <h2 className="text-lg text-gray-700 font-semibold">{title}</h2>
                 <p className="text-gray-600 text-sm">{description}</p>
             </div>
         </div>

@@ -31,7 +31,7 @@ function App() {
   const { user } = useSelector((state) => state.profile);
 
   return (
-    <div className="min-h-screen w-screen bg-richblack-900 font-inter text-white">
+    <div className="min-h-96 w-screen bg-richblack-900 font-inter text-white">
 
       {/* TOASTER */}
       <Toaster position="top-center" />
@@ -40,7 +40,7 @@ function App() {
       <Navbar />
 
       {/* MAIN CONTENT */}
-      <main className="pt-16 min-h-[calc(100vh-64px)]">
+      <main className="">
         <Routes>
 
           {/* PUBLIC ROUTES */}

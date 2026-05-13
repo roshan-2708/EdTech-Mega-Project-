@@ -17,19 +17,24 @@ import { MdLeaderboard } from "react-icons/md";
 import { FaGraduationCap } from "react-icons/fa";
 import { FaGem } from "react-icons/fa";
 import { FaCode } from "react-icons/fa";
+
 const Home = () => {
+    const token = localStorage.getItem('token');
     return (
         <div className='flex flex-col justify-center items-center'>
 
             {/* section-1 */}
             <div className="relative mx-auto flex flex-col w-11/12 items-center text-white justify-center ">
-                <Link to="/signup">
+
+                <Link to={token !== null ? "/dashboard/my-profile" : "/login"}>
                     <div className="mt-16 p-1 mx-auto rounded-full bg-richblack-300 font-bold text-yellow-25
-                    w-fit cursor-pointer transition-all duration-300 
-                    shadow-md hover:shadow-xl hover:scale-95 group">
+    w-fit cursor-pointer transition-all duration-300 
+    shadow-md hover:shadow-xl hover:scale-95 group">
                         <div className="flex flex-row items-center gap-2 rounded-full px-10 py-[5px]
-                        transition-all duration-300 group-hover:bg-richblack-500">
-                            <p>Become An Instructor</p>
+        transition-all duration-300 group-hover:bg-richblack-500">
+                            <p>
+                                {token !== null ? "Go to Dashboard" : "Become An Instructor"}
+                            </p>
                             <FaLongArrowAltRight />
                         </div>
                     </div>
@@ -45,29 +50,29 @@ const Home = () => {
 
 
                 <div className='flex flex-row gap-7 mt-8'>
-                    <CTAButton active={true} linkto={"/signup"}>
+                    <CTAButton active={true} linkto={token !== null ? "/dashboard" : "/login"}>
                         Learn more
                     </CTAButton>
-                    <CTAButton active={false} linkto={"/login"}>
+                    <CTAButton active={false} linkto={token !== null ? "/dashboard/my-profile" : "/login"}>
                         Book a demo
                     </CTAButton>
                 </div>
-                <div className="relative rounded-xl overflow-hidden shadow-xl shadow-blue-300 group mt-10 ">
-                    <div className="w-[850px] h-[450px] rounded-xl overflow-hidden">
-                        <video
-                            src={banner}
-                            muted
-                            loop
-                            autoPlay
-                            playsInline
-                            className="w-full h-full object-cover"
-                        ></video>
+                <div className="relative mx-auto my-12 w-fit shadow-[20px_20px_0px_0px_rgba(255,255,255,1)]">
+                    <div className="group relative  transition-all duration-200 hover:scale-[1.02]">
+
+                        {/* Main Video Wrapper */}
+                        <div className="w-[850px] h-[450px] overflow-hidden">
+                            <video
+                                src={banner}
+                                muted
+                                loop
+                                autoPlay
+                                playsInline
+                                className="w-full h-full object-cover"
+                            ></video>
+                        </div>
+
                     </div>
-
-
-                    {/* Overlay on hover */}
-                    <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 
-                    transition-all duration-300"></div>
                 </div>
 
                 {/* code section-1 */}
@@ -78,26 +83,19 @@ const Home = () => {
                             Unlock your coding potential <br /> <HighlighText text=" with our online courses." />
                         </div>
                     }
-                    subheading="Our courses are designed and taught by industry experts who have years of experience "
+                    subheading="Our courses are designed and taught by industry experts who have years of experience."
                     ctabtn1={{
                         active: true,
-                        linkto: "/signup",
+                        linkto: token !== null ? '/dashboard/enrolled-courses' : '/login',
                         btnText: "Start Learning",
                     }}
                     ctabtn2={{
                         active: false,
-                        linkto: "/courses",
+                        linkto: token !== null ? '/dashboard/my-profile' : '/login',
                         btnText: "Learn more",
                     }}
-                    codeBlock={`function generateGreeting(name) {
-  const message = "Hello, " + name + "!";
-  for (let i = 0; i < 3; i++) {
-    console.log(message);
-  }
-  return message;
-}
-generateGreeting("Roshan");`}
-
+                    // Yahan hum ensure kar rahe hain ki code block ek clean string ho
+                    codeBlock={`function generateGreeting(name) {\n  const message = "Hello, " + name + "!";\n  for (let i = 0; i < 3; i++) {\n    console.log(message);\n  }\n  return message;\n}\ngenerateGreeting("Roshan");`}
                     backgroundGradient="bg-gradient-to-r from-yellow-400 to-blue-500"
                     codeColor="text-yellow-200"
                 />
@@ -107,32 +105,21 @@ generateGreeting("Roshan");`}
                     position="lg:flex-row-reverse"
                     heading={
                         <div>
-                            Start <HighlighText text="coding in second" />
+                            Start <HighlighText text="coding in seconds" />
                         </div>
                     }
                     subheading="Go ahead, give it a try. Our hands-on learning environment means you'll be writing real code from your very first lesson."
                     ctabtn1={{
                         active: true,
-                        linkto: "/signup",
+                        linkto: token !== null ? "/dashboard/enrolled-courses" : "/login",
                         btnText: "Continue Lesson",
                     }}
                     ctabtn2={{
                         active: false,
-                        linkto: "/courses",
+                        linkto: token !== null ? "/dashboard/my-profile" : "/login",
                         btnText: "Learn more",
                     }}
-                    codeBlock={`def binary_search(arr, target):
-low, high = 0, len(arr) - 1
-    while low <= high:
-    mid = (low + high) // 2
-    if arr[mid] == target:
-        return mid
-    elif arr[mid] < target:
-        low = mid + 1
-    else:
-        high = mid - 1
-    return -1
-`}
+                    codeBlock={`def binary_search(arr, target):\n    low, high = 0, len(arr) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            low = mid + 1\n        else:\n            high = mid - 1\n    return -1`}
                     backgroundGradient="bg-gradient-to-r from-blue-400 to-yellow-500"
                     codeColor="text-blue-100"
                 />
@@ -149,24 +136,23 @@ low, high = 0, len(arr) - 1
 
             </div>
 
-
             {/* section-2 */}
-
             <div className="bg-pure-greys-5 text-richblack-700 w-full">
 
                 <div className="homepage_bg h-[333px] w-full flex justify-center items-center">
                     <div className="flex flex-row gap-7 text-whit font-bold">
-                        <CTAButton active={true} linkto={"/signup"}>
+                        <CTAButton active={true} linkto={token !== null ? '/dashboard' : '/about'}>
                             <div>Explore Full Catalog</div>
                         </CTAButton>
 
-                        <CTAButton active={false} linkto={"/signup"}>
+                        <CTAButton active={false} linkto={token !== null ? '/dashboard' : '/'}>
                             <div>Learn More</div>
                         </CTAButton>
                     </div>
                 </div>
             </div>
 
+            {/* section-3 */}
             <div className="section2 w-full flex flex-col items-center justify-center bg-gray-50 py-16 px-4 md:px-20">
                 <div className="flex flex-col md:flex-row md:gap-16 gap-12 items-center w-full max-w-6xl">
 
@@ -174,7 +160,7 @@ low, high = 0, len(arr) - 1
                     <div className="text-center md:text-left md:max-w-lg space-y-4 mb-8 md:mb-0">
                         <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
                             Get the skills you need{' '}
-                            <span className="bg-gradient-to-r from-blue-50 to-blue-25 bg-clip-text text-transparent">
+                            <span className="bg-gradient-to-r from-blue-500 to-blue-800 bg-clip-text text-transparent">
                                 for a job that is in demand.
                             </span>
                         </h2>
@@ -183,8 +169,8 @@ low, high = 0, len(arr) - 1
 
                     {/* Right Paragraph + Button */}
                     <div className="md:max-w-md text-center md:text-left space-y-6">
-                        <p className="text-sm text-gray-700 mb-10">
-                            The modern StudyNotion sets its own terms. Today, being a competitive specialist requires more than professional skills.
+                        <p className="text-sm text-gray-700 font-semibold mb-10">
+                            "The modern StudyNotion sets its own terms. Today, being a competitive specialist requires more than professional skills."
                         </p>
                         <div className='w-[150px] font-extrabold text-2xl'>
                             <CTAButton
@@ -238,17 +224,17 @@ low, high = 0, len(arr) - 1
                         <img
                             src={TimeLineLogo}
                             alt=""
-                            className="rounded-xl w-full max-w-sm md:max-w-none drop-shadow-[0_10px_20px_rgba(0,128,255,0.7)]"
+                            className=" w-full max-w-sm md:max-w-none drop-shadow-[0_10px_20px_rgba(0,128,255,0.7)]"
                         />
 
                         {/* green stats bar */}
                         <div
                             className="
-                bg-caribbeangreen-500
+                bg-green-800
                 w-[90%] md:w-[500px]
                 text-white
                 flex flex-row justify-center items-center
-                py-4 md:py-6 rounded-lg
+                py-4 md:py-6
                 absolute left-1/2 -translate-x-1/2
                 -bottom-8 md:-bottom-10
                 shadow-xl
@@ -301,58 +287,34 @@ low, high = 0, len(arr) - 1
 
                     <div className="flex flex-col md:flex-row items-center justify-center">
 
-                        <div className="bg-white flex flex-col md:flex-row items-center p-0">
+                        <div className=" flex flex-col md:flex-row items-center p-0">
 
-                            {/* IMAGE 1 */}
-                            <img
-                                src={Know}
-                                alt="Know"
-                                className="
-                    object-contain 
-                    w-48 md:w-auto 
-                    -mb-10 md:mb-0 
-                    md:-mr-32 
-                    z-30
-                "
-                            />
-
-                            {/* IMAGE 2 */}
-                            <img
-                                src={Compare}
-                                alt="Compare"
-                                className="
-                    object-contain 
-                    w-48 md:w-auto
-                    -mb-10 md:mb-0
-                    md:-mr-32 
-                    z-20
-                "
-                            />
-
-                            {/* IMAGE 3 */}
-                            <img
-                                src={Plan}
-                                alt="Plan"
-                                className="
-                    object-contain 
-                    w-48 md:w-auto 
-                    z-10
-                "
-                            />
+                            <div className="flex flex-col md:flex-row items-center justify-center mt-8 md:mt-0">
+                                <img
+                                    src={Know}
+                                    alt="KnowYourProgress"
+                                    className="object-contain md:-mr-32 hover:scale-105 transition-all duration-200"
+                                />
+                                <img
+                                    src={Compare}
+                                    alt="CompareWithOthers"
+                                    className="object-contain hover:scale-105 transition-all duration-200 mt-[-50px] md:mt-0"
+                                />
+                                <img
+                                    src={Plan}
+                                    alt="PlanYourLesson"
+                                    className="object-contain md:-ml-36 hover:scale-105 transition-all duration-200 mt-[-90px] md:mt-0"
+                                />
+                            </div>
 
                         </div>
                     </div>
 
                 </div>
 
-
-                <div className='mt-6 font-bold'>
-                    <CTAButton active={true} linkto={'/signup'}>Learn More</CTAButton>
-                </div>
-
             </div>
-            {/* section-3 */}
 
+            {/* section-4 */}
             <div className=' flex flex-col md:flex-row p-10 mt-10 justify-center items-center gap-16 w-full'>
                 <div className='bg-white w-[616px] h-[545px] relative'>
                     <img
@@ -379,16 +341,15 @@ low, high = 0, len(arr) - 1
 
                     {/* CTA */}
                     <div className="pt-2">
-                        <CTAButton active={true} linkto={'/signup'}>
+                        <CTAButton active={true} linkto={token !== null ? '/dashboard' : '/signup'}>
                             Start Teaching Today
                         </CTAButton>
                     </div>
                 </div>
             </div>
 
-
-            {/* section-4 */}
-
+            {/* section-5 */}
+            {/*TODO: rating part will be added */}
 
             {/* footer */}
             <Footer></Footer>
