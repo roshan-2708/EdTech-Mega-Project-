@@ -165,7 +165,7 @@ const About = () => {
             </div>
 
             {/* section-6 */}
-            <div className="w-full max-w-[1440px] mx-auto flex flex-col gap-12 mt-16 px-4 md:px-10 items-center justify-center ">
+            <div className="w-full max-w-[1440px] mx-auto flex flex-col gap-12 m-16 px-4 md:px-10 items-center justify-center ">
 
                 {/* LEFT SECTION */}
                 <div className="flex flex-col md:flex-row gap-12">
@@ -183,7 +183,7 @@ const About = () => {
                             organizations worldwide.
                         </p>
 
-                        <CTAButton active={true} linkto="/signup">
+                        <CTAButton active={true} linkto="/">
                             <div>Learn More</div>
                         </CTAButton>
                     </div>
@@ -235,16 +235,6 @@ const About = () => {
                         </p>
                     </div>
 
-                </div>
-            </div>
-
-
-
-
-            {/* section-7 */}
-            <div className=" py-10">
-                <div className="max-w-7xl mx-auto px-4">
-                    <ContatctForm />
                 </div>
             </div>
 
