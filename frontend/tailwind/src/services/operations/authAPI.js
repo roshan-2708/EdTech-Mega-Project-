@@ -18,60 +18,30 @@ const {
 } = authEndpoints;
 
 // ================= LOGIN =================
-
-// export const login = (email, password, role, navigate) => {
-//     return async (dispatch) => {
-//         try {
-//             const res = await apiConnector("POST", LOGIN, {
-//                 email,
-//                 password,
-//                 role,
-//             });
-
-//             const { token, user } = res.data;
-
-//             dispatch(setToken(token));
-//             dispatch(setUser(user));
-
-//             localStorage.setItem("token", token);
-//             localStorage.setItem("user", JSON.stringify(user));
-
-//             navigate("/dashboard/my-profile");
-//         } catch (err) {
-//             toast.error(err.response?.data?.message || "Login failed");
-//         }
-//     };
-// };
 export const login = (email, password, role, navigate) => {
     return async (dispatch) => {
         try {
-            const res = await apiConnector("POST", LOGIN, {
-                email,
-                password,
-                role,
-            });
+            const res = await apiConnector("POST", LOGIN, { email, password, role });
 
-            console.log("LOGIN RESPONSE 👉", res.data);
-
-            const token = res.data.token || res.data.data?.token;
-            const user = res.data.user || res.data.data?.user;
-
-            if (!token || !user) {
-                throw new Error("Token or User missing");
-            }
-
-            dispatch(setToken(token));
-            dispatch(setUser(user));
+            const { token, user } = res.data?.data || res.data;
 
             localStorage.setItem("token", token);
             localStorage.setItem("user", JSON.stringify(user));
 
-            toast.success("Login successful 🎉");
-            navigate("/dashboard/my-profile");
+            dispatch(setToken(token));
+            dispatch(setUser(user));
 
+            toast.success("Login successful 🎉");
+
+            if (role === "Instructor") {
+                navigate("/dashboard/my-profile");
+            } else if (role === "Student") {
+                navigate("/dashboard/my-profile");
+            } else {
+                navigate("/");
+            }
         } catch (err) {
-            console.error("LOGIN ERROR 👉", err);
-            toast.error(err.response?.data?.message || err.message || "Login failed");
+            toast.error(err.response?.data?.message || "Login failed");
         }
     };
 };
