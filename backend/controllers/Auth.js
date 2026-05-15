@@ -186,7 +186,7 @@ exports.login = async (req, res) => {
             });
         }
 
-        if (role !== user.role) {
+        if (role !== user.accountType) {
             return res.status(400).json({
                 success: false,
                 message: "Role mismatch",
