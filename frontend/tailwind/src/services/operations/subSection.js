@@ -1,7 +1,5 @@
-// services/operations/subSectionAPI.js
 import { apiConnector } from "../apiConnecter";
 import { subSectionEndpoints } from "../apis";
-import { toast } from "react-hot-toast";
 
 const {
     CREATE_SUBSECTION,
@@ -9,13 +7,15 @@ const {
     DELETE_SUBSECTION,
 } = subSectionEndpoints;
 
+// create sub section
 export const createSubSection = async (data, token) => {
     const response = await apiConnector("POST", CREATE_SUBSECTION, data, {
         Authorization: `Bearer ${token}`,
     });
-    return response.data; // return full data (success, message, data)
+    return response.data;
 };
 
+// update sub section
 export const updateSubSection = async (data, token) => {
     const response = await apiConnector("PUT", UPDATE_SUBSECTION, data, {
         Authorization: `Bearer ${token}`,
@@ -23,6 +23,7 @@ export const updateSubSection = async (data, token) => {
     return response.data;
 };
 
+// delete sub section
 export const deleteSubSection = async (data, token) => {
     const response = await apiConnector("DELETE", DELETE_SUBSECTION, data, {
         Authorization: `Bearer ${token}`,

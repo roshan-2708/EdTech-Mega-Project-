@@ -17,15 +17,13 @@ const courseSlice = createSlice({
         setStep: (state, action) => {
             state.step = action.payload;
         },
-        // setCourse: (state, action) => {
-        //     state.course = action.payload;
-        // },
+        
         setCourse: (state, action) => {
             const courseData = action.payload;
 
             state.course = {
                 ...courseData,
-                id: courseData._id || courseData.id, // ✅ normalize once
+                id: courseData._id || courseData.id, 
                 courseContent: courseData.courseContent || [],
             };
         },
@@ -36,7 +34,7 @@ const courseSlice = createSlice({
         setPaymentLoading: (state, action) => {
             state.paymentLoading = action.payload;
         },
-        resetCourseState: () => initialState, // ✅ clean reset
+        resetCourseState: () => initialState, 
     },
 });
 

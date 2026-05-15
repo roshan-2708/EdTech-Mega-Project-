@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const Button = ({ children, active, linkto, onClick }) => {
-    // 👉 If linkto exists → navigation button
+    // If linkto exists → navigation button
     if (linkto) {
         return (
             <Link to={linkto}>
@@ -17,7 +17,7 @@ const Button = ({ children, active, linkto, onClick }) => {
         );
     }
 
-    // 👉 Normal action button (LOGIN)
+    // Normal action button 
     return (
         <button
             type="button"

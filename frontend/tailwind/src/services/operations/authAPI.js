@@ -17,7 +17,7 @@ const {
     RESET_PASSWORD,
 } = authEndpoints;
 
-// ================= LOGIN =================
+// login
 export const login = (email, password, role, navigate) => {
     return async (dispatch) => {
         try {
@@ -45,24 +45,22 @@ export const login = (email, password, role, navigate) => {
         }
     };
 };
-
-
-// ================= SEND OTP =================
+// send otp
 export const sendOtp = (email) => {
     return apiConnector("POST", SEND_OTP, { email });
 };
 
-// ================= VERIFY OTP =================
+// verify otp
 export const verifyOtp = (email, otp) => {
     return apiConnector("POST", VERIFY_OTP, { email, otp });
 };
 
-// ================= SIGNUP =================
+// signup
 export const signup = (data) => {
     return apiConnector("POST", SIGNUP, data);
 };
 
-// ================= LOGOUT =================
+// logout
 export const logoutUser = (navigate) => {
     return async (dispatch) => {
         try {
@@ -81,7 +79,7 @@ export const logoutUser = (navigate) => {
     };
 };
 
-// ================= CHANGE PASSWORD =================
+// change password  
 export const changePassword = (oldPassword, newPassword) => {
     return apiConnector("PUT", CHANGE_PASSWORD, {
         oldPassword,
@@ -89,11 +87,12 @@ export const changePassword = (oldPassword, newPassword) => {
     });
 };
 
-// ================= DELETE ACCOUNT =================
+// delete account
 export const deleteAccount = () => {
     return apiConnector("DELETE", DELETE_ACCOUNT);
 };
-// ================= SEND RESET PASSWORD LINK =================
+
+// send reset password link
 export const getPasswordResetToken = (email, setEmailSent) => {
     return async () => {
         try {
@@ -109,7 +108,7 @@ export const getPasswordResetToken = (email, setEmailSent) => {
     };
 };
 
-// ================= RESET PASSWORD =================
+// reset password
 export const resetPassword = (password, confirmPassword, token, navigate) => {
     return async () => {
         try {

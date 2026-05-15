@@ -1,7 +1,8 @@
 import toast from "react-hot-toast";
 import { apiConnector } from "../apiConnecter";
-import { catalogData } from "../apis";
 
+
+// get catelog page data
 export const getCatalogPageData = async (categoryId) => {
     if (!categoryId) {
         toast.error("Category ID is required");

@@ -1,19 +1,17 @@
-// services/operations/courseAPI.js
-import { apiConnector } from "../apiConnecter"; // ✅ FIXED import
+import { apiConnector } from "../apiConnecter";
 import toast from "react-hot-toast";
-// ✅ FIXED: RELATIVE PATHS (apiConnector handles baseURL + /api/v1)
 const CREATE_COURSE_API = `/course/createCourse`;
 const EDIT_COURSE_API = `/course/editCourse`;
 const INSTRUCTOR_COURSES_API = `/course/instructor-courses`;
 const COURSE_DETAILS_API = (courseId) => `/course/getCourseDetails/${courseId}`;
-const COURSE_DELETE_API = (courseId) => `/course/${courseId}`; // ✅ PERFECT!
+const COURSE_DELETE_API = (courseId) => `/course/${courseId}`;
 const GET_FULL_COURSE_DETAILS = "/course/getFullCourseDetails"
 const CREATE_RATING_API = `/rating/create`
 const LECTURE_COMPLETION_API = `/progress/update`
 
+// create course
 export const createCourse = async (courseData, token) => {
     try {
-        console.log("📤 Creating course with:", courseData);
 
         const formData = new FormData();
         formData.append("courseName", courseData.courseName);
@@ -28,27 +26,24 @@ export const createCourse = async (courseData, token) => {
             formData.append("thumbnailImage", courseData.thumbnail);
         }
 
-
-        // ✅ FIXED: NO manual Content-Type for FormData
         const result = await apiConnector("POST", CREATE_COURSE_API, formData, {
             Authorization: `Bearer ${token}`,
         });
 
-        console.log("✅ Backend response:", result);
         if (!result?.data?.success) {
             throw new Error("Course creation failed");
         }
 
         return result.data.data;
     } catch (error) {
-        console.error("❌ CreateCourse error:", error.response?.data || error);
+        console.error("CreateCourse error:", error.response?.data || error);
         throw error;
     }
 };
 
+// edit course details
 export const editCourseDetails = async (courseData, token) => {
     try {
-        console.log("📤 Editing course with:", courseData);
 
         const formData = new FormData();
 
@@ -80,19 +75,18 @@ export const editCourseDetails = async (courseData, token) => {
             }
         );
 
-        console.log("✅ Edit course response:", result);
-
         if (!result?.data?.success) {
             throw new Error("Course update failed");
         }
 
         return result.data.data;
     } catch (error) {
-        console.error("❌ EditCourse error:", error.response?.data || error);
+        console.error("EditCourse error:", error.response?.data || error);
         throw error;
     }
 };
-// ! add this
+
+// get instructor course 
 export const getInstructorCourses = async (token) => {
     try {
         const response = await apiConnector(
@@ -106,18 +100,18 @@ export const getInstructorCourses = async (token) => {
 
         return response.data?.data || [];
     } catch (error) {
-        console.error("❌ GetInstructorCourses error:", error);
+        console.error("GetInstructorCourses error:", error);
         throw error;
     }
 };
 
-
+// get course details
 export const getFullCourseDetails = async (courseId, token) => {
     try {
         const response = await apiConnector(
-            "POST",                       // ✅ POST
-            GET_FULL_COURSE_DETAILS,      // ✅ STRING
-            { courseId },                 // ✅ body
+            "POST",
+            GET_FULL_COURSE_DETAILS,
+            { courseId },
             {
                 Authorization: `Bearer ${token}`,
             }
@@ -129,26 +123,22 @@ export const getFullCourseDetails = async (courseId, token) => {
 
         return response.data;
     } catch (error) {
-        console.error("❌ GetCourseDetails error:", error);
+        console.error("GetCourseDetails error:", error);
         return null;
     }
 };
 
-
-
-// ✅ PERFECT deleteCourse
+// delete course
 export const deleteCourse = async (courseId, token) => {
     try {
-        console.log("🗑️ DELETE URL:", COURSE_DELETE_API(courseId));
+        console.log("DELETE URL:", COURSE_DELETE_API(courseId));
 
         const result = await apiConnector("DELETE", COURSE_DELETE_API(courseId), null, {
             Authorization: `Bearer ${token}`,
         });
-
-        console.log("✅ Delete result:", result);
         return result;
     } catch (error) {
-        console.error("❌ Delete error details:", {
+        console.error("Delete error details:", {
             url: error.config?.url,
             status: error.response?.status,
             message: error.response?.data?.message
@@ -160,17 +150,11 @@ export const deleteCourse = async (courseId, token) => {
 // mark a lecture as complete
 export const markLectureAsComplete = async (data, token) => {
     let result = null
-    console.log("mark complete data", data)
     const toastId = toast.loading("Loading...")
     try {
         const response = await apiConnector("POST", LECTURE_COMPLETION_API, data, {
             Authorization: `Bearer ${token}`,
         })
-        console.log(
-            "MARK_LECTURE_AS_COMPLETE_API API RESPONSE............",
-            response
-        )
-
         if (!response.data.message) {
             throw new Error(response.data.error)
         }
@@ -185,7 +169,7 @@ export const markLectureAsComplete = async (data, token) => {
     return result
 }
 
-
+// rating creation
 export const createRating = async (data, token) => {
     const toastId = toast.loading("Loading...")
     let success = false
@@ -193,7 +177,6 @@ export const createRating = async (data, token) => {
         const response = await apiConnector("POST", CREATE_RATING_API, data, {
             Authorization: `Bearer ${token}`,
         })
-        console.log("CREATE RATING API RESPONSE............", response)
         if (!response?.data?.success) {
             throw new Error("Could Not Create Rating")
         }
@@ -208,12 +191,12 @@ export const createRating = async (data, token) => {
     return success
 }
 
-
+// fetch course details for student
 export const fetchCourseDetails = async (courseId) => {
     try {
         const response = await apiConnector(
             "GET",
-            COURSE_DETAILS_API(courseId) // ✅ NOT getFullCourseDetails
+            COURSE_DETAILS_API(courseId)
         );
 
         if (!response?.data?.success) {

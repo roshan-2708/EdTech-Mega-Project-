@@ -13,10 +13,10 @@ function RatingStars({ Review_Count, Star_Size }) {
     });
 
     useEffect(() => {
-        const count = Number(Review_Count) || 0; // ✅ ensure it's a number
-        const fullStars = Math.floor(count);      // full stars
-        const halfStars = count % 1 >= 0.5 ? 1 : 0; // half star if decimal >= 0.5
-        const emptyStars = 5 - fullStars - halfStars; // remaining empty
+        const count = Number(Review_Count) || 0; 
+        const fullStars = Math.floor(count);      
+        const halfStars = count % 1 >= 0.5 ? 1 : 0; 
+        const emptyStars = 5 - fullStars - halfStars; 
 
         setStarCount({
             full: fullStars,
