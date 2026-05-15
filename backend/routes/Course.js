@@ -35,7 +35,7 @@ router.put(
 
 router.get("/allCourses", getAllCourses);
 router.get("/getCourseDetails/:courseId", getCourseDetails);
-router.delete("/:courseId", auth, isInstructor, deleteCourse);  // ✅ FIXED
+router.delete("/:courseId", auth, isInstructor, deleteCourse);
 router.get("/instructor-courses", auth, isInstructor, getInstructorCourses);
 router.post("/getFullCourseDetails", auth, getFullCourseDetails);
 module.exports = router;

@@ -127,21 +127,6 @@ exports.createCourse = async (req, res) => {
     }
 };
 
-
-// Get all courses
-
-// exports.getAllCourses = async (req, res) => {
-//     try {
-//         const courses = await Course.find({})
-//             .populate("instructor")
-//             .populate("category");
-
-//         return res.status(200).json({ success: true, data: courses });
-//     } catch (error) {
-//         console.error("Get All Courses Error:", error);
-//         return res.status(500).json({ success: false, message: error.message });
-//     }
-// };
 exports.getAllCourses = async (req, res) => {
     try {
         const courses = await Course.find({})
@@ -164,9 +149,6 @@ exports.getAllCourses = async (req, res) => {
         });
     }
 };
-
-
-
 // Get single course details
 exports.getCourseDetails = async (req, res) => {
     try {
