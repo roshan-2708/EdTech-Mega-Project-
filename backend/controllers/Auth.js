@@ -9,7 +9,6 @@ require("dotenv").config();
 
 
 // ---------------- SEND OTP ------------------
-
 exports.sendOtp = async (req, res) => {
     try {
         const { email } = req.body;
@@ -68,9 +67,7 @@ exports.sendOtp = async (req, res) => {
     }
 };
 
-
 // ---------------- SIGN UP ------------------
-
 exports.signUp = async (req, res) => {
     try {
         const {
@@ -167,98 +164,78 @@ exports.signUp = async (req, res) => {
     }
 };
 
-
-
 // ---------------- LOGIN ------------------
-
 exports.login = async (req, res) => {
     try {
-        const { email, password, role } = req.body;
+        const { email, role, password } = req.body;
 
-        if (!email || !password || !role) {
+
+        if (!email || !role || !password) {
             return res.status(400).json({
                 success: false,
-                message: "Email, password and role are required."
+                message: "All field are required."
             });
         }
 
-        const user = await User.findOne({ email }).populate("additionalDetail");
+        const user = await User.findOne({ email }).select("+password");
 
         if (!user) {
             return res.status(404).json({
                 success: false,
-                message: "User not found."
+                message: "User not found",
             });
         }
 
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(401).json({
+        if (role !== user.role) {
+            return res.status(400).json({
                 success: false,
-                message: "Incorrect password."
-            });
-        }
-        if (user.accountType !== role) {
-            return res.status(403).json({
-                success: false,
-                message: `You are registered as ${user.accountType}, not ${role}`,
+                message: "Role mismatch",
             });
         }
 
-        const payload = {
-            id: user._id,
-            email: user.email,
-            role: user.accountType,
-        };
+        if (await bcrypt.compare(password, user.password)) {
+            const payload = {
+                email: user.email,
+                id: user._id,
+                role: user.role,
+            }
 
-        const token = jwt.sign(payload, process.env.JWT_SECRET, {
-            expiresIn: "2h",
-        });
+            const token = jwt.sign(payload, process.env.JWT_SECRET, {
+                expiresIn: "1d",
+            });
 
-        // const cookieOptions = {
-        //     httpOnly: true,
-        //     secure: process.env.NODE_ENV === "production",
-        //     expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-        // };
-        const cookieOptions = {
-            httpOnly: true,
-            secure: true,           // ALWAYS true on Render
-            sameSite: "None",       // REQUIRED for cross-domain
-            expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-        };
+            user.password = undefined;
 
+            const options = {
+                expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+                httpOnly: true,
+            };
 
-        user.password = undefined;
-
-        return res
-            .cookie("token", token, cookieOptions)
-            .status(200)
-            .json({
+            res.cookie("token", token, options).status(200).json({
                 success: true,
-                message: "Login successful",
                 token,
                 user,
+                message: "Login successful",
             });
+        }
+        else {
+            return res.status(401).json({
+                success: false,
+                message: "Password mismatch",
+            })
+        }
 
     } catch (error) {
-        console.error("LOGIN ERROR:", error);
+        console.log("Error in login :-", error.message || error);
         return res.status(500).json({
             success: false,
             message: "Login failed",
         });
     }
-};
-
+}
 // ---------------- LOGOUT ------------------
-
 exports.logout = async (req, res) => {
     try {
-        // Clear cookie
-        // res.clearCookie("token", {
-        //     httpOnly: true,
-        //     sameSite: "lax",
-        //     secure: process.env.NODE_ENV === "production",
-        // });
         res.clearCookie("token", {
             httpOnly: true,
             secure: true,
@@ -279,9 +256,7 @@ exports.logout = async (req, res) => {
     }
 };
 
-
 // ---------------- CHANGE PASSWORD ------------------
-
 exports.changePassword = async (req, res) => {
     try {
         const { oldPassword, newPassword } = req.body;
