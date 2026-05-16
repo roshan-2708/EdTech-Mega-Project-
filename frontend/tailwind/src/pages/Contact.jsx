@@ -6,7 +6,7 @@ import {
     MapPinIcon,
     PhoneIcon,
     SparklesIcon
-} from "@heroicons/react/24/outline"; 
+} from "@heroicons/react/24/outline";
 
 const Contact = () => {
     return (
@@ -15,20 +15,20 @@ const Contact = () => {
             <main className="flex-grow relative overflow-hidden">
 
                 {/* Background Decorations */}
-                <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/10 blur-[120px] rounded-full -z-10" />
-                <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-purple-600/10 blur-[120px] rounded-full -z-10" />
+                <div className="absolute top-0 left-1/4 w-96 h-96 bg-yellow-500/10 blur-[120px] rounded-full -z-10" />
+                <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-pink-600/10 blur-[120px] rounded-full -z-10" />
 
                 <section className="max-w-7xl mx-auto py-20 px-6 lg:px-12">
 
                     {/* Header Section */}
                     <div className="text-center mb-16 space-y-4">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-sm font-medium">
                             <SparklesIcon className="h-4 w-4" />
                             <span>Available for new projects</span>
                         </div>
                         <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight">
                             Let's build something <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-300">
                                 extraordinary together.
                             </span>
                         </h1>
@@ -67,7 +67,7 @@ const Contact = () => {
                             ].map((item, index) => (
                                 <div
                                     key={index}
-                                    className="group p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-blue-500/30 transition-all duration-300"
+                                    className="group p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-yellow-500/30 transition-all duration-300"
                                 >
                                     <div className="flex items-center gap-4">
                                         <div className={`p-3 rounded-xl bg-white/5 ${item.color}`}>
@@ -82,7 +82,7 @@ const Contact = () => {
                                 </div>
                             ))}
 
-                            <div className="p-8 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white hidden lg:block">
+                            <div className="p-8 rounded-2xl bg-gradient-to-br from-yellow-600 to-yellow-400 text-white hidden lg:block">
                                 <h4 className="text-xl font-bold mb-2">Why choose us?</h4>
                                 <ul className="space-y-3 text-blue-100 text-sm">
                                     <li className="flex items-center gap-2">✓ 24/7 Priority Support</li>

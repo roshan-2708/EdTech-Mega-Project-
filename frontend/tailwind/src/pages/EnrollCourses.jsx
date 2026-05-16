@@ -23,14 +23,18 @@ const EnrollCourses = () => {
     const { token } = useSelector((state) => state.auth);
     const [enrolledCourses, setEnrolledCourses] = useState(null);
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const getEnrolledCourses = useCallback(async () => {
         try {
+            setLoading(true);
             const res = await getUserEnrolledCourses(token);
             setEnrolledCourses(res || []);
         } catch (error) {
             console.error("Failed to fetch enrolled courses:", error);
             setEnrolledCourses([]);
+        } finally {
+            setLoading(false);
         }
     }, [token]);
 
@@ -48,7 +52,13 @@ const EnrollCourses = () => {
             navigate(`/view-course/${course._id}`);
         }
     };
-
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-slate-900 flex items-center justify-center p-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400"></div>
+            </div>
+        );
+    }
     // Loading State with Skeleton
     if (enrolledCourses === null) {
         return (
@@ -108,7 +118,7 @@ const EnrollCourses = () => {
 
                                 {/* Details */}
                                 <div className="flex-1 min-w-0 sm:ml-5 w-full">
-                                    <h3 className="font-bold text-lg text-slate-200 group-hover:text-emerald-400 transition-colors duration-200 truncate mb-1">
+                                    <h3 className="font-bold text-lg text-slate-200 group-hover:text-yellow-400 transition-colors duration-200 truncate mb-1">
                                         {course.courseName}
                                     </h3>
                                     <p className="text-sm text-slate-400 line-clamp-1 pr-4">
@@ -124,7 +134,7 @@ const EnrollCourses = () => {
                                     <div className="w-32 sm:text-right">
                                         <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
                                             <span className="text-slate-500 sm:hidden">Progress</span>
-                                            <span className={progress === 100 ? "text-emerald-400" : "text-slate-300"}>
+                                            <span className={progress === 100 ? "text-yellow-400" : "text-slate-300"}>
                                                 {progress}%
                                             </span>
                                         </div>

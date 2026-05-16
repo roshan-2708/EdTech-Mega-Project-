@@ -1,105 +1,136 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Chart, registerables } from "chart.js";
 import { Pie } from "react-chartjs-2";
 
 Chart.register(...registerables);
 
 const InstructorChart = ({ courses }) => {
-    const safeCourses = Array.isArray(courses) ? courses : [];
+    // 1. Declare all hooks strictly at the top level
     const [currChart, setCurrChart] = useState("students");
 
-    const getRandomColors = (numColors) => {
+    const safeCourses = useMemo(() => (Array.isArray(courses) ? courses : []), [courses]);
+
+    // Re-designed theme-friendly charts palette
+    const getChartColors = useMemo(() => {
         const colors = [
-            'rgb(99, 102, 241)',   // indigo
-            'rgb(16, 185, 129)',   // emerald
-            'rgb(245, 158, 11)',   // amber
-            'rgb(168, 85, 247)',   // violet
-            'rgb(59, 130, 246)',   // blue
-            'rgb(239, 68, 68)',    // red
-            'rgb(34, 197, 94)',    // green
-            'rgb(251, 146, 60)'    // orange
+            'rgba(250, 204, 21, 0.85)',  // yellow-400
+            'rgba(59, 130, 246, 0.85)',   // blue-500
+            'rgba(16, 185, 129, 0.85)',  // emerald-500
+            'rgba(168, 85, 247, 0.85)',  // violet-500
+            'rgba(244, 63, 94, 0.85)',   // rose-500
+            'rgba(249, 115, 22, 0.85)',  // orange-500
+            'rgba(6, 182, 212, 0.85)'    // cyan-500
         ];
-        return Array.from({ length: numColors }, (_, i) => colors[i % colors.length]);
+        return (numColors) => Array.from({ length: numColors }, (_, i) => colors[i % colors.length]);
+    }, []);
+
+    // Dynamic configuration generator
+    const chartData = useMemo(() => {
+        const isStudents = currChart === "students";
+        return {
+            labels: safeCourses.map(c => c.courseName),
+            datasets: [{
+                data: safeCourses.map(c => isStudents ? (c.totalStudentsEnrolled || 0) : (c.totalAmountGenerated || 0)),
+                backgroundColor: getChartColors(safeCourses.length),
+                borderWidth: 2,
+                borderColor: '#0f172a', // slate-900 base border match
+                hoverOffset: 12
+            }],
+        };
+    }, [safeCourses, currChart, getChartColors]);
+
+    // High performance configurations override
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    padding: 24,
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    font: {
+                        size: 12,
+                        weight: '500',
+                        family: 'Inter, system-ui, sans-serif'
+                    },
+                    color: '#94a3b8', // slate-400
+                }
+            },
+            tooltip: {
+                backgroundColor: '#1e293b', // slate-800 tooltips
+                titleColor: '#ffffff',
+                bodyColor: '#f8fafc',
+                borderColor: 'rgba(234, 179, 8, 0.2)', // yellow edge accent
+                borderWidth: 1,
+                padding: 12,
+                boxPadding: 6,
+                usePointStyle: true,
+                callbacks: {
+                    label: function (context) {
+                        let label = context.label || '';
+                        if (label) label += ': ';
+                        if (context.parsed !== undefined) {
+                            label += currChart === 'students'
+                                ? `${context.parsed} students`
+                                : `₹${context.parsed.toLocaleString()}`;
+                        }
+                        return label;
+                    }
+                }
+            }
+        }
     };
 
+    // 2. Perform early returns / conditional UI handling ONLY after hook registrations
     if (safeCourses.length === 0) {
         return (
-            <div className="flex items-center justify-center h-80 bg-slate-800 rounded-2xl border border-slate-700 p-8">
-                <p className="text-slate-400 text-lg font-medium">No chart data available</p>
+            <div className="flex flex-col items-center justify-center h-[340px] bg-slate-900/40 rounded-2xl border border-slate-800 p-8 text-center">
+                <svg className="w-12 h-12 text-slate-600 mb-3" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" />
+                </svg>
+                <p className="text-slate-400 text-sm font-medium">No analytics data available right now</p>
             </div>
         );
     }
 
-    const chartDataForStudents = {
-        labels: safeCourses.map(c => c.courseName),
-        datasets: [{
-            data: safeCourses.map(c => c.totalStudentsEnrolled || 0),
-            backgroundColor: getRandomColors(safeCourses.length),
-            borderWidth: 2,
-            borderColor: '#374151', // gray-700
-        }],
-    };
-
-    const chartDataForIncome = {
-        labels: safeCourses.map(c => c.courseName),
-        datasets: [{
-            data: safeCourses.map(c => c.totalAmountGenerated || 0),
-            backgroundColor: getRandomColors(safeCourses.length),
-            borderWidth: 2,
-            borderColor: '#374151', // gray-700
-        }],
-    };
-
     return (
-        <div className="bg-slate-800 rounded-2xl border border-slate-700 p-8">
-            <div className="flex items-center justify-between mb-8">
+        <div className="w-full flex flex-col justify-between h-full space-y-6">
+            {/* Header Area */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold text-slate-100">Analytics Overview</h2>
-                    <p className="text-slate-400 mt-2 text-lg">Visualize your courses performance</p>
+                    <h3 className="text-lg font-bold text-white tracking-tight">Revenue & Engagement</h3>
+                    <p className="text-xs text-slate-400 mt-0.5">Visualize your overall performance analytics</p>
                 </div>
-                <div className="flex gap-2 bg-slate-700 p-2 rounded-xl">
+
+                {/* Clean Professional Tab Switcher */}
+                <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-800 w-fit self-start sm:self-auto">
                     <button
                         onClick={() => setCurrChart("students")}
-                        className={`px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center gap-2 ${currChart === "students"
-                                ? "bg-yellow-400 text-white"
-                                : "text-slate-300 hover:bg-slate-600 hover:text-white"
+                        className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 ${currChart === "students"
+                                ? "bg-yellow-400 text-slate-950 shadow-sm"
+                                : "text-slate-400 hover:text-white"
                             }`}
                     >
                         Students
                     </button>
                     <button
                         onClick={() => setCurrChart("income")}
-                        className={`px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center gap-2 ${currChart === "income"
-                                ? "bg-yellow-400 text-white"
-                                : "text-slate-300 hover:bg-slate-600 hover:text-white"
+                        className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 ${currChart === "income"
+                                ? "bg-yellow-400 text-slate-950 shadow-sm"
+                                : "text-slate-400 hover:text-white"
                             }`}
                     >
                         Income
                     </button>
                 </div>
             </div>
-            <div className="bg-slate-900 rounded-xl p-8 border border-slate-700 h-96 flex items-center justify-center">
-                <Pie
-                    data={currChart === "students" ? chartDataForStudents : chartDataForIncome}
-                    options={{
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    padding: 20,
-                                    usePointStyle: true,
-                                    font: {
-                                        size: 13,
-                                        weight: '500'
-                                    },
-                                    color: '#9ca3af', // gray-400
-                                }
-                            }
-                        }
-                    }}
-                />
+
+            {/* Render Canvas Wrapper */}
+            <div className="relative w-full h-[260px] md:h-[280px] flex items-center justify-center mt-auto">
+                <Pie data={chartData} options={options} />
             </div>
         </div>
     );

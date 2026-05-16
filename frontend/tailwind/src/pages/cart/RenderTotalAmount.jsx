@@ -17,35 +17,40 @@ const RenderTotalAmount = () => {
     };
 
     return (
-        <div className="min-w-[280px] rounded-2xl border border-richblack-700 bg-richblack-800 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.3)] sticky top-24">
-            {/* Label */}
-            <p className="mb-1 text-sm font-medium text-richblack-300">Total Price:</p>
-
-            {/* Price Display */}
-            <p className="mb-6 text-3xl font-bold text-yellow-100">
-                ₹ {totalPrice.toLocaleString("en-IN")}
-            </p>
-
-            {/* Buy Now Button */}
-            <button
-                onClick={handleBuyCourse}
-                className="group relative flex w-full items-center justify-center overflow-hidden rounded-xl bg-yellow-50 py-3 font-bold text-richblack-900 transition-all duration-300 hover:scale-[0.98] active:scale-95 shadow-[inset_0px_-1px_0px_rgba(255,255,255,0.18)] hover:shadow-none"
-            >
-                <span className="relative z-10">Buy Now</span>
-                {/* Subtle shine effect on hover */}
-                <div className="absolute inset-0 z-0 h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full transition-transform duration-500 group-hover:translate-x-full" />
-            </button>
-
-            {/* Trust Factor/Info */}
-            <div className="mt-4 flex items-center justify-center gap-2 text-xs text-richblack-400">
-                <FaShieldAlt className="text-caribbeangreen-200" />
-                <span>Secure Checkout • 7-Day Money Back</span>
+        <div className="w-full bg-transparent flex flex-col">
+            {/* Total Description Row */}
+            <div className="flex items-baseline justify-between mb-5">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    Total Pricing
+                </span>
+                <p className="text-3xl font-black text-white tracking-tight">
+                    ₹{totalPrice?.toLocaleString("en-IN") || "0"}
+                </p>
             </div>
 
-            {/* Micro-copy */}
-            <p className="mt-2 text-center text-[10px] uppercase tracking-widest text-richblack-500">
-                100% Authentic Content
-            </p>
+            {/* Premium CTA Checkout Action Control */}
+            <button
+                onClick={handleBuyCourse}
+                className="w-full inline-flex items-center justify-center bg-yellow-400 hover:bg-yellow-500 py-3 text-sm font-bold text-slate-950 rounded-xl transition-all duration-200 shadow-md shadow-yellow-400/10 hover:shadow-yellow-400/20 active:scale-[0.98]"
+            >
+                Proceed to Checkout
+            </button>
+
+            {/* Trust Matrix Architecture Section */}
+            <div className="mt-5 pt-4 border-t border-slate-900 flex flex-col items-center justify-center gap-2">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
+                    {/* Inline Pure Clean Vector Trust Shield */}
+                    <svg className="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.74c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                    </svg>
+                    <span>Secure Gateway Processing</span>
+                </div>
+
+                {/* Micro-copy Info */}
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 text-center">
+                    7-Day Refund Policy Verification
+                </p>
+            </div>
         </div>
     );
 };

@@ -7,6 +7,8 @@ import Footer from '../components/universal/Footer'
 import FoundingStory from '../assets/Images/FoundingStory.png'
 import CTAButton from '../components/core/HomePage/Button';
 import ContatctForm from '../components/core/HomePage/ContatctForm'
+import { SparklesIcon } from '@heroicons/react/24/outline';
+
 const About = () => {
     return (
         <div className='flex flex-col items-center justify-center w-full h-full bg-richblack-900'>
@@ -16,12 +18,13 @@ const About = () => {
                 <div className="w-11/12 max-w-6xl mx-auto flex flex-col items-center text-center gap-6">
 
                     {/* Small Heading */}
-                    <p className="text-yellow-400 text-lg font-semibold tracking-wider">
+                    <p className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-sm font-medium">
+                        <SparklesIcon className="h-4 w-4" />
                         About Us
                     </p>
 
                     {/* Main Heading */}
-                    <h1 className="text-3xl md:text-5xl font-bold leading-snug max-w-4xl">
+                    <h1 className="text-4xl md:text-6xl font-bold leading-snug max-w-4xl">
                         Driving Innovation in Online Education<br /><HighlightText text="for a Brighter Future"></HighlightText>
                     </h1>
 

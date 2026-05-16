@@ -44,7 +44,7 @@ const ContactUs = () => {
     };
 
     // Reusable Input Class
-    const inputStyle = "w-full bg-white/[0.03] border border-white/10 focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 rounded-2xl px-5 py-4 text-white outline-none transition-all duration-300 placeholder:text-gray-600 hover:bg-white/[0.05]";
+    const inputStyle = "w-full bg-white/[0.03] border border-white/10 focus:border-yellow-500/50 focus:ring-4 focus:ring-yellow-500/10 rounded-2xl px-5 py-4 text-white outline-none transition-all duration-300 placeholder:text-gray-600 hover:bg-white/[0.05]";
 
     return (
         <div className="relative">
@@ -55,7 +55,7 @@ const ContactUs = () => {
                     </div>
                     <h3 className="text-2xl font-bold text-white">Message Received!</h3>
                     <p className="text-gray-400 max-w-[250px]">Our strategy team will reach out to you shortly.</p>
-                    <button onClick={() => setSubmitted(false)} className="text-blue-400 text-sm font-medium hover:underline">Send another message</button>
+                    <button onClick={() => setSubmitted(false)} className="text-yellow-400 text-sm font-medium hover:underline">Send another message</button>
                 </div>
             ) : (
                 <form onSubmit={handleSubmit(submitContactForm)} className="space-y-7" noValidate>
@@ -150,7 +150,7 @@ const ContactUs = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full relative group overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-5 rounded-2xl transition-all duration-300 transform active:scale-[0.98] shadow-xl shadow-blue-500/20 flex items-center justify-center gap-3 disabled:opacity-50"
+                        className="w-full relative group overflow-hidden bg-gradient-to-r from-yellow-600 to-yellow-600 hover:from-yellow-500 hover:to-yellow-500 text-white font-bold py-5 rounded-2xl transition-all duration-300 transform active:scale-[0.98] shadow-xl shadow-yellow-500/20 flex items-center justify-center gap-3 disabled:opacity-50"
                     >
                         {loading ? (
                             <Loader2 className="w-6 h-6 animate-spin text-white/80" />

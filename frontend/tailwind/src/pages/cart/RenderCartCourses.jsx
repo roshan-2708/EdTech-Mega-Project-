@@ -17,76 +17,78 @@ const RenderCartCourses = () => {
     };
 
     return (
-        <div className="flex flex-1 flex-col divide-y divide-richblack-800">
+        <div className="flex flex-col divide-y divide-slate-900 w-full">
             {cart.map((course, index) => {
-                const avgRating = getAvgRating(course?.ratingAndReview) || 4.5; // fallback to 4.5 for visual demo
+                const avgRating = getAvgRating?.(course?.ratingAndReview) || 4.5;
 
                 return (
                     <div
                         key={course._id || index}
-                        className={`flex flex-col gap-6 py-6 lg:flex-row lg:items-center justify-between ${
-                            index === 0 ? "pt-2" : ""
-                        } ${index === cart.length - 1 ? "pb-2" : ""}`}
+                        className={`flex flex-col gap-6 py-5 lg:flex-row lg:items-center justify-between transition-all duration-150 ${
+                            index === 0 ? "pt-1" : ""
+                        } ${index === cart.length - 1 ? "pb-1" : ""}`}
                     >
-                        {/* LEFT SECTION: Thumbnail & Info */}
-                        <div className="flex flex-col gap-5 sm:flex-row flex-1 min-w-0 items-start w-full">
-                            {/* Thumbnail */}
-                            <div className="w-full sm:w-44 aspect-video relative overflow-hidden rounded-xl bg-richblack-900 border border-richblack-800 flex-shrink-0 group">
+                        {/* LEFT SECTION: Main Course Metadata & Graphics Card */}
+                        <div className="flex flex-col gap-4 sm:flex-row flex-1 min-w-0 items-start w-full">
+                            {/* Thumbnail Fixed Dimensions Frame */}
+                            <div className="w-full sm:w-40 aspect-video relative overflow-hidden rounded-xl bg-slate-950 border border-slate-900 flex-shrink-0 group">
                                 <img
                                     src={course?.thumbnail}
                                     alt={course?.courseName}
-                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                     loading="lazy"
                                 />
                             </div>
 
-                            {/* Course Metadata */}
+                            {/* Core Typography Properties */}
                             <div className="flex flex-col flex-1 min-w-0 space-y-2 w-full">
-                                <div className="space-y-1.5">
-                                    <h3 className="text-lg font-bold text-richblack-5 leading-snug hover:text-yellow-50 transition-colors duration-200 cursor-pointer line-clamp-2 pr-2">
+                                <div className="space-y-1">
+                                    <h3 className="text-base md:text-lg font-bold text-slate-100 hover:text-yellow-400 transition-colors line-clamp-1 leading-snug">
                                         {course?.courseName}
                                     </h3>
-                                    <span className="inline-block text-xs font-semibold text-richblack-300 bg-richblack-900 border border-richblack-800 px-2.5 py-0.5 rounded-md">
+                                    <span className="inline-block text-[10px] font-bold text-slate-400 bg-slate-950 border border-slate-900 px-2.5 py-0.5 rounded-md uppercase tracking-wide">
                                         {course?.courseCategory?.name || "General Development"}
                                     </span>
                                 </div>
 
-                                {/* Strict Single Line Ratings Module */}
-                                <div className="flex items-center gap-2 pt-1 flex-nowrap overflow-x-auto no-scrollbar whitespace-nowrap w-full">
-                                    <span className="text-sm font-bold text-yellow-5 flex-shrink-0">{avgRating}</span>
-                                    <div className="flex items-center pointer-events-none flex-shrink-0">
+                                {/* Precision Uniform Single-Line Ratings Grid */}
+                                <div className="flex items-center gap-2 pt-0.5 flex-nowrap overflow-x-auto no-scrollbar whitespace-nowrap w-full">
+                                    <span className="text-sm font-bold text-yellow-400 flex-shrink-0">
+                                        {avgRating.toFixed(1)}
+                                    </span>
+                                    <div className="flex items-center pointer-events-none flex-shrink-0 opacity-90 scale-95 origin-left">
                                         <ReactStars
                                             count={5}
                                             value={avgRating}
-                                            size={18}
+                                            size={16}
                                             edit={false}
-                                            activeColor="#ffd700"
+                                            activeColor="#eab308"
                                             emptyIcon={<FaRegStar />}
                                             fullIcon={<FaStar />}
                                         />
                                     </div>
-                                    <span className="text-xs text-richblack-400 font-medium flex-shrink-0">
+                                    <span className="text-xs text-slate-500 font-medium flex-shrink-0">
                                         ({course?.ratingAndReview?.length || 0} Reviews)
                                     </span>
                                 </div>
                             </div>
                         </div>
 
-                        {/* RIGHT SECTION: Price Top & Button Bottom Always */}
-                        <div className="flex flex-row lg:flex-col justify-between items-center lg:items-end flex-shrink-0 w-full lg:w-auto gap-4 pt-4 lg:pt-0 border-t lg:border-t-0 border-richblack-800/60 lg:ml-6">
-                            {/* Price (Top on desktop, left on mobile) */}
+                        {/* RIGHT SECTION: Dynamic Financial Block & Action Matrix */}
+                        <div className="flex flex-row lg:flex-col justify-between items-center lg:items-end flex-shrink-0 w-full lg:w-auto gap-4 pt-4 lg:pt-0 border-t lg:border-t-0 border-slate-900 lg:ml-6">
+                            {/* Indian Standardised Currency Layout */}
                             <div className="lg:text-right">
-                                <p className="text-2xl font-extrabold text-yellow-50 tracking-tight">
-                                    ₹{course?.price?.toLocaleString("en-IN")}
+                                <p className="text-xl md:text-2xl font-extrabold text-white tracking-tight">
+                                    ₹{course?.price?.toLocaleString("en-IN") || "0"}
                                 </p>
                             </div>
 
-                            {/* Remove Action (Bottom on desktop, right on mobile) */}
+                            {/* Destructive Control Button */}
                             <button
                                 onClick={() => dispatch(removeFromCart(course._id))}
-                                className="group flex items-center gap-1.5 rounded-lg border border-richblack-800 bg-richblack-900/40 py-2 px-3 text-xs font-semibold text-pink-200 transition-all duration-300 hover:bg-pink-600/10 hover:border-pink-500/30 hover:text-pink-100 active:scale-95"
+                                className="group flex items-center gap-1.5 rounded-xl border border-slate-900 bg-slate-950/40 px-3.5 py-2 text-xs font-bold text-red-400 transition-all duration-200 hover:bg-red-500/5 hover:border-red-500/20 active:scale-95"
                             >
-                                <RiDeleteBin6Line className="text-sm transition-transform group-hover:scale-110" />
+                                <RiDeleteBin6Line className="text-sm transition-transform group-hover:scale-105" />
                                 <span>Remove</span>
                             </button>
                         </div>
