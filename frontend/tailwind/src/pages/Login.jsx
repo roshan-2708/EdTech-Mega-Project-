@@ -35,7 +35,7 @@ const Login = () => {
     };
 
     const handleGoogleLogin = () => {
-        const backendBaseURL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+        const backendBaseURL = process.env.REACT_APP_BASE_URL|| "http://localhost:5000";
         window.open(`${backendBaseURL}/api/v1/auth/google`, "_self");
     };
 
