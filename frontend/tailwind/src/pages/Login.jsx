@@ -33,9 +33,14 @@ const Login = () => {
         dispatch(login(email, password, role, navigate));
     };
 
+    const handleGoogleLogin = () => {
+        const backendBaseURL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+        window.open(`${backendBaseURL}/api/v1/auth/google`, "_self");
+    };
+
     return (
         <div className="w-full min-h-screen flex items-center justify-center bg-[#000814] relative overflow-hidden px-4 py-16">
-            
+
             {/* BACKGROUND GLOWING BLOBS FOR PREMIUM LOOK */}
             <div className="absolute top-[-10%] left-[-10%] w-[400px] h-[400px] rounded-full bg-blue-900/20 blur-[120px] pointer-events-none" />
             <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-yellow-900/10 blur-[150px] pointer-events-none" />
@@ -68,11 +73,10 @@ const Login = () => {
                                     key={tab}
                                     type="button"
                                     onClick={() => setRole(tab)}
-                                    className={`py-2 px-6 rounded-full transition-all duration-300 font-semibold text-sm tracking-wide ${
-                                        role === tab
-                                            ? "bg-richblack-900 text-yellow-50 shadow-md shadow-black/40 border border-richblack-700"
-                                            : "bg-transparent text-richblack-300 hover:text-richblack-5"
-                                    }`}
+                                    className={`py-2 px-6 rounded-full transition-all duration-300 font-semibold text-sm tracking-wide ${role === tab
+                                        ? "bg-richblack-900 text-yellow-50 shadow-md shadow-black/40 border border-richblack-700"
+                                        : "bg-transparent text-richblack-300 hover:text-richblack-5"
+                                        }`}
                                 >
                                     {tab}
                                 </button>
@@ -134,6 +138,11 @@ const Login = () => {
                             >
                                 Sign In
                             </button>
+
+                            <button onClick={handleGoogleLogin} className="flex items-center justify-center gap-2 bg-richblack-800 text-richblack-50 p-3 rounded-md border border-richblack-700 hover:bg-richblack-700 transition-all">
+                                <FcGoogle size={22} />
+                                <span>Continue with Google</span>
+                            </button>
                         </form>
                     </div>
 
@@ -141,7 +150,7 @@ const Login = () => {
                     <div className="relative mx-auto w-11/12 max-w-[450px] md:mx-0 group selection:bg-transparent">
                         {/* Decorative background glow behind the image frame */}
                         <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/10 to-yellow-500/10 blur-2xl group-hover:scale-105 transition-all duration-500 rounded-md" />
-                        
+
                         <img
                             src={frameImg}
                             alt="Pattern"

@@ -26,6 +26,7 @@ import { ACCOUNT_TYPE } from "./utils/constants";
 import VideoDetails from "./pages/VideoDetails";
 import { useSelector } from "react-redux";
 import InstructorDashBoard from "./pages/InstructorDashBoard";
+import OAuthSuccess from "./pages/OAuthSuccess";
 function App() {
 
   const { user } = useSelector((state) => state.profile);
@@ -94,7 +95,7 @@ function App() {
               element={<InstructorDashBoard />}
             />
           </Route>
-
+          <Route path="oauth-success" element={<OAuthSuccess />} />
         </Routes>
       </main>
 
