@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setToken } from "../slices/authSlice"; 
+import { setToken } from "../slice/AuthSlice"; 
 
 export default function OAuthSuccess() {
   const [searchParams] = useSearchParams();
