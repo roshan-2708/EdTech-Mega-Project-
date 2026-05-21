@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const passport = require('passport');
 const userController = require("../controllers/Auth");
 const {
     resetPasswordToken,
@@ -31,7 +31,6 @@ router.put("/change-password", auth, userController.changePassword);
 router.post("/reset-password-token", resetPasswordToken);
 router.post("/reset-password", resetPassword);
 
-// ✅ CORRECT - Import from profileController
 const profileController = require("../controllers/profileController");
 // Update the route
 router.delete("/delete-account", auth, profileController.deleteAccount);
@@ -63,5 +62,28 @@ router.get("/profile", auth, async (req, res) => {
         });
     }
 });
+
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+router.get('/google/callback', 
+  passport.authenticate('google', { session: false, failureRedirect: '/login' }),
+  (req, res) => {
+    
+    const payload = {
+      email: req.user.email,
+      id: req.user._id,
+      accountType: req.user.accountType
+    };
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "3d" });
+
+   
+    const frontendURL = process.env.NODE_ENV === 'production' 
+      ? `https://ed-tech-mega-project.vercel.app/oauth-success?token=${token}`
+      : `http://localhost:3000/oauth-success?token=${token}`;
+
+    res.redirect(frontendURL);
+  }
+);
 
 module.exports = router;
