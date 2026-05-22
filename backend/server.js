@@ -13,8 +13,11 @@ const { cloudinaryConnect } = require("./config/cloudinary");
 connectDB();
 cloudinaryConnect();
 
-// Database initialization ke baad passport load karein
-const passport = require("./config/passport");
+// --- PASSPORT FIXED LOGIC ---
+// 1. Official npm package load karo jisme .initialize() function hota hai
+const passport = require("passport"); 
+// 2. Apni custom config/strategies wali file ko execute karo
+require("./config/passport"); 
 
 // Routes
 const userRoutes = require("./routes/User");
@@ -40,7 +43,7 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
 
-// Passport Middleware
+// Passport Middleware (Ab ye perfect chalega)
 app.use(passport.initialize());
 
 // API Routes
