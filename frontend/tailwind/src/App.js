@@ -95,7 +95,7 @@ function App() {
               element={<InstructorDashBoard />}
             />
           </Route>
-          <Route path="oauth-success" element={<OAuthSuccess />} />
+          <Route path="/auth-success" element={<OAuthSuccess />} />
         </Routes>
       </main>
 
