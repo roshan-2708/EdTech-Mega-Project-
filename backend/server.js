@@ -1,11 +1,22 @@
 const dotenv = require("dotenv");
 dotenv.config();
-const passport = require("./config/passport");
+
 const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
+// Database connections pehle initialize karein
+const { connectDB } = require("./config/database");
+const { cloudinaryConnect } = require("./config/cloudinary");
+
+connectDB();
+cloudinaryConnect();
+
+// Database initialization ke baad passport load karein
+const passport = require("./config/passport");
+
+// Routes
 const userRoutes = require("./routes/User");
 const profileRoutes = require("./routes/Profile");
 const courseRoutes = require("./routes/Course");
@@ -16,13 +27,7 @@ const courseProgressRoute = require("./routes/courseProgressRoutes");
 const ratingAndReviewRoutes = require("./routes/ratingAndReviewRoutes");
 const paymentRoutes = require("./routes/payments");
 
-const { connectDB } = require("./config/database");
-const { cloudinaryConnect } = require("./config/cloudinary");
-
 const PORT = process.env.PORT || 5000;
-
-connectDB();
-cloudinaryConnect();
 
 const corsOptions = {
     origin: true,
@@ -32,11 +37,13 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
+
+// Passport Middleware
 app.use(passport.initialize());
 
+// API Routes
 app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/payment", paymentRoutes);
@@ -47,6 +54,7 @@ app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/rating", ratingAndReviewRoutes);
 app.use("/api/v1/progress", courseProgressRoute);
 
+// Health check endpoints
 app.get("/", (req, res) => {
     res.status(200).json({
         success: true,
@@ -55,10 +63,10 @@ app.get("/", (req, res) => {
     });
 });
 
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-});
-
 app.get('/health', (req, res) => {
     res.status(200).send('Server is active');
+});
+
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
 });
