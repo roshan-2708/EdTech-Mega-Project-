@@ -34,9 +34,20 @@ const Login = () => {
         dispatch(login(email, password, role, navigate));
     };
 
+    // const handleGoogleLogin = () => {
+    //     const backendBaseURL = process.env.REACT_APP_BASE_URL|| "http://localhost:5000";
+    //     window.open(`${backendBaseURL}/api/v1/auth/google`, "_self");
+    // };
+
     const handleGoogleLogin = () => {
-        const backendBaseURL = process.env.REACT_APP_BASE_URL|| "http://localhost:5000";
-        window.open(`${backendBaseURL}/api/v1/auth/google`, "_self");
+       
+        const backendBaseURL = process.env.REACT_APP_BASE_URL || "http://localhost:5000";
+
+        const finalURL = backendBaseURL.includes("/api/v1")
+            ? `${backendBaseURL}/auth/google`
+            : `${backendBaseURL}/api/v1/auth/google`;
+
+        window.open(finalURL, "_self");
     };
 
     return (
