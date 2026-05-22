@@ -12,7 +12,8 @@ export default function OAuthSuccess() {
     const token = searchParams.get("token");
 
     if (token) {
-      localStorage.setItem("token", JSON.stringify(token));
+      // 💡 FIX: Direct token save karo bina JSON.stringify ke
+      localStorage.setItem("token", token); 
       dispatch(setToken(token));
 
       navigate("/dashboard/my-profile");
