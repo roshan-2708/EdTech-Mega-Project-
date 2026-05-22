@@ -35,7 +35,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setToken } from '../slices/authSlice'; // 💡 Apne slice ka sahi file path check kar lena
+import { setToken } from '../slice/AuthSlice'; // 💡 Apne slice ka sahi file path check kar lena
 
 const OAuthSuccess = () => {
     const [searchParams] = useSearchParams();
