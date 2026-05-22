@@ -6,6 +6,7 @@ const {
     resetPasswordToken,
     resetPassword
 } = require("../controllers/ResetPassword");
+const jwt = require("jsonwebtoken"); // <-- YEH LINE TOP PAR ADD KARO
 
 const { auth } = require("../middleware/auth");
 
