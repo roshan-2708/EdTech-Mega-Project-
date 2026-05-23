@@ -2,133 +2,88 @@ const express = require("express");
 const router = express.Router();
 const passport = require('passport');
 const userController = require("../controllers/Auth");
-const {
-    resetPasswordToken,
-    resetPassword
-} = require("../controllers/ResetPassword");
-const jwt = require("jsonwebtoken"); // <-- YEH LINE TOP PAR ADD KARO
-
+const { resetPasswordToken, resetPassword } = require("../controllers/ResetPassword");
+const jwt = require("jsonwebtoken");
 const { auth } = require("../middleware/auth");
 
-// OTP
+// ── existing routes (unchanged) ──────────────────────────────
 router.post("/send-otp", userController.sendOtp);
-
-// verify otp
 router.post("/verify-otp", userController.verifyOtp);
-
-// Signup
 router.post("/signup", userController.signUp);
-
-// Login
 router.post("/login", userController.login);
-
-// Logout route
 router.post("/logout", userController.logout);
-
-// Change password
 router.put("/change-password", auth, userController.changePassword);
-
-// Forgot-password flow
 router.post("/reset-password-token", resetPasswordToken);
 router.post("/reset-password", resetPassword);
 
 const profileController = require("../controllers/profileController");
-// Update the route
 router.delete("/delete-account", auth, profileController.deleteAccount);
 
-// Get full profile
 router.get("/profile", auth, async (req, res) => {
     try {
         const User = require("../model/User");
-
         const user = await User.findById(req.user.id)
             .populate("additionalDetail")
             .populate("courses")
             .populate("courseProgress");
-
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: "User not found",
-            });
-        }
-
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
         return res.status(200).json({ success: true, user });
-
     } catch (err) {
         console.error("PROFILE ERROR:", err);
-        return res.status(500).json({
-            success: false,
-            message: "Failed to fetch profile",
-        });
+        return res.status(500).json({ success: false, message: "Failed to fetch profile" });
     }
 });
 
+// ── Google OAuth routes (fixed) ───────────────────────────────
 
-/**
- * @desc    Google Login trigger (Ispe click karte hi Google Dialog box khulega)
- * @route   GET /api/auth/google
- */
-
-/**
- * @desc    Google Callback (Google login ke baad yahan data bhejega)
- * @route   GET /api/auth/google/callback
- */
-
-router.get(
-    '/google',
-    (req, res, next) => {
-        // URL se Student/Instructor nikal kar passport ki state me daal rahe hain
-        const accountType = req.query.type || 'Student'; 
-        passport.authenticate('google', { 
-            scope: ['profile', 'email'],
-            state: accountType // <--- Yeh state callback me wapas milegi
-        })(req, res, next);
+// Step 1: frontend calls this BEFORE opening Google to save the role
+router.post("/set-role", (req, res) => {
+    const { role } = req.body;
+    if (!["Student", "Instructor"].includes(role)) {
+        return res.status(400).json({ error: "Invalid role" });
     }
+    req.session.pending_role = role;
+    res.json({ ok: true });
+});
+
+// Step 2: opens Google login
+router.get("/google",
+    passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
-router.get(
-    '/google/callback',
-    passport.authenticate('google', { session: false, failureRedirect: 'https://ed-tech-mega-project.vercel.app/?error=login_failed' }),
+// Step 3: Google redirects back here after login
+router.get("/google/callback",
+    passport.authenticate("google", {
+        failureRedirect: `${process.env.FRONTEND_URL}/?error=login_failed`,
+        session: true,           // must be true so pending_role session works
+    }),
     async (req, res) => {
         try {
-            if (!req.user) {
-                return res.redirect("https://ed-tech-mega-project.vercel.app/?error=no_user");
-            }
+            const user = req.user;
 
-            
-            const payload = {
-                email: req.user.email,
-                id: req.user._id,
-                role: req.user.accountType, 
-            };
-
-            const authToken = jwt.sign(
-                payload,
+            const token = jwt.sign(
+                { email: user.email, id: user._id, role: user.accountType },
                 process.env.JWT_SECRET,
-                { expiresIn: '7d' }
+                { expiresIn: "7d" }
             );
 
-            
-            req.user.activeToken = authToken;
-            await req.user.save();
+            user.activeToken = token;
+            await user.save();
 
-            
-            const options = {
-                expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+            res.cookie("token", token, {
+                expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
                 httpOnly: true,
-                secure: true, 
-                sameSite: 'none'
-            };
-            res.cookie("token", authToken, options);
+                secure: true,
+                sameSite: "none",
+            });
 
-            
-            const frontendURL = "https://ed-tech-mega-project.vercel.app/auth-success";
-            return res.redirect(`${frontendURL}?token=${authToken}`);
-
-        } catch (error) {
-            console.error("JWT Generation Error:", error);
-            return res.redirect("https://ed-tech-mega-project.vercel.app/?error=server_error");
+            // redirect to frontend with token + role
+            return res.redirect(
+                `${process.env.FRONTEND_URL}/auth/callback?token=${token}&role=${user.accountType}`
+            );
+        } catch (err) {
+            console.error("Google callback error:", err);
+            return res.redirect(`${process.env.FRONTEND_URL}/?error=server_error`);
         }
     }
 );
