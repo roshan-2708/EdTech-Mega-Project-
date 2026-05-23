@@ -35,24 +35,21 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setToken } from '../slice/AuthSlice'; // 💡 Apne slice ka sahi file path check kar lena
+import { setToken } from '../slice/AuthSlice';
 
 const OAuthSuccess = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const dispatch = useDispatch(); // 💡 Redux action chalane ke liye dispatch initialization
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const token = searchParams.get('token');
 
         if (token) {
-            // 1. LocalStorage mein raw string save karo
             localStorage.setItem('token', token);
 
-            // 2. 🔥 FIX: Redux state ko notify karo taaki Navbar/App update ho jaye
             dispatch(setToken(token));
 
-            // 3. Home page ya dashboard par redirect karo
             navigate('/', { replace: true });
         } else {
             navigate('/login');
@@ -65,7 +62,7 @@ const OAuthSuccess = () => {
             justifyContent: 'center', 
             alignItems: 'center', 
             height: '100vh', 
-            backgroundColor: '#000814', // StudyNotion dark theme color
+            backgroundColor: '#000814', 
             color: 'white' 
         }}>
             <div style={{ textAlign: 'center' }}>
