@@ -77,7 +77,14 @@ router.get("/profile", auth, async (req, res) => {
 
 router.get(
     '/google',
-    passport.authenticate('google', { scope: ['profile', 'email'] })
+    (req, res, next) => {
+        // URL se Student/Instructor nikal kar passport ki state me daal rahe hain
+        const accountType = req.query.type || 'Student'; 
+        passport.authenticate('google', { 
+            scope: ['profile', 'email'],
+            state: accountType // <--- Yeh state callback me wapas milegi
+        })(req, res, next);
+    }
 );
 
 router.get(
