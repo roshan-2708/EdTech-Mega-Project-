@@ -85,23 +85,37 @@ router.get(
     passport.authenticate('google', { session: false, failureRedirect: 'https://ed-tech-mega-project.vercel.app/?error=login_failed' }),
     async (req, res) => {
         try {
-            // Check if passport actually found/created a user
             if (!req.user) {
                 return res.redirect("https://ed-tech-mega-project.vercel.app/?error=no_user");
             }
 
-            // 1. JWT Token generate karo
+            
+            const payload = {
+                email: req.user.email,
+                id: req.user._id,
+                role: req.user.accountType, 
+            };
+
             const authToken = jwt.sign(
-                { id: req.user._id },
+                payload,
                 process.env.JWT_SECRET,
-                { expiresIn: '7d' } // 1 day thoda chota ho sakta hai, 7 days is better for UX
+                { expiresIn: '7d' }
             );
 
-            // 2. Save active token to database 
+            
             req.user.activeToken = authToken;
             await req.user.save();
 
-            // 3. Redirect to Frontend
+            
+            const options = {
+                expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+                httpOnly: true,
+                secure: true, 
+                sameSite: 'none'
+            };
+            res.cookie("token", authToken, options);
+
+            
             const frontendURL = "https://ed-tech-mega-project.vercel.app/auth-success";
             return res.redirect(`${frontendURL}?token=${authToken}`);
 
