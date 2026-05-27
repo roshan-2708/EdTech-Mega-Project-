@@ -5,7 +5,6 @@ const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const session = require("express-session");
 
 // Database connections pehle initialize karein
 const { connectDB } = require("./config/database");
@@ -13,12 +12,6 @@ const { cloudinaryConnect } = require("./config/cloudinary");
 
 connectDB();
 cloudinaryConnect();
-
-// --- PASSPORT FIXED LOGIC ---
-// 1. Official npm package load karo jisme .initialize() function hota hai
-const passport = require("passport");
-// 2. Apni custom config/strategies wali file ko execute karo
-require("./config/passport");
 
 // Routes
 const userRoutes = require("./routes/User");
@@ -40,24 +33,10 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"],
 };
 
+// Middlewares
 app.use(cors(corsOptions));
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
-app.use(
-  session({
-    secret: process.env.JWT_SECRET,
-    resave: false,
-    saveUninitialized: false,
-
-    cookie: {
-      secure: false,
-      maxAge: 24 * 60 * 60 * 1000,
-    },
-  }),
-);
-// Passport Middleware (Ab ye perfect chalega)
-app.use(passport.initialize());
-app.use(passport.session());
 
 // API Routes
 app.use("/api/v1/auth", userRoutes);

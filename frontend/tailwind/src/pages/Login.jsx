@@ -34,9 +34,6 @@ const Login = () => {
     dispatch(login(email, password, role, navigate));
   };
 
-  const handleGoogleLogin = (accountType) => {
-    window.location.href = `https://edtech-mega-project.onrender.com/api/v1/auth/google?accountType=${accountType}`;
-  };
 
   return (
     <div className="w-full min-h-screen flex items-center justify-center bg-[#000814] relative overflow-hidden px-4 py-16">
@@ -141,23 +138,7 @@ const Login = () => {
                 Sign In
               </button>
 
-              <div className="flex items-center gap-x-3 mt-4">
-                <button
-                  onClick={() => handleGoogleLogin("Student")}
-                  className="flex items-center justify-center gap-2 bg-richblack-800 text-richblack-50 p-3 rounded-md border border-richblack-700 hover:bg-richblack-700 transition-all"
-                >
-                  <FcGoogle size={22} />
-                  <span>Continue as Student</span>
-                </button>
-
-                <button
-                  onClick={() => handleGoogleLogin("Instructor")}
-                  className="flex items-center justify-center gap-2 bg-richblack-800 text-richblack-50 p-3 rounded-md border border-richblack-700 hover:bg-richblack-700 transition-all"
-                >
-                  <FcGoogle size={22} />
-                  <span>Continue as Instructor</span>
-                </button>
-              </div>
+              
             </form>
           </div>
 
