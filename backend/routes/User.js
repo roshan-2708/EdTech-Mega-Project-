@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const userController = require("../controllers/Auth");
+const User = require("../model/User");
 const {
   resetPasswordToken,
   resetPassword,
@@ -39,26 +40,44 @@ router.delete("/delete-account", auth, profileController.deleteAccount);
 // Get full profile
 router.get("/profile", auth, async (req, res) => {
   try {
-    const User = require("../model/User");
+    // 2. Defensive Check: Ensure req.user exists (Auth middleware check)
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized: User payload missing from token",
+      });
+    }
 
+    // 3. Fetch User with populate
     const user = await User.findById(req.user.id)
       .populate("additionalDetail")
       .populate("courses")
-      .populate("courseProgress");
+      .populate("courseProgress")
+      .exec(); // Explicitly executing the query
 
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "User not found in database",
       });
     }
 
-    return res.status(200).json({ success: true, user });
+    // Security Tip: Password field ko frontend par bhejne se roko
+    user.password = undefined;
+
+    return res.status(200).json({
+      success: true,
+      user
+    });
+
   } catch (err) {
-    console.error("PROFILE ERROR:", err);
+    // Ye aapko Render logs mein exact reason batayega (e.g., Mongoose schema missing error)
+    console.error("CRITICAL PROFILE ERROR:", err.message, err.stack);
+
     return res.status(500).json({
       success: false,
       message: "Failed to fetch profile",
+      error: err.message // Environment debug ke liye error message pass kar do temporarily
     });
   }
 });
