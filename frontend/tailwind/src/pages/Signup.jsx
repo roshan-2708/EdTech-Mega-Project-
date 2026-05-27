@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import signupImage from "../assets/Images/signup.webp";
+import Instructor from "../assets/Images/Instructor.png";
 import frameImg from "../assets/Images/frame.png"; // Dynamic frame used in login theme
 import { signup } from "../services/operations/authAPI";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
@@ -60,7 +61,7 @@ const Signup = () => {
 
     return (
         <div className="w-full min-h-screen flex items-center justify-center bg-[#000814] relative overflow-hidden px-4 py-16">
-            
+
             {/* PREMIUM BACKGROUND GLOWING BLOBS */}
             <div className="absolute top-[-10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-blue-900/20 blur-[120px] pointer-events-none" />
             <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-yellow-900/10 blur-[150px] pointer-events-none" />
@@ -91,11 +92,10 @@ const Signup = () => {
                                     key={type}
                                     type="button"
                                     onClick={() => setFormData({ ...formData, accountType: type })}
-                                    className={`py-2 px-6 rounded-full transition-all duration-300 font-semibold text-sm tracking-wide ${
-                                        formData.accountType === type
-                                            ? "bg-richblack-900 text-yellow-50 shadow-md shadow-black/40 border border-richblack-700"
-                                            : "bg-transparent text-richblack-300 hover:text-richblack-5"
-                                    }`}
+                                    className={`py-2 px-6 rounded-full transition-all duration-300 font-semibold text-sm tracking-wide ${formData.accountType === type
+                                        ? "bg-richblack-900 text-yellow-50 shadow-md shadow-black/40 border border-richblack-700"
+                                        : "bg-transparent text-richblack-300 hover:text-richblack-5"
+                                        }`}
                                 >
                                     {type}
                                 </button>
@@ -104,7 +104,7 @@ const Signup = () => {
 
                         {/* FORM */}
                         <form onSubmit={handleSubmit} className="flex flex-col gap-y-4 w-full">
-                            
+
                             {/* FIRSTNAME & LASTNAME ROW */}
                             <div className="flex flex-col sm:flex-row gap-4">
                                 <label className="flex-1 flex flex-col gap-y-1.5">
@@ -215,7 +215,7 @@ const Signup = () => {
                     <div className="hidden lg:block relative mx-auto w-11/12 max-w-[450px] lg:mx-0 group selection:bg-transparent">
                         {/* Interactive backdrop glow mesh */}
                         <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/10 to-yellow-500/10 blur-2xl group-hover:scale-105 transition-all duration-500 rounded-md" />
-                        
+
                         <img
                             src={frameImg}
                             alt="Pattern"
@@ -225,8 +225,8 @@ const Signup = () => {
                             className="opacity-80 object-cover"
                         />
                         <img
-                            src={signupImage}
-                            alt="Signup Graphic"
+                            src={formData.accountType === "Student" ? signupImage : Instructor}
+                            alt={formData.accountType === "Student" ? "Students" : "Instructor"}
                             width={558}
                             height={504}
                             loading="lazy"
@@ -235,8 +235,9 @@ const Signup = () => {
                     </div>
 
                 </div>
-            )}
-        </div>
+            )
+            }
+        </div >
     );
 };
 
