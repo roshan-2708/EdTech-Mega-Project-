@@ -16,7 +16,7 @@ import PrivateRoute from "./components/core/auth/PrivateRoute";
 import Settings from "./pages/Settings";
 import EnrollCourses from "./pages/EnrollCourses";
 import Cart from "./pages/cart/Index";
-import MyCourses from './pages/MyCourses'
+import MyCourses from "./pages/MyCourses";
 import AddCourse from "./pages/addCourse/AddCourse";
 import EditCourseDetails from "./pages/EditCourse/EditCourseDetails";
 import Catalog from "./pages/Catalog";
@@ -26,14 +26,12 @@ import { ACCOUNT_TYPE } from "./utils/constants";
 import VideoDetails from "./pages/VideoDetails";
 import { useSelector } from "react-redux";
 import InstructorDashBoard from "./pages/InstructorDashBoard";
-import OAuthSuccess from "./pages/OAuthSuccess";
+import AuthSuccess from "./pages/AuthSuccess";
 function App() {
-
   const { user } = useSelector((state) => state.profile);
 
   return (
     <div className="min-h-96 w-screen bg-richblack-900 font-inter text-white">
-
       {/* TOASTER */}
       <Toaster position="top-center" />
 
@@ -43,7 +41,6 @@ function App() {
       {/* MAIN CONTENT */}
       <main className="">
         <Routes>
-
           {/* PUBLIC ROUTES */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -90,15 +87,11 @@ function App() {
               path="edit-course/:courseId"
               element={<EditCourseDetails />}
             />
-            <Route
-              path="Instructor"
-              element={<InstructorDashBoard />}
-            />
+            <Route path="Instructor" element={<InstructorDashBoard />} />
           </Route>
-          <Route path="/auth-success" element={<OAuthSuccess />} />
+          <Route path="/auth-success" element={<AuthSuccess />} />
         </Routes>
       </main>
-
     </div>
   );
 }

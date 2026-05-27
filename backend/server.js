@@ -5,6 +5,7 @@ const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const session = require("express-session");
 
 // Database connections pehle initialize karein
 const { connectDB } = require("./config/database");
@@ -15,9 +16,9 @@ cloudinaryConnect();
 
 // --- PASSPORT FIXED LOGIC ---
 // 1. Official npm package load karo jisme .initialize() function hota hai
-const passport = require("passport"); 
+const passport = require("passport");
 // 2. Apni custom config/strategies wali file ko execute karo
-require("./config/passport"); 
+require("./config/passport");
 
 // Routes
 const userRoutes = require("./routes/User");
@@ -33,18 +34,30 @@ const paymentRoutes = require("./routes/payments");
 const PORT = process.env.PORT || 5000;
 
 const corsOptions = {
-    origin: true,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+  origin: true,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(cors(corsOptions));
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
+app.use(
+  session({
+    secret: process.env.JWT_SECRET,
+    resave: false,
+    saveUninitialized: false,
 
+    cookie: {
+      secure: false,
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+  }),
+);
 // Passport Middleware (Ab ye perfect chalega)
 app.use(passport.initialize());
+app.use(passport.session());
 
 // API Routes
 app.use("/api/v1/auth", userRoutes);
@@ -60,17 +73,17 @@ app.use("/api/v1/progress", courseProgressRoute);
 
 // Health check endpoints
 app.get("/", (req, res) => {
-    res.status(200).json({
-        success: true,
-        message: "🚀 Server is up and running!",
-        timestamp: new Date().toISOString(),
-    });
+  res.status(200).json({
+    success: true,
+    message: "🚀 Server is up and running!",
+    timestamp: new Date().toISOString(),
+  });
 });
 
-app.get('/health', (req, res) => {
-    res.status(200).send('Server is active');
+app.get("/health", (req, res) => {
+  res.status(200).send("Server is active");
 });
 
 app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
