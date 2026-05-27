@@ -40,11 +40,10 @@ const AuthSuccess = () => {
         localStorage.setItem("user", JSON.stringify(user));
 
         // Redirect based on role
-        if (user.accountType === "Student") {
+        if (user.accountType === "Student" || user.accountType === "Instructor") {
           navigate("/dashboard/my-profile");
-        } else if (user.accountType === "Instructor") {
-          navigate("/dashboard/instructor");
-        } else {
+        } 
+        else {
           navigate("/");
         }
       } catch (error) {
