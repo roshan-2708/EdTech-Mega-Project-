@@ -345,5 +345,3 @@ exports.verifyOtp = async (req, res) => {
         });
     }
 };
-
-

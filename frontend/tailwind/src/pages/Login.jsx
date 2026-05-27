@@ -34,19 +34,7 @@ const Login = () => {
         dispatch(login(email, password, role, navigate));
     };
 
-    // const handleGoogleLogin = () => {
-    //     window.location.href = "https://edtech-mega-project.onrender.com/api/v1/auth/google";
-    // };
-
-    // ✅ new code (saves role first)
-    // ✅ correct URLs — no /auth/ prefix since that's already in the route
-    const handleGoogleLogin = async () => {
-        await fetch("https://edtech-mega-project.onrender.com/api/v1/auth/set-role", {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ role }),
-        });
+    const handleGoogleLogin = () => {
         window.location.href = "https://edtech-mega-project.onrender.com/api/v1/auth/google";
     };
 
@@ -151,9 +139,9 @@ const Login = () => {
                                 Sign In
                             </button>
 
-                            <button onClick={handleGoogleLogin}>
+                            <button onClick={handleGoogleLogin} className="flex items-center justify-center gap-2 bg-richblack-800 text-richblack-50 p-3 rounded-md border border-richblack-700 hover:bg-richblack-700 transition-all">
                                 <FcGoogle size={22} />
-                                <span>Continue with Google as {role}</span>  {/* role is already in state */}
+                                <span>Continue with Google</span>
                             </button>
                         </form>
                     </div>
