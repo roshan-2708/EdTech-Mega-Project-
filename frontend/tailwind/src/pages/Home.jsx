@@ -17,6 +17,8 @@ import { MdLeaderboard } from "react-icons/md";
 import { FaGraduationCap } from "react-icons/fa";
 import { FaGem } from "react-icons/fa";
 import { FaCode } from "react-icons/fa";
+import { FaChalkboardTeacher } from "react-icons/fa";
+
 
 const Home = () => {
     const token = localStorage.getItem('token');
@@ -41,22 +43,25 @@ const Home = () => {
                 </Link>
 
                 <div className='text-center text-4xl font-semibold mt-8'>
-                    Empower Your Future with <HighlighText text="Coding Skill" />
+                    Empower Your Future <HighlighText text="with Coding Skills" />
                 </div>
 
                 <div className='w-[50%] text-center text-sm font-bold text-richblack-100 mt-4'>
                     “Learn industry-ready skills from expert instructors. Build real-world projects, boost your career, and unlock new opportunities with flexible, high-quality courses designed to help you grow at your own pace.”
                 </div>
 
-
-                <div className='flex flex-row gap-7 mt-8'>
-                    <CTAButton active={true} linkto={token !== null ? "/dashboard" : "/login"}>
-                        Learn more
-                    </CTAButton>
-                    <CTAButton active={false} linkto={token !== null ? "/dashboard/my-profile" : "/login"}>
-                        Book a demo
+                <div className="flex mt-8">
+                    <CTAButton
+                        active={true}
+                        linkto={token ? "/DemoVideo" : "/login"}
+                    >
+                        <span className="flex items-center gap-2">
+                            Start Learning for Free
+                            <FaChalkboardTeacher className="text-lg" />
+                        </span>
                     </CTAButton>
                 </div>
+
                 <div className="relative mx-auto my-12 w-fit shadow-[20px_20px_0px_0px_rgba(255,255,255,1)]">
                     <div className="group relative  transition-all duration-200 hover:scale-[1.02]">
 
@@ -138,45 +143,57 @@ const Home = () => {
 
             {/* section-2 */}
             <div className="bg-pure-greys-5 text-richblack-700 w-full">
+                <div className="homepage_bg h-[333px] w-full flex justify-center items-center px-4">
+                    <div className="max-w-4xl mx-auto text-center flex flex-col items-center justify-center gap-4">
 
-                <div className="homepage_bg h-[333px] w-full flex justify-center items-center">
-                    <div className="flex flex-row gap-7 text-whit font-bold">
-                        <CTAButton active={true} linkto={token !== null ? '/dashboard' : '/about'}>
-                            <div>Explore Full Catalog</div>
-                        </CTAButton>
+                        {/* Small Badge / Pre-heading */}
+                        <span className="text-xs uppercase tracking-widest font-bold text-yellow-50 bg-richblack-800/80 px-4 py-1.5 rounded-full border border-richblack-700 shadow-sm">
+                            Next-Gen Learning
+                        </span>
 
-                        <CTAButton active={false} linkto={token !== null ? '/dashboard' : '/'}>
-                            <div>Learn More</div>
-                        </CTAButton>
+                        {/* Main Heading */}
+                        <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-richblack-5 tracking-tight leading-tight">
+                            Master Industry-Grade Skills <br className="hidden sm:inline" />
+                            <span className="text-yellow-50">At Your Own Pace</span>
+                        </h2>
+
+                        {/* Paragraph / Subtitle */}
+                        <p className="text-richblack-200 text-sm sm:text-base md:text-lg max-w-2xl font-normal leading-relaxed">
+                            Step into curated roadmaps, live interactive playgrounds, and expert-reviewed projects designed to transition you seamlessly into tech roles.
+                        </p>
+
                     </div>
                 </div>
             </div>
 
             {/* section-3 */}
             <div className="section2 w-full flex flex-col items-center justify-center bg-gray-50 py-16 px-4 md:px-20">
-                <div className="flex flex-col md:flex-row md:gap-16 gap-12 items-center w-full max-w-6xl">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-10 lg:gap-16 w-full max-w-6xl mx-auto py-12 px-4">
 
-                    {/* Left Text */}
-                    <div className="text-center md:text-left md:max-w-lg space-y-4 mb-8 md:mb-0">
-                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+                    {/* Left Heading */}
+                    <div className="w-full md:w-1/2 text-left space-y-4">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-semibold uppercase tracking-wider">
+                            Future Proof
+                        </div>
+
+                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-richblack-900 leading-[1.2] tracking-tight">
                             Get the skills you need{' '}
-                            <span className="bg-gradient-to-r from-blue-500 to-blue-800 bg-clip-text text-transparent">
+                            <span className="bg-gradient-to-r from-blue-700 to-caribbean-300 bg-clip-text text-transparent">
                                 for a job that is in demand.
                             </span>
                         </h2>
-
                     </div>
 
-                    {/* Right Paragraph + Button */}
-                    <div className="md:max-w-md text-center md:text-left space-y-6">
-                        <p className="text-sm text-gray-700 font-semibold mb-10">
-                            "The modern StudyNotion sets its own terms. Today, being a competitive specialist requires more than professional skills."
+                    {/* Right Editorial Text + Action */}
+                    <div className="w-full md:w-5/12 flex flex-col items-start gap-6 border-l-2 border-richblack-100 pl-0 md:pl-8">
+                        <p className="text-base text-richblack-600 font-normal leading-relaxed">
+                            The modern tech space sets its own terms. Today, becoming a top-tier engineer demands practical intuition, adaptability, and production-level execution.
                         </p>
-                        <div className='w-[150px] font-extrabold text-2xl'>
+
+                        <div className="w-fit transition-transform duration-200 hover:scale-95">
                             <CTAButton
                                 active={true}
                                 linkto="/signup"
-                                className="bg-yellow-400 text-black hover:bg-yellow-500"
                             >
                                 Learn More
                             </CTAButton>
@@ -315,7 +332,7 @@ const Home = () => {
             </div>
 
             {/* section-4 */}
-            <div className=' flex flex-col md:flex-row p-10 mt-10 justify-center items-center gap-16 w-full'>
+            <div className=' flex flex-col md:flex-row p-10 m-10 justify-center items-center gap-16 w-full'>
                 <div className='bg-white w-[616px] h-[545px] relative'>
                     <img
                         src={Instructor}
@@ -324,27 +341,49 @@ const Home = () => {
                     />
                 </div>
 
-                {/* Right Content */}
-                <div className="text-white flex flex-col max-w-[480px] space-y-6">
+                <div className="w-full max-w-[520px] flex flex-col space-y-6 text-left">
+
+                    {/* Small Category Pill */}
+                    <div className="w-fit inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-richblack-800 border border-richblack-700 text-xs font-semibold text-yellow-50 uppercase tracking-wider">
+                        <span>Instructor Portal</span>
+                    </div>
 
                     {/* Heading */}
-                    <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight tracking-tight">
                         Become an <HighlighText text="Instructor" />
-                    </h1>
+                    </h2>
 
                     {/* Subtext */}
-                    <p className="text-gray-300 text-lg leading-relaxed">
-                        Instructors from around the world teach millions of students on StudyNotion.
-                        We provide the tools and skills to help you teach what you love, effortlessly
-                        and at scale.
+                    <p className="text-richblack-300 text-base sm:text-lg font-normal leading-relaxed">
+                        Instructors from around the world teach millions of students on StudyNotion. We provide the tools, reach, and platform to help you teach what you love with absolute confidence.
                     </p>
 
-                    {/* CTA */}
-                    <div className="pt-2">
+                    {/* Highlights List */}
+                    <div className="grid grid-cols-2 gap-3 pt-1 text-sm text-richblack-100 font-medium">
+                        <div className="flex items-center gap-2">
+                            <span className="text-yellow-50 font-bold">✓</span> Global Reach
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-yellow-50 font-bold">✓</span> Direct Payouts
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-yellow-50 font-bold">✓</span> Built-in Analytics
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-yellow-50 font-bold">✓</span> Course Builder Tools
+                        </div>
+                    </div>
+
+                    {/* CTA Button */}
+                    <div className="pt-4 w-fit transition-transform duration-200 hover:scale-95">
                         <CTAButton active={true} linkto={token !== null ? '/dashboard' : '/signup'}>
-                            Start Teaching Today
+                            <div className="flex items-center gap-2">
+                                <span>Start Teaching Today</span>
+                                <span>→</span>
+                            </div>
                         </CTAButton>
                     </div>
+
                 </div>
             </div>
 

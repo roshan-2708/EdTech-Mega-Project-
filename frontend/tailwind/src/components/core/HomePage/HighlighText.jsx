@@ -2,7 +2,7 @@ import React from 'react';
 
 const HighlighText = ({ text }) => {
     return ( 
-        <span className='font-semiboldbold text-richblue-200'>
+        <span className='font-semiboldbold text-yellow-400'>
             {text}
         </span>
     );

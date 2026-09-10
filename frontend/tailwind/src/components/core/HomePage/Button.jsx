@@ -7,7 +7,7 @@ const Button = ({ children, active, linkto, onClick }) => {
         return (
             <Link to={linkto}>
                 <div
-                    className={`text-center text-[13px] px-6 py-3 rounded-md font-bold 
+                    className={`text-center text-[13px] rounded-sm px-6 py-3 font-bold 
           ${active ? "bg-yellow-50 text-black" : "bg-richblack-700 text-white"} 
           transition-all duration-200 hover:scale-95 cursor-pointer`}
                 >
@@ -22,7 +22,7 @@ const Button = ({ children, active, linkto, onClick }) => {
         <button
             type="button"
             onClick={onClick}
-            className={`text-center text-[13px] px-6 py-3 rounded-md font-bold 
+            className={`text-center text-[13px] px-6 py-3 font-bold rounded-sm
       ${active ? "bg-yellow-50 text-black" : "bg-richblack-700 text-white"} 
       transition-all duration-200 hover:scale-95`}
         >
