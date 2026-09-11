@@ -59,8 +59,8 @@ const CourseDetails = () => {
 
     const handleActive = (id) => {
         setIsActive(
-            isActive.includes(id) 
-                ? isActive.filter((e) => e !== id) 
+            isActive.includes(id)
+                ? isActive.filter((e) => e !== id)
                 : [...isActive, id]
         );
     };
@@ -106,10 +106,10 @@ const CourseDetails = () => {
 
     return (
         <div className="relative mx-auto flex max-w-7xl flex-col-reverse gap-10 px-6 py-10 lg:flex-row items-start">
-            
+
             {/* LEFT SECTION (Main Details) */}
             <div className="flex flex-1 flex-col gap-8 w-full">
-                
+
                 {/* Hero Header Card */}
                 <div className="rounded-2xl bg-richblack-800 p-6 md:p-8 border border-richblack-700 text-white shadow-xl">
                     <h1 className="text-2xl md:text-4xl font-extrabold text-richblack-5 tracking-tight">
