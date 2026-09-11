@@ -10,7 +10,7 @@ const CourseCard = ({ cardData, currentCard, setCurrentCard }) => {
             onClick={() => setCurrentCard(heading)}
             className={`
         w-full sm:w-[260px] md:w-[280px] lg:w-[300px]
-        p-5 rounded-xl cursor-pointer transition-all duration-300
+        p-5 rounded-sm cursor-pointer transition-all duration-300
         ${isActive
                     ? "bg-white text-richblack-700 border-2 border-yellow-5 shadow-lg scale-105"
                     : "bg-richblack-700 border border-richblack-600 hover:scale-105"
