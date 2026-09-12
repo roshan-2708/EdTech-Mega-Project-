@@ -1,18 +1,18 @@
 import React from 'react';
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { Link } from 'react-router-dom';
-import HighlighText from '../components/core/HomePage/HighlighText';
-import ExploreMore from '../components/core/HomePage/ExploreMore';
-import CTAButton from '../components/core/HomePage/Button';
-import banner from '../assets/Images/banner.mp4'
-import CodeBlocks from "../components/core/HomePage/Code";
-import Footer from '../components/universal/Footer';
-import TimeLineLogo from '../assets/Images/TimelineImage.png';
-import Instructor from '../assets/Images/Instructor.png';
-import Plan from '../assets/Images/Plan_your_lessons.png'
-import Design from "../components/core/HomePage/Design";
-import Know from '../assets/Images/Know_your_progress.svg'
-import Compare from '../assets/Images/Compare_with_others.svg'
+import HighlighText from '../features/home/components/HighlightText';
+import ExploreMore from '../features/home/components/ExploreMore';
+import CTAButton from '../components/common/Button';
+import banner from '../assets/videos/banner.mp4'
+import CodeBlocks from "../features/home/components/Code";
+import Footer from '../components/layout/Footer';
+import TimeLineLogo from '../assets/images/about/TimelineImage.png';
+import Instructor from '../assets/images/about/Instructor.png';
+import Plan from '../assets/images/home/Plan_your_lessons.png'
+import Design from "../features/home/components/Design";
+import Know from '../assets/images/home/Know_your_progress.svg'
+import Compare from '../assets/images/home/Compare_with_others.svg'
 import { MdLeaderboard } from "react-icons/md";
 import { FaGraduationCap } from "react-icons/fa";
 import { FaGem } from "react-icons/fa";

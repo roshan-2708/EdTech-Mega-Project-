@@ -1,6 +1,6 @@
 import React from "react";
-import Footer from "../components/universal/Footer";
-import ContactUs from "../components/core/HomePage/ContactUs";
+import Footer from "../components/layout/Footer";
+import ContactUs from "../features/home/components/ContactUs";
 import {
     ChatBubbleLeftRightIcon,
     MapPinIcon,

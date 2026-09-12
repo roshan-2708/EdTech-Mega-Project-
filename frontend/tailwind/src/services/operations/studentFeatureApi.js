@@ -1,8 +1,8 @@
 import { studentEndpoints } from "../apis";
 import { apiConnector } from "../apiConnecter";
 import { toast } from "react-hot-toast";
-import { setPaymentLoading } from "../../slice/courseSlice";
-import { resetCart } from "../../slice/cartSlice";
+import { setPaymentLoading } from "../../features/courses/courseSlice";
+import { resetCart } from "../../features/cart/cartSlice";
 
 const {
     COURSE_PAYMENT_API,

@@ -1,12 +1,12 @@
 import React from 'react';
-import about1 from '../assets/Images/aboutus1.webp';
-import about2 from '../assets/Images/aboutus2.webp';
-import about3 from '../assets/Images/aboutus3.webp';
-import HighlightText from '../components/core/HomePage/HighlighText';
-import Footer from '../components/universal/Footer';
-import FoundingStory from '../assets/Images/FoundingStory.png';
-import CTAButton from '../components/core/HomePage/Button';
-import ContatctForm from '../components/core/HomePage/ContatctForm';
+import about1 from '../assets/images/about/aboutus1.webp';
+import about2 from '../assets/images/about/aboutus2.webp';
+import about3 from '../assets/images/about/aboutus3.webp';
+import HighlightText from '../features/home/components/HighlightText';
+import Footer from '../components/layout/Footer';
+import FoundingStory from '../assets/images/about/FoundingStory.png';
+import CTAButton from '../components/common/Button';
+import ContatctForm from '../features/home/components/ContactForm';
 import { SparklesIcon } from '@heroicons/react/24/outline';
 
 const statsData = [

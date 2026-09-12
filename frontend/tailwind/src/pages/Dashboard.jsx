@@ -1,5 +1,5 @@
 import React from "react";
-import SideBar from "../components/core/HomePage/SideBar";
+import SideBar from "../components/layout/Sidebar";
 import { Outlet } from "react-router-dom";
 
 const Dashboard = () => {
