@@ -15,11 +15,10 @@ const SideBar = () => {
     const [confirmationModal, setConfirmationModal] = useState(null);
 
     return (
-        <div className="flex min-w-[222px] flex-col border-r border-richblack-700
-                    h-[calc(100vh-3.5rem)] py-10 text-white">
-
+        <div className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around md:justify-center gap-2 md:gap-8 border-t border-richblack-700 bg-richblack-800/90 backdrop-blur-md px-4 py-3 text-white shadow-lg">
+            
             {/* Sidebar links */}
-            <div className="flex flex-col">
+            <div className="flex items-center gap-1 sm:gap-4 overflow-x-auto no-scrollbar">
                 {sidebarLinks.map((link) => {
                     if (link.type && user?.accountType !== link.type) return null;
                     return (
@@ -32,41 +31,43 @@ const SideBar = () => {
                 })}
             </div>
 
-            <div className="mx-auto my-6 h-[1px] w-10/12 bg-richblack-700" />
+            <div className="hidden md:block h-6 w-[1px] bg-richblack-700" />
 
-            {/* Settings */}
-            <SiderLink
-                link={{ name: "Settings", path: "/dashboard/settings" }}
-                iconName="VscSettingsGear"
-            />
+            {/* Settings & Logout Container */}
+            <div className="flex items-center gap-2 sm:gap-4">
+                {/* Settings */}
+                <SiderLink
+                    link={{ name: "Settings", path: "/dashboard/settings" }}
+                    iconName="VscSettingsGear"
+                />
 
-            {/* Logout */}
-            <button
-                onClick={() =>
-                    setConfirmationModal({
-                        text1: "Are you sure?",
-                        text2: "You will be logged out of your account.",
-                        btn1Text: "Logout",
-                        btn2Text: "Cancel",
-                        btn1Handler: async () => {
-                            try {
-                                await logoutUser();      // API call
-                                localStorage.removeItem("token");
-                                dispatch(setUser(null)); // Clear Redux user
-                                navigate("/login");
-                            } catch (error) {
-                                console.error("Logout failed", error);
-                            }
-                        },
-
-                        btn2Handler: () => setConfirmationModal(null),
-                    })
-                }
-                className="mt-4 flex items-center gap-x-2 px-6 py-2 text-sm text-richblack-300"
-            >
-                <VscSignOut />
-                <span>Logout</span>
-            </button>
+                {/* Logout */}
+                <button
+                    onClick={() =>
+                        setConfirmationModal({
+                            text1: "Are you sure?",
+                            text2: "You will be logged out of your account.",
+                            btn1Text: "Logout",
+                            btn2Text: "Cancel",
+                            btn1Handler: async () => {
+                                try {
+                                    await logoutUser();
+                                    localStorage.removeItem("token");
+                                    dispatch(setUser(null));
+                                    navigate("/login");
+                                } catch (error) {
+                                    console.error("Logout failed", error);
+                                }
+                            },
+                            btn2Handler: () => setConfirmationModal(null),
+                        })
+                    }
+                    className="flex items-center gap-x-1.5 px-3 py-2 text-xs sm:text-sm text-richblack-300 hover:text-pink-300 transition"
+                >
+                    <VscSignOut className="text-base" />
+                    <span className="hidden sm:inline">Logout</span>
+                </button>
+            </div>
 
             {confirmationModal && (
                 <ConfirmationModal modalData={confirmationModal} />

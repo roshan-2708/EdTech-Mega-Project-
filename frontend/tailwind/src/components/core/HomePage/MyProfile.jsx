@@ -1,158 +1,352 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import IconButton from "../../common/IconButton";
 import { useSelector } from "react-redux";
-import { FaEdit } from "react-icons/fa";
+import IconButton from "../../common/IconButton";
+
+import {
+  FaEdit,
+  FaFire,
+  FaGraduationCap,
+  FaCheckCircle,
+  FaChartLine,
+  FaLock,
+  FaShieldAlt,
+} from "react-icons/fa";
 
 const MyProfile = () => {
-    const { user } = useSelector((state) => state.profile);
-    const navigate = useNavigate();
+  const { user } = useSelector((state) => state.profile);
+  const navigate = useNavigate();
 
-    return (
-        <div className="w-full space-y-6">
-            {/* Top card: heading + avatar + primary info */}
-            <div className="w-full rounded-xl border border-richblack-700 bg-richblack-800/60 p-6 text-white shadow-sm">
-                {/* Header */}
-                <div className="flex flex-wrap items-center gap-6">
-                    <div className="flex flex-col gap-1">
-                        <h1 className="text-2xl font-semibold">My Profile</h1>
-                        <p className="text-sm text-richblack-300">
-                            Manage your personal information and account details.
-                        </p>
-                    </div>
+  const goToSettings = () => {
+    navigate("/dashboard/settings");
+  };
 
-                    <div className="flex-1" />
+  const aboutText =
+    user?.about?.trim() ||
+    user?.additionalDetail?.about ||
+    "Write something about yourself to let others know you better.";
 
-                    <IconButton
-                        text="Edit"
-                        onClick={() => navigate("/dashboard/settings")}
-                        customClasses="ml-auto flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-400 text-richblack-900 hover:bg-yellow-300 transition"
-                    >
-                        <FaEdit className="text-sm" />
-                    </IconButton>
+  return (
+    <div className="w-full min-h-full bg-richblack-900 px-3 py-4 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-6xl space-y-4">
+
+        <section className="rounded-xl border border-richblack-700 bg-richblack-800/60 p-4 shadow-sm sm:p-5">
+
+          <div className="flex items-center justify-between gap-4">
+
+            {/* Profile information */}
+            <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+
+              {/* Avatar */}
+              <div className="relative shrink-0">
+                <img
+                  src={
+                    user?.image ||
+                    "https://api.dicebear.com/5.x/initials/svg?seed=User"
+                  }
+                  alt={`profile-${user?.firstName || "user"}`}
+                  className="h-14 w-14 rounded-full border-2 border-richblack-600 object-cover sm:h-16 sm:w-16"
+                />
+
+                {/* Online indicator */}
+                <span className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full border-2 border-richblack-800 bg-green-500" />
+              </div>
+
+              {/* Name + email */}
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h1 className="truncate text-base font-semibold text-richblack-5 sm:text-lg">
+                    {user?.firstName || "User"}{" "}
+                    {user?.lastName || ""}
+                  </h1>
+
+                  <span className="rounded-full bg-richblack-700 px-2 py-0.5 text-[9px] font-medium text-richblack-200">
+                    Verified Student
+                  </span>
                 </div>
 
-                {/* Divider */}
-                <div className="mt-5 h-px w-full bg-richblack-700" />
-
-                {/* Profile info row */}
-                <div className="mt-5 flex items-center gap-4">
-                    <img
-                        src={user?.image}
-                        alt={`profile-${user?.firstName}`}
-                        className="h-20 w-20 rounded-full object-cover border-2 border-richblack-600 shadow-sm"
-                    />
-                    <div className="flex flex-col gap-1">
-                        <p className="text-lg font-medium">
-                            {user?.firstName} {user?.lastName}
-                        </p>
-                        <p className="text-sm text-richblack-300">{user?.email}</p>
-                    </div>
-                </div>
+                <p className="mt-0.5 truncate text-xs text-richblack-300 sm:text-sm">
+                  {user?.email || "No email available"}
+                </p>
+              </div>
             </div>
 
-            {/* About card */}
-            <div className="w-full rounded-xl border border-richblack-700 bg-richblack-800/60 p-6 text-white">
-                <div className="mb-3 flex items-center gap-3">
-                    <h2 className="text-lg font-semibold">About</h2>
-                    <span className="rounded-full bg-richblack-700 px-2 py-0.5 text-xs text-richblack-200">
-                        Bio
-                    </span>
+            {/* Edit */}
+            <IconButton
+              text="Edit"
+              onClick={goToSettings}
+              customClasses="
+                shrink-0
+                flex items-center gap-2
+                rounded-lg
+                border border-richblack-600
+                bg-richblack-700
+                px-3 py-2
+                text-xs font-medium text-richblack-5
+                transition
+                hover:bg-richblack-600
+              "
+            >
+              <FaEdit className="text-xs" />
+            </IconButton>
+          </div>
 
-                    <IconButton
-                        text="Edit"
-                        onClick={() => navigate("/dashboard/settings")}
-                        customClasses="ml-auto flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-400 text-richblack-900 hover:bg-yellow-300 transition"
-                    >
-                        <FaEdit className="text-sm" />
-                    </IconButton>
-                </div>
+          <div className="mt-4 grid grid-cols-3 overflow-hidden rounded-lg border border-richblack-700 bg-richblack-900">
 
-                <div className="mt-1 text-sm leading-relaxed text-richblack-200">
-                    {user?.about && user.about.trim().length > 0 ? (
-                        user.about
-                    ) : (
-                        <span className="italic text-richblack-400">
-                            {user?.additionalDetail?.about || "Write something about yourself to let others know you better."}
-                        </span>
-                    )}
-                </div>
+            {/* Enrolled */}
+            <div className="border-r border-richblack-700 px-3 py-3 text-center">
+              <div className="flex items-center justify-center gap-1.5">
+                <FaGraduationCap className="text-xs text-richblack-300" />
+                <p className="text-base font-semibold text-richblack-5 sm:text-lg">
+                  04
+                </p>
+              </div>
+
+              <p className="mt-0.5 text-[9px] uppercase tracking-wide text-richblack-400 sm:text-[10px]">
+                Enrolled
+              </p>
             </div>
 
-            {/* Personal details card */}
-            <div className="w-full rounded-xl border border-richblack-700 bg-richblack-800/60 p-6 text-white">
-                {/* Header */}
-                <div className="mb-4 flex items-center gap-3">
-                    <h2 className="text-lg font-semibold">Personal Details</h2>
+            {/* Completed */}
+            <div className="border-r border-richblack-700 px-3 py-3 text-center">
+              <div className="flex items-center justify-center gap-1.5">
+                <FaCheckCircle className="text-xs text-richblack-300" />
+                <p className="text-base font-semibold text-richblack-5 sm:text-lg">
+                  03
+                </p>
+              </div>
 
-                    <IconButton
-                        text="Edit"
-                        onClick={() => navigate("/dashboard/settings")}
-                        customClasses="ml-auto flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-400 text-richblack-900 hover:bg-yellow-300 transition"
-                    >
-                        <FaEdit className="text-sm" />
-                    </IconButton>
-                </div>
-
-                {/* Details grid */}
-                <div className="grid gap-4 md:grid-cols-2">
-                    {/* First Name */}
-                    <div className="space-y-1">
-                        <p className="text-xs font-medium uppercase tracking-wide text-richblack-400">
-                            First Name
-                        </p>
-                        <p className="text-sm text-richblack-50">{user?.firstName || "-"}</p>
-                    </div>
-
-                    {/* Last Name */}
-                    <div className="space-y-1">
-                        <p className="text-xs font-medium uppercase tracking-wide text-richblack-400">
-                            Last Name
-                        </p>
-                        <p className="text-sm text-richblack-50">{user?.lastName || "-"}</p>
-                    </div>
-
-                    {/* Email */}
-                    <div className="space-y-1">
-                        <p className="text-xs font-medium uppercase tracking-wide text-richblack-400">
-                            Email
-                        </p>
-                        <p className="text-sm text-richblack-50 break-all">
-                            {user?.email || "-"}
-                        </p>
-                    </div>
-
-                    {/* Gender */}
-                    <div className="space-y-1">
-                        <p className="text-xs font-medium uppercase tracking-wide text-richblack-400">
-                            Gender
-                        </p>
-                        <p className="text-sm text-richblack-50">{user?.additionalDetail?.gender || "-"}</p>
-                    </div>
-
-                    {/* Phone Number */}
-                    <div className="space-y-1">
-                        <p className="text-xs font-medium uppercase tracking-wide text-richblack-400">
-                            Phone Number
-                        </p>
-                        <p className="text-sm text-richblack-50">
-                            {user?.additionalDetail?.contactNumber || "-"}
-                        </p>
-                    </div>
-
-                    {/* Date of birth */}
-                    <div className="space-y-1">
-                        <p className="text-xs font-medium uppercase tracking-wide text-richblack-400">
-                            Date of birth
-                        </p>
-                        <p className="text-sm text-richblack-50">
-                            {user?.additionalDetail?.dateOfBirth || "-"}
-                        </p>
-                    </div>
-                </div>
+              <p className="mt-0.5 text-[9px] uppercase tracking-wide text-richblack-400 sm:text-[10px]">
+                Completed
+              </p>
             </div>
-        </div>
-    );
+
+            {/* Score */}
+            <div className="px-3 py-3 text-center">
+              <div className="flex items-center justify-center gap-1.5">
+                <FaChartLine className="text-xs text-richblack-300" />
+                <p className="text-base font-semibold text-richblack-5 sm:text-lg">
+                  88%
+                </p>
+              </div>
+
+              <p className="mt-0.5 text-[9px] uppercase tracking-wide text-richblack-400 sm:text-[10px]">
+                Avg Score
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="flex items-center justify-between rounded-xl border border-richblack-700 bg-richblack-800/60 px-4 py-3 sm:px-5">
+
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-richblack-700">
+              <FaFire className="text-sm text-yellow-400" />
+            </div>
+
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="text-xs font-semibold text-richblack-5 sm:text-sm">
+                  14 Days Streak
+                </p>
+
+                <span className="rounded-full bg-richblack-700 px-1.5 py-0.5 text-[8px] text-richblack-300">
+                  Active
+                </span>
+              </div>
+
+              <p className="mt-0.5 text-[10px] text-richblack-400 sm:text-xs">
+                Top 5% among engineering peers
+              </p>
+            </div>
+          </div>
+
+          {/* Streak bars */}
+          <div className="hidden items-end gap-1 sm:flex">
+            <span className="h-3 w-1 rounded-full bg-richblack-500" />
+            <span className="h-5 w-1 rounded-full bg-richblack-400" />
+            <span className="h-4 w-1 rounded-full bg-richblack-500" />
+            <span className="h-7 w-1 rounded-full bg-yellow-400" />
+            <span className="h-5 w-1 rounded-full bg-yellow-400" />
+            <span className="h-8 w-1 rounded-full bg-yellow-400" />
+            <span className="h-6 w-1 rounded-full bg-yellow-400" />
+          </div>
+        </section>
+        <section className="rounded-xl border border-richblack-700 bg-richblack-800/60 p-4 sm:p-5">
+
+          <div className="mb-3 flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-richblack-5 sm:text-base">
+              About Me
+            </h2>
+
+            <span className="rounded-full bg-richblack-700 px-2 py-0.5 text-[9px] text-richblack-300">
+              Bio
+            </span>
+
+            <IconButton
+              text="Edit"
+              onClick={goToSettings}
+              customClasses="
+                ml-auto
+                flex items-center gap-1.5
+                rounded-md
+                bg-richblack-700
+                px-2.5 py-1.5
+                text-[10px] text-richblack-200
+                transition
+                hover:bg-richblack-600
+              "
+            >
+              <FaEdit className="text-[9px]" />
+            </IconButton>
+          </div>
+
+          <p className="text-xs leading-relaxed text-richblack-200 sm:text-sm">
+            {aboutText}
+          </p>
+
+          {/* Skills / tags */}
+          <div className="mt-3 flex flex-wrap gap-2">
+            {["Full-Stack", "Next.js", "TypeScript", "Python"].map(
+              (skill) => (
+                <span
+                  key={skill}
+                  className="rounded-md bg-richblack-700 px-2 py-1 text-[9px] text-richblack-300 sm:text-[10px]"
+                >
+                  {skill}
+                </span>
+              )
+            )}
+          </div>
+        </section>
+
+        <section className="rounded-xl border border-richblack-700 bg-richblack-800/60 p-4 sm:p-5">
+
+          <div className="mb-4 flex items-center">
+            <h2 className="text-sm font-semibold text-richblack-5 sm:text-base">
+              Personal Details
+            </h2>
+
+            <IconButton
+              text="Edit"
+              onClick={goToSettings}
+              customClasses="
+                ml-auto
+                flex items-center gap-1.5
+                rounded-md
+                bg-richblack-700
+                px-2.5 py-1.5
+                text-[10px] text-richblack-200
+                transition
+                hover:bg-richblack-600
+              "
+            >
+              <FaEdit className="text-[9px]" />
+            </IconButton>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+
+            <ProfileField
+              label="First Name"
+              value={user?.firstName}
+            />
+
+            <ProfileField
+              label="Last Name"
+              value={user?.lastName}
+            />
+
+            <ProfileField
+              label="Email Address"
+              value={user?.email}
+              fullWidth
+            />
+
+            <ProfileField
+              label="Phone Number"
+              value={user?.additionalDetail?.contactNumber}
+            />
+
+            <ProfileField
+              label="Gender"
+              value={user?.additionalDetail?.gender}
+            />
+
+            <ProfileField
+              label="Date of Birth"
+              value={user?.additionalDetail?.dateOfBirth}
+            />
+          </div>
+        </section>
+        <section className="rounded-xl border border-richblack-700 bg-richblack-800/60 p-4 sm:p-5">
+
+          <div className="mb-3 flex items-center gap-2">
+            <FaLock className="text-xs text-richblack-400" />
+
+            <h2 className="text-sm font-semibold text-richblack-5 sm:text-base">
+              Account Credentials
+            </h2>
+
+            <span className="ml-auto flex items-center gap-1 rounded-full bg-richblack-700 px-2 py-1 text-[9px] text-richblack-300">
+              <FaShieldAlt className="text-[8px]" />
+              2FA Active
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between rounded-lg border border-richblack-700 bg-richblack-900 px-3 py-3">
+
+            <div className="flex items-center gap-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-richblack-800">
+                <FaLock className="text-xs text-richblack-400" />
+              </div>
+
+              <div>
+                <p className="text-xs font-medium text-richblack-200">
+                  Password
+                </p>
+
+                <p className="mt-0.5 text-[9px] text-richblack-500">
+                  Last modified 32 days ago
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={goToSettings}
+              className="
+                rounded-md
+                bg-richblack-700
+                px-3 py-1.5
+                text-[9px] font-medium
+                text-richblack-200
+                transition
+                hover:bg-richblack-600
+              "
+            >
+              Update
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+};
+
+const ProfileField = ({ label, value, fullWidth = false }) => {
+  return (
+    <div className={`${fullWidth ? "sm:col-span-2" : ""}`}>
+      <p className="mb-1 text-[9px] font-medium uppercase tracking-wide text-richblack-400">
+        {label}
+      </p>
+
+      <div className="flex min-h-[38px] items-center rounded-md border border-richblack-700 bg-richblack-900 px-3 py-2">
+        <p className="break-all text-xs text-richblack-100">
+          {value || "-"}
+        </p>
+      </div>
+    </div>
+  );
 };
 
 export default MyProfile;
