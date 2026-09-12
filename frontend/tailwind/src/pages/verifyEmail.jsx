@@ -84,11 +84,11 @@ const VerifyEmail = () => {
             {/* LEFT SIDE: Branding & Ed-Tech Content */}
             <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-richblack-900 to-[#00122e] p-12 flex-col justify-between relative overflow-hidden">
                 {/* Background Decor */}
-                <div className="absolute top-[-10%] left-[-10%] w-64 h-64 bg-blue-600/10 blur-[100px] rounded-full" />
+                <div className="absolute top-[-10%] left-[-10%] w-64 h-64 bg-blue-600/10 blur-[100px] rounded-sm" />
 
                 <div className="relative z-10">
                     <div className="flex items-center gap-2 text-yellow-50 text-2xl font-bold mb-12">
-                        <div className="bg-yellow-50 text-richblack-900 p-1.5 rounded-lg">
+                        <div className="bg-yellow-50 text-richblack-900 p-1.5 rounded-sm">
                             <BookOpen size={24} />
                         </div>
                         StudyNotion
@@ -107,7 +107,7 @@ const VerifyEmail = () => {
                                 { icon: BiCheckShield, title: "Secure Learning", desc: "Verified accounts ensure a safe environment for everyone." }
                             ].map((item, i) => (
                                 <div key={i} className="flex gap-4 items-start group">
-                                    <div className="p-3 bg-white/5 rounded-xl text-blue-100 group-hover:bg-blue-600/20 transition-all">
+                                    <div className="p-3 bg-white/5 rounded-sm text-blue-100 group-hover:bg-blue-600/20 transition-all">
                                         <item.icon size={24} />
                                     </div>
                                     <div>
@@ -158,12 +158,12 @@ const VerifyEmail = () => {
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="roshan@example.com"
-                                        className="w-full bg-richblack-800 rounded-xl p-4 text-richblack-5 outline-none focus:ring-2 focus:ring-yellow-50 transition-all shadow-[inset_0px_-1px_0px_rgba(255,255,255,0.18)]"
+                                        className="w-full bg-richblack-800 rounded-sm p-4 text-richblack-5 outline-none focus:ring-2 focus:ring-yellow-50 transition-all shadow-[inset_0px_-1px_0px_rgba(255,255,255,0.18)]"
                                     />
                                 </div>
                                 <button
                                     onClick={handleSendOtp}
-                                    className="w-full bg-yellow-50 py-4 rounded-xl font-bold text-richblack-900 transition-all hover:scale-[0.98] active:scale-[0.95] shadow-lg shadow-yellow-50/10"
+                                    className="w-full bg-yellow-50 py-4 rounded-sm font-bold text-richblack-900 transition-all hover:scale-[0.98] active:scale-[0.95] shadow-lg shadow-yellow-50/10"
                                 >
                                     Get Verification Code
                                 </button>
@@ -180,13 +180,13 @@ const VerifyEmail = () => {
                                             value={digit}
                                             onChange={(e) => handleOtpChange(e, index)}
                                             onKeyDown={(e) => handleKeyDown(e, index)}
-                                            className="w-full aspect-square text-center text-2xl font-bold bg-richblack-800 rounded-xl focus:ring-2 focus:ring-yellow-50 text-yellow-50 shadow-[inset_0px_-1px_0px_rgba(255,255,255,0.18)] outline-none"
+                                            className="w-full aspect-square text-center text-2xl font-bold bg-richblack-800 rounded-sm focus:ring-2 focus:ring-yellow-50 text-yellow-50 shadow-[inset_0px_-1px_0px_rgba(255,255,255,0.18)] outline-none"
                                         />
                                     ))}
                                 </div>
                                 <button
                                     onClick={handleVerifyOtp}
-                                    className="w-full bg-yellow-50 py-4 rounded-xl font-bold text-richblack-900 transition-all hover:scale-[0.98] shadow-lg shadow-yellow-50/10"
+                                    className="w-full bg-yellow-50 py-4 rounded-sm font-bold text-richblack-900 transition-all hover:scale-[0.98] shadow-lg shadow-yellow-50/10"
                                 >
                                     Complete Verification
                                 </button>

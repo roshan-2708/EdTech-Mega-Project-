@@ -67,10 +67,10 @@ const Contact = () => {
                             ].map((item, index) => (
                                 <div
                                     key={index}
-                                    className="group p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-yellow-500/30 transition-all duration-300"
+                                    className="group p-6 rounded-sm bg-white/[0.03] border border-white/5 hover:border-yellow-500/30 transition-all duration-300"
                                 >
                                     <div className="flex items-center gap-4">
-                                        <div className={`p-3 rounded-xl bg-white/5 ${item.color}`}>
+                                        <div className={`p-3 rounded-sm bg-white/5 ${item.color}`}>
                                             <item.icon className="h-6 w-6" />
                                         </div>
                                         <div>
@@ -82,7 +82,7 @@ const Contact = () => {
                                 </div>
                             ))}
 
-                            <div className="p-8 rounded-2xl bg-gradient-to-br from-yellow-600 to-yellow-400 text-white hidden lg:block">
+                            <div className="p-8 rounded-sm bg-gradient-to-br from-yellow-600 to-yellow-400 text-white hidden lg:block">
                                 <h4 className="text-xl font-bold mb-2">Why choose us?</h4>
                                 <ul className="space-y-3 text-blue-100 text-sm">
                                     <li className="flex items-center gap-2">✓ 24/7 Priority Support</li>
@@ -94,8 +94,8 @@ const Contact = () => {
 
                         {/* Right Side: Form Card (7 Columns) */}
                         <div className="lg:col-span-7">
-                            <div className="relative p-1 rounded-3xl bg-gradient-to-b from-white/10 to-transparent">
-                                <div className="bg-[#0f0f0f] rounded-[calc(1.5rem-1px)] p-8 md:p-10 shadow-2xl">
+                            <div className="relative p-1 rounded-sm bg-gradient-to-b from-white/10 to-transparent">
+                                <div className="bg-[#0f0f0f] p-8 md:p-10 shadow-2xl">
                                     <div className="mb-8">
                                         <h2 className="text-2xl font-bold text-white mb-2">Send us a message</h2>
                                         <p className="text-gray-400">We'll get back to you within 24 business hours.</p>

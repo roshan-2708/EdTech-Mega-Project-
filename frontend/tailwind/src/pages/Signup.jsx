@@ -63,12 +63,12 @@ const Signup = () => {
         <div className="w-full min-h-screen flex items-center justify-center bg-[#000814] relative overflow-hidden px-4 py-16">
 
             {/* PREMIUM BACKGROUND GLOWING BLOBS */}
-            <div className="absolute top-[-10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-blue-900/20 blur-[120px] pointer-events-none" />
-            <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-yellow-900/10 blur-[150px] pointer-events-none" />
+            <div className="absolute top-[-10%] right-[-10%] w-[400px] h-[400px] rounded-sm bg-blue-900/20 blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-sm bg-yellow-900/10 blur-[150px] pointer-events-none" />
 
             {loading ? (
                 <div className="flex justify-center items-center h-screen">
-                    <div className="spinner border-t-yellow-50 animate-spin rounded-full h-12 w-12 border-4 border-richblack-700"></div>
+                    <div className="spinner border-t-yellow-50 animate-spin rounded-sm h-12 w-12 border-4 border-richblack-700"></div>
                 </div>
             ) : (
                 <div className="w-11/12 max-w-6xl flex flex-col lg:flex-row items-center justify-between gap-y-12 lg:gap-x-16 z-10">
@@ -86,13 +86,13 @@ const Signup = () => {
                         </header>
 
                         {/* ROLE TOGGLE */}
-                        <div className="flex bg-richblack-800/80 p-1.5 gap-x-1 my-1 rounded-full border border-richblack-700 w-fit backdrop-blur-sm shadow-inner">
+                        <div className="flex bg-richblack-800/80 p-1.5 gap-x-1 my-1 rounded-sm border border-richblack-700 w-fit backdrop-blur-sm shadow-inner">
                             {["Student", "Instructor"].map((type) => (
                                 <button
                                     key={type}
                                     type="button"
                                     onClick={() => setFormData({ ...formData, accountType: type })}
-                                    className={`py-2 px-6 rounded-full transition-all duration-300 font-semibold text-sm tracking-wide ${formData.accountType === type
+                                    className={`py-2 px-6 rounded-sm transition-all duration-300 font-semibold text-sm tracking-wide ${formData.accountType === type
                                         ? "bg-richblack-900 text-yellow-50 shadow-md shadow-black/40 border border-richblack-700"
                                         : "bg-transparent text-richblack-300 hover:text-richblack-5"
                                         }`}
@@ -115,7 +115,7 @@ const Signup = () => {
                                         name="firstName"
                                         onChange={handleChange}
                                         placeholder="Enter first name"
-                                        className="bg-richblack-800/90 rounded-xl text-richblack-5 w-full p-3 border border-richblack-700 shadow-[inset_0px_1px_1px_rgba(255,255,255,0.05)] outline-none focus:border-yellow-50 focus:ring-4 focus:ring-yellow-50/10 transition-all duration-200 placeholder:text-richblack-500"
+                                        className="bg-richblack-800/90 rounded-sm text-richblack-5 w-full p-3 border border-richblack-700 shadow-[inset_0px_1px_1px_rgba(255,255,255,0.05)] outline-none focus:border-yellow-50 focus:ring-4 focus:ring-yellow-50/10 transition-all duration-200 placeholder:text-richblack-500"
                                     />
                                 </label>
                                 <label className="flex-1 flex flex-col gap-y-1.5">
@@ -126,7 +126,7 @@ const Signup = () => {
                                         name="lastName"
                                         onChange={handleChange}
                                         placeholder="Enter last name"
-                                        className="bg-richblack-800/90 rounded-xl text-richblack-5 w-full p-3 border border-richblack-700 shadow-[inset_0px_1px_1px_rgba(255,255,255,0.05)] outline-none focus:border-yellow-50 focus:ring-4 focus:ring-yellow-50/10 transition-all duration-200 placeholder:text-richblack-500"
+                                        className="bg-richblack-800/90 rounded-sm text-richblack-5 w-full p-3 border border-richblack-700 shadow-[inset_0px_1px_1px_rgba(255,255,255,0.05)] outline-none focus:border-yellow-50 focus:ring-4 focus:ring-yellow-50/10 transition-all duration-200 placeholder:text-richblack-500"
                                     />
                                 </label>
                             </div>
@@ -138,7 +138,7 @@ const Signup = () => {
                                     type="email"
                                     value={email}
                                     readOnly
-                                    className="bg-richblack-800/50 rounded-xl text-richblack-400 w-full p-3 border border-richblack-800 shadow-inner outline-none cursor-not-allowed select-none font-medium"
+                                    className="bg-richblack-800/50 rounded-sm text-richblack-400 w-full p-3 border border-richblack-800 shadow-inner outline-none cursor-not-allowed select-none font-medium"
                                 />
                             </label>
 
@@ -151,7 +151,7 @@ const Signup = () => {
                                     name="contactNumber"
                                     onChange={handleChange}
                                     placeholder="Enter phone number"
-                                    className="bg-richblack-800/90 rounded-xl text-richblack-5 w-full p-3 border border-richblack-700 shadow-[inset_0px_1px_1px_rgba(255,255,255,0.05)] outline-none focus:border-yellow-50 focus:ring-4 focus:ring-yellow-50/10 transition-all duration-200 placeholder:text-richblack-500"
+                                    className="bg-richblack-800/90 rounded-sm text-richblack-5 w-full p-3 border border-richblack-700 shadow-[inset_0px_1px_1px_rgba(255,255,255,0.05)] outline-none focus:border-yellow-50 focus:ring-4 focus:ring-yellow-50/10 transition-all duration-200 placeholder:text-richblack-500"
                                 />
                             </label>
 
@@ -167,7 +167,7 @@ const Signup = () => {
                                             name="password"
                                             onChange={handleChange}
                                             placeholder="Enter password"
-                                            className="bg-richblack-800/90 rounded-xl text-richblack-5 w-full p-3 pr-12 border border-richblack-700 shadow-[inset_0px_1px_1px_rgba(255,255,255,0.05)] outline-none focus:border-yellow-50 focus:ring-4 focus:ring-yellow-50/10 transition-all duration-200 placeholder:text-richblack-500"
+                                            className="bg-richblack-800/90 rounded-sm text-richblack-5 w-full p-3 pr-12 border border-richblack-700 shadow-[inset_0px_1px_1px_rgba(255,255,255,0.05)] outline-none focus:border-yellow-50 focus:ring-4 focus:ring-yellow-50/10 transition-all duration-200 placeholder:text-richblack-500"
                                         />
                                         <span
                                             onClick={() => setShowPassword((prev) => !prev)}
@@ -188,7 +188,7 @@ const Signup = () => {
                                             name="confirmPassword"
                                             onChange={handleChange}
                                             placeholder="Confirm password"
-                                            className="bg-richblack-800/90 rounded-xl text-richblack-5 w-full p-3 pr-12 border border-richblack-700 shadow-[inset_0px_1px_1px_rgba(255,255,255,0.05)] outline-none focus:border-yellow-50 focus:ring-4 focus:ring-yellow-50/10 transition-all duration-200 placeholder:text-richblack-500"
+                                            className="bg-richblack-800/90 rounded-sm text-richblack-5 w-full p-3 pr-12 border border-richblack-700 shadow-[inset_0px_1px_1px_rgba(255,255,255,0.05)] outline-none focus:border-yellow-50 focus:ring-4 focus:ring-yellow-50/10 transition-all duration-200 placeholder:text-richblack-500"
                                         />
                                         <span
                                             onClick={() => setShowConfirmPassword((prev) => !prev)}
@@ -204,7 +204,7 @@ const Signup = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="mt-5 w-full rounded-xl font-bold bg-yellow-50 py-3 px-4 text-black border border-yellow-100 hover:bg-yellow-100 hover:scale-[0.98] active:scale-[0.95] transition-all duration-300 shadow-lg shadow-yellow-50/10 tracking-wide disabled:bg-richblack-600 disabled:cursor-not-allowed"
+                                className="mt-5 w-full rounded-sm font-bold bg-yellow-50 py-3 px-4 text-black border border-yellow-100 hover:bg-yellow-100 hover:scale-[0.98] active:scale-[0.95] transition-all duration-300 shadow-lg shadow-yellow-50/10 tracking-wide disabled:bg-richblack-600 disabled:cursor-not-allowed"
                             >
                                 {loading ? "Creating Account..." : "Create Account"}
                             </button>

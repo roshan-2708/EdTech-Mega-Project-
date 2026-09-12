@@ -44,13 +44,13 @@ const ContactUs = () => {
     };
 
     // Reusable Input Class
-    const inputStyle = "w-full bg-white/[0.03] border border-white/10 focus:border-yellow-500/50 focus:ring-4 focus:ring-yellow-500/10 rounded-2xl px-5 py-4 text-white outline-none transition-all duration-300 placeholder:text-gray-600 hover:bg-white/[0.05]";
+    const inputStyle = "w-full bg-white/[0.03] border border-white/10 focus:border-yellow-500/50 focus:ring-4 focus:ring-yellow-500/10 rounded-sm px-5 py-4 text-white outline-none transition-all duration-300 placeholder:text-gray-600 hover:bg-white/[0.05]";
 
     return (
         <div className="relative">
             {submitted ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center space-y-4 animate-in fade-in zoom-in duration-500">
-                    <div className="h-20 w-20 bg-green-500/10 rounded-full flex items-center justify-center">
+                    <div className="h-20 w-20 bg-green-500/10 rounded-sm flex items-center justify-center">
                         <CheckCircle2 className="h-10 w-10 text-green-400" />
                     </div>
                     <h3 className="text-2xl font-bold text-white">Message Received!</h3>
@@ -106,7 +106,7 @@ const ContactUs = () => {
                         </label>
                         <div className="flex gap-3">
                             <select
-                                className="w-[110px] bg-white/[0.03] border border-white/10 rounded-2xl px-3 py-4 text-white outline-none cursor-pointer hover:bg-white/[0.05] transition-all appearance-none"
+                                className="w-[110px] bg-white/[0.03] border border-white/10 rounded-sm px-3 py-4 text-white outline-none cursor-pointer hover:bg-white/[0.05] transition-all appearance-none"
                                 {...register("countryCode")}
                                 defaultValue="+91" // HTML level default
                             >
@@ -150,7 +150,7 @@ const ContactUs = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full relative group overflow-hidden bg-gradient-to-r from-yellow-600 to-yellow-600 hover:from-yellow-500 hover:to-yellow-500 text-white font-bold py-5 rounded-2xl transition-all duration-300 transform active:scale-[0.98] shadow-xl shadow-yellow-500/20 flex items-center justify-center gap-3 disabled:opacity-50"
+                        className="w-full relative group overflow-hidden bg-gradient-to-r from-yellow-600 to-yellow-600 hover:from-yellow-500 hover:to-yellow-500 text-white font-bold py-5 rounded-sm transition-all duration-300 transform active:scale-[0.98] shadow-xl shadow-yellow-500/20 flex items-center justify-center gap-3 disabled:opacity-50"
                     >
                         {loading ? (
                             <Loader2 className="w-6 h-6 animate-spin text-white/80" />
