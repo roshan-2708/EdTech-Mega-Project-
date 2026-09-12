@@ -6,7 +6,7 @@ import HighlightText from '../features/home/components/HighlightText';
 import Footer from '../components/layout/Footer';
 import FoundingStory from '../assets/images/about/FoundingStory.png';
 import CTAButton from '../components/common/Button';
-import HighlightText from '../features/home/components/HighlightText';
+// import HighlightText from '../features/home/components/HighlightText';
 import { SparklesIcon } from '@heroicons/react/24/outline';
 
 const statsData = [
