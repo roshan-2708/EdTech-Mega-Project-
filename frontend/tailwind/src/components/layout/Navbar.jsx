@@ -134,7 +134,7 @@ const Navbar = () => {
                             <FaShoppingCart className="text-2xl text-richblack-25 group-hover:text-yellow-25 transition duration-200" />
 
                             {totalItems > 0 && (
-                                <span className="absolute -top-2 -right-2 bg-yellow-25 text-black min-w-[20px] h-[20px] flex items-center justify-center rounded-sm text-[11px] font-bold animate-bounce">
+                                <span className="absolute -top-2 -right-2 bg-yellow-25 text-yellow-300 min-w-[20px] h-[20px] flex items-center justify-center rounded-sm text-[11px] font-bold animate-bounce">
                                     {totalItems}
                                 </span>
                             )}

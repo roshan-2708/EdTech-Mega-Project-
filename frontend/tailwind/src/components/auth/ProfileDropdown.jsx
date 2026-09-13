@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { logoutUser } from "../../features/auth/authAPI";
 import { logout } from "../../features/auth/AuthSlice";
+import { VscDashboard, VscSignOut } from "react-icons/vsc";
+import { AiOutlineCaretDown } from "react-icons/ai";
 
 const ProfileDropDown = () => {
     const { user } = useSelector((state) => state.auth);
@@ -13,8 +15,6 @@ const ProfileDropDown = () => {
     const location = useLocation();
 
     useEffect(() => {
-        console.log("USER FROM REDUX:", user);
-
         const handleClickOutside = (e) => {
             if (ref.current && !ref.current.contains(e.target)) {
                 setOpen(false);
@@ -26,6 +26,7 @@ const ProfileDropDown = () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
     // Logout
     const handleLogout = async () => {
         try {
@@ -39,41 +40,56 @@ const ProfileDropDown = () => {
 
     return (
         <div className="relative" ref={ref}>
-            {/* Profile Image Button */}
-            <button onClick={() => setOpen((prev) => !prev)}>
+            {/* Profile Image & Arrow Button */}
+            <button
+                onClick={() => setOpen((prev) => !prev)}
+                className="flex items-center gap-x-1.5 group focus:outline-none"
+            >
                 <img
                     src={user?.image || "/default-avatar.png"}
-                    alt="Profile"
-                    className="w-7 h-7 rounded-full object-cover border"
+                    alt={`profile-${user?.firstName}`}
+                    className="aspect-square w-[30px] rounded-full object-cover border border-richblack-700 shadow-md group-hover:border-yellow-50 transition-all duration-200"
                     onError={(e) => {
                         e.target.src = "/default-avatar.png";
                     }}
                 />
+                <AiOutlineCaretDown className={`text-xs text-richblack-300 transition-transform duration-200 ${open ? "rotate-180 text-yellow-50" : ""}`} />
             </button>
 
-            {/* Dropdown */}
+            {/* Dropdown Menu */}
             {open && (
+                <div
+                    onClick={(e) => e.stopPropagation()}
+                    className="absolute right-0 top-[120%] z-[1000] divide-y divide-richblack-700 overflow-hidden rounded-xl border border-richblack-700 bg-richblack-800 shadow-2xl w-48 py-1 backdrop-blur-xl animate-in fade-in zoom-in-95 duration-150"
+                >
+                    <div className="px-4 py-2.5 bg-richblack-700/30">
+                        <p className="text-xs text-richblack-300 font-medium truncate">Logged in as</p>
+                        <p className="text-xs font-semibold text-richblack-5 truncate">{user?.firstName || "User"}</p>
+                    </div>
 
-                <div className="absolute right-0 mt-2 w-44 bg-white border rounded-lg shadow-lg z-50">
-                    <ul className="py-2 text-sm text-gray-700">
-                        <Link to={'/dashboard/my-profile'}>
-                            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                                Dashboard
-                            </li></Link>
+                    <div className="py-1">
+                        <Link
+                            to="/dashboard/my-profile"
+                            onClick={() => setOpen(false)}
+                            className="flex w-full items-center gap-x-2 py-2 px-4 text-sm text-richblack-100 hover:bg-richblack-700 hover:text-yellow-50 transition-all duration-150"
+                        >
+                            <VscDashboard className="text-lg text-yellow-50" />
+                            Dashboard
+                        </Link>
+                    </div>
 
-                        <li className="border-t my-1"></li>
-
-                        <li
-                            className="px-4 py-2 text-red-500 hover:bg-red-50 cursor-pointer"
+                    <div className="py-1">
+                        <div
                             onClick={() => {
                                 setOpen(false);
-                                handleLogout(); // ✅ CALL THE FUNCTION
+                                handleLogout();
                             }}
+                            className="flex w-full items-center gap-x-2 py-2 px-4 text-sm text-pink-200 hover:bg-pink-200/10 hover:text-pink-100 transition-all duration-150 cursor-pointer font-medium"
                         >
+                            <VscSignOut className="text-lg text-pink-200" />
                             Logout
-                        </li>
-
-                    </ul>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
