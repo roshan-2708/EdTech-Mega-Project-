@@ -63,7 +63,7 @@ const CourseDetailsCard = ({ course, handleBuyCourse }) => {
             <div className="absolute -top-24 -right-24 w-48 h-48 bg-yellow-50/10 rounded-md blur-3xl pointer-events-none"></div>
 
             {/* Thumbnail */}
-            <div className="relative overflow-hidden rounded-md group border border-richblack-700/60 shadow-inner">
+            <div className="relative overflow-hidden rounded-md  group border border-richblack-700/60 shadow-inner">
                 <img
                     src={thumbnailImage}
                     alt="Course thumbnail"

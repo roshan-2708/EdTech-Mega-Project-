@@ -233,7 +233,7 @@ const CourseDetails = () => {
                     </div>
 
                     {/* Instructor Profile */}
-                    <div className="rounded-2xl border border-richblack-700/80 bg-richblack-800/60 backdrop-blur-md p-6 lg:p-8 shadow-xl">
+                    <div className="rounded-md border border-richblack-700/80 bg-richblack-800/60 backdrop-blur-md p-6 lg:p-8 shadow-xl">
                         <h2 className="text-xl font-bold text-richblack-5 mb-5 flex items-center gap-2">
                             <span className="w-2 h-6 bg-yellow-50 rounded-full"></span>
                             Instructor
